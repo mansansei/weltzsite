@@ -1,0 +1,134 @@
+*{
+    padding: 0 0;
+    margin: 0 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body{
+    background-image: url(images/loginbg4.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100vh;
+}
+
+.logincontainer {
+    width: 30%;
+    height: 500px;
+    margin-right: 8rem;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.logowrapper {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    background-color: white;
+    height: 80%;
+    width: 20%;
+}
+
+.logo__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.formwrapper {
+    background-color: white;
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.2);
+}
+
+.logintitle {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logintitle h1 {
+    font-size: 50px;
+    color: red;
+}
+
+.loginform {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.input2 {
+    margin-bottom: 15px;
+}
+
+.loginform input {
+    height: 13%;
+    width: 80%;
+    padding: 5px 5px;
+    border-radius: 10px;
+    border: none;
+    background-color: #F2F2F2;
+}
+
+.loginform input:focus {
+    border: none;
+    outline: none;
+}
+
+.loginform input:focus::placeholder {
+    opacity: 0;
+}
+
+.loginform button {
+    padding: 10px 30px;
+    border-radius: 20px;
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+.loginform button:hover {
+    cursor: pointer;
+    transition: 0.2s;
+    background-color: gray;
+}
+
+.signuphere {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.signuphere a {
+    text-decoration: none;
+    color: red;
+}
+
+.signuphere p {
+    color: grey;
+}

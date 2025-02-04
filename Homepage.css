@@ -1,0 +1,267 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    /*background-image: url(../images/satoru.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;*/
+
+    background-color: white;
+    padding: 0 200px;
+    color: #f4f1ec;
+
+}
+
+.header {
+    background-color: #FD2627;
+    border-radius: 50px;
+    margin-top: 5px;
+    height: 40px;
+    margin-bottom: 20px;
+    min-width: 450px;
+    padding: 10px 25px 10px 25px;
+}
+
+.header__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.header__logo {
+    margin-left: 50px;
+    color: #f4f1ec;
+    width: 70px;
+    height: 100%;
+}
+
+.header__image {
+    height: 100%;
+    width: 70px;
+    object-fit: cover;
+}
+
+.header__links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header__items {
+    text-decoration: none;
+    color: #f4f1ec;
+}
+
+/*Hanggang dito lng yung css for the header*/
+
+.home {
+    background-color: aliceblue;
+    padding: 10rem 10rem;
+    border-radius: 20px;
+    background-image: url(images/homepic.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-bottom: 20px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+}
+
+.home h1 {
+    margin-bottom: 5px;
+    color: #a67676;
+}
+
+.home button {
+    padding: 10px 20px;
+    border-radius: 15px;
+    background-color: #e39795;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/*Hanggang dito lng yung Order now na pic or banner i dunno*/
+
+.featured {
+    /*background-color: bisque;*/
+    margin-bottom: 20px;
+}
+
+.featured h2 {
+    color: black;
+    margin-bottom: 30px;
+}
+
+.featured__items-wrapper {
+    height: 150px;
+    /* background-color: blueviolet; */
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    overflow-x: auto;
+}
+
+.featured__item1 {
+    /* background-color: red; */
+    height: 90%;
+    width: 500px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.featured__item2 {
+    /* background-color: red; */
+    height: 90%;
+    width: 500px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+/* pwede ko na pag isahin yung featured__item pero di muna for adjusting purposes para makita ko pang clean up na yon */
+
+.featured__items-picture {
+    /* background-color: chartreuse; */
+    width: 20%;
+    height: 70%;
+    margin-left: 20px;
+}
+
+.featured__items-name {
+    /*background-color: cornflowerblue; */
+    height: 100%;
+    width: 60%;
+    display: flex;
+    color: black;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+/*Hanggang dito lng yung featured na shit*/
+
+
+.aboutus {
+    background-color: white;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.aboutus__description-wrapper {
+    background-color: chocolate;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.aboutus__description {
+    background-color: red;
+    height: 80%;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.aboutus__description p {
+    text-align: justify;
+    font-size: 20px;
+    line-height: 26px;
+}
+
+.aboutus__description h3 {
+    text-align: center;
+}
+
+.aboutus__picture-wrapper {
+    background-color: aquamarine;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.aboutus__picture {
+    background-color: beige;
+    width: 80%;
+    height: 80%;
+}
+
+.aboutus__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/*Hanggang dito lng yung aboutus na design*/
+
+.partners {
+    background-color: darkgoldenrod;
+    height: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.partners__title {
+    background-color: cornflowerblue;
+    width: 100%;
+    height: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.partners__title h2 {
+    font-size: 40px;
+}
+
+.partners__images-wrapper {
+    background-color: darkorange;
+    width: 100%;
+    height: 60%;
+    gap: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    overflow-x: auto;
+}
+
+.partners__images {
+    background-color: aliceblue;
+    min-height: 150px;
+    min-width: 150px;
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+}
+
+.partners__picture {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/*hanggang dito lng yung trusted partners na design or css*/
