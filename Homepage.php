@@ -20,6 +20,7 @@
                 <a class="header__items" href="#">Products</a>
                 <a class="header__items" href="#">Contact</a>
                 <a class="header__items" href="#">Blogs</a>
+                <p><a class="header__items" href="Login.php">Login</a>/<a class="header__items" href="Signup.php">Sign Up</a></p>
             </div>
         </nav>
     </header>
