@@ -12,6 +12,8 @@ session_start();
     <link rel="stylesheet" href="Signup.css">
 </head>
 <body>
+
+<!-- Start of Sign Up Section -->
     <section class="signup">
         <div class="logo-wrapper">
             <div class="logo">
