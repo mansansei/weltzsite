@@ -27,7 +27,7 @@ function send_verification($fname,$email,$otp) {
         $mail->Body    = "<h1>Hello ".$fname."</h1>
         <br><p>You have registered an account on our website!
         <br>Please click the link below to complete your verification:</p>
-        <br><br><h3><strong><i><a href='http://localhost/SE2Website/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
+        <br><br><h3><strong><i><a href='http://localhost/weltzite/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
 
         $mail->send();
         ?>
