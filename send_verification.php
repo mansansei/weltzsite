@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\Exception;
 require 'vendor/autoload.php';
 
 
-function send_verification($fname,$email,$otp) {
+function send_verification($firstname,$email,$otp) {
 
     $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
     try {
@@ -24,10 +24,10 @@ function send_verification($fname,$email,$otp) {
         //Content
         $mail->isHTML(true);  // Set email format to HTML
         $mail->Subject = "Weltz Industrial OTP Verification Code";
-        $mail->Body    = "<h1>Hello ".$fname."</h1>
+        $mail->Body    = "<h1>Hello ".$firstname."</h1>
         <br><p>You have registered an account on our website!
         <br>Please click the link below to complete your verification:</p>
-        <br><br><h3><strong><i><a href='http://localhost/weltzite/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
+        <br><br><h3><strong><i><a href='http://localhost/weltzsite/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
 
         $mail->send();
         ?>

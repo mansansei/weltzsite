@@ -247,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $conn->query($insertsql);
 
     if ($result == True) { 
-        send_verification($fname,$email,$otp);
+        send_verification($firstname,$email,$otp);
         echo "<script>alert('Registration successful!'); window.location.href = 'Login.php';</script>";
         
         } else {
