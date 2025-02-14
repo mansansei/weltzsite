@@ -1,0 +1,213 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: white;
+    color: #231f20;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+h1, h2, h3 {
+    font-family: 'Anton', sans-serif;
+    font-style: italic;
+    letter-spacing: 2px;
+}
+
+p {
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.svgg2 .butt1 {
+    background-color: #fc0001;
+}
+/* HANGGANG DITO LNG YUNG HEADER */
+
+.cart {
+    height: 100px;
+    width: 100%;
+    padding: 5px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #fc0001;
+}
+
+
+.carttitle {
+    height: 100%;
+    width: 350px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 25px;
+}
+
+.cartlink {
+    height: 100%;
+    width: 150px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 25px;
+}
+
+.cartlink a {
+    color: #fc0001;
+    text-decoration: none;
+}
+
+/* HANGGANG DITO LNG SA CARTTITLE */
+
+.cart2 {
+    /* background-color: aquamarine; */
+    height: 100vh;
+    width: 100%;
+    padding: 5px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cartdesc {
+    /* background-color: cadetblue ; */
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    border-radius: 100px;
+    font-size: 20px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+}
+
+.cartdesc1 {
+    /* background-color: cornflowerblue; */
+    height: 100%;
+    width: 400px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.cartdesc2 {
+    /* background-color: crimson; */
+    height: 100%;
+    width: 800px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+    place-items: center;
+}
+.cartwrapper {
+    /* background-color: burlywood; */
+    height: 70%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 20px 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cartitemwrapper {
+    background-color: white;
+    min-height: 150px;
+    width: 100%;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    border-radius: 50px;
+}
+
+.box1 {
+    /* background-color: bisque; */
+    height: 100%;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cartitemimage {
+    /* background-color: aquamarine; */
+    height: 100%;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nyerm {
+    /* background-color: gray; */
+    height: 80%;
+    width: 80%;
+}
+
+.nyerm img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.cartitemdesc {
+    height: 100%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cartitemdesc h1 {
+    font-size: 20px;
+}
+
+.box2 {
+    /* background-color: darkgrey; */
+    height: 100%;
+    width: 800px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+    place-items: center;
+    font-size: 20px;
+    word-break: break-word;
+}
+
+.status {
+    color: orange;
+}
+
+.action {
+    color: #fc0001;
+    text-decoration: none;
+}
+
+.return {
+    /* background-color: blanchedalmond; */
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 30px;
+}
+
+.return button {
+    padding: 10px 30px;
+    border-radius: 50px;
+    background-color: #fc0001;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 20px;
+}

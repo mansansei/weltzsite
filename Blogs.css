@@ -1,0 +1,158 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    /* background-color: white; */
+    color: #231f20;
+    font-family: 'Bebas Neue', sans-serif;
+    background-image: url(../images/landingpic.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgba(0,0,0,0.60);
+    background-blend-mode: overlay;
+}
+
+h1, h2, h3 {
+    font-family: 'Anton', sans-serif;
+    font-style: italic;
+    letter-spacing: 2px;
+}
+
+p {
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.links .active5 button {
+    background-color: #fc0001;
+}
+/* HANGGANG DITO LNG HEADER PART PARA SA COPY PASTA */
+
+/* Blog Section */
+.blogsheader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.blogsheader h1 {
+    color: #fc0001;
+    font-size: 50px;
+    text-align: center;
+}
+
+
+.blogswrapper {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+
+.blogs, .blogs2 {
+    background-color: white;
+    height: 450px;
+    width: 35%;
+    min-width: 200px;
+    border-radius: 15px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.blogsimg {
+    background-color: white;
+    height: 60%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.blogsimg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.blogsewanko {
+    height: 65%;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.blogstitle {
+    height: 20%;
+    color: black;
+    font-size: 23px;
+}
+
+.blogsdesc p {
+    color: black;
+}
+
+.blogslink {
+    height: 15%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.blogslink a {
+    color: red;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+/* HANGGANG DITO LNG YUNG BUONG BLOGS PART */
+
+/* ========== Responsive Design ========== */
+
+/* Medium Screens (Tablets) */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 50px; 
+    }
+
+    .blogswrapper {
+        flex-direction: column; 
+        align-items: center;
+    }
+
+    .blogs, .blogs2 {
+        width: 80%; 
+    }
+}
+
+/* Small Screens (Mobile) */
+@media (max-width: 768px) {
+    body {
+        padding: 0 20px; 
+    }
+
+    .blogsheader h1 {
+        font-size: 35px; 
+    }
+
+    .header__links {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .blogs, .blogs2 {
+        width: 100%;
+    }
+
+    .blogslink a {
+        font-size: 16px; 
+    }
+}

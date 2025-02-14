@@ -1,267 +1,231 @@
 * {
     padding: 0;
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    /*background-image: url(../images/satoru.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;*/
-
     background-color: white;
-    padding: 0 200px;
-    color: #f4f1ec;
-
+    color: #231f20;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
-.header {
-    background-color: #FD2627;
-    border-radius: 50px;
-    margin-top: 5px;
-    height: 40px;
-    margin-bottom: 20px;
-    min-width: 450px;
-    padding: 10px 25px 10px 25px;
+h1, h2, h3 {
+    font-family: 'Anton', sans-serif;
+    font-style: italic;
+    letter-spacing: 2px;
 }
 
-.header__nav {
+p {
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.links .active button {
+    background-color: #fc0001;
+}
+/* HANGGANG DITO LNG YUNG HEADER */
+
+.landing {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-}
-
-.header__logo {
-    margin-left: 50px;
-    color: #f4f1ec;
-    width: 70px;
-    height: 100%;
-}
-
-.header__image {
-    height: 100%;
-    width: 70px;
-    object-fit: cover;
-}
-
-.header__links {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.header__items {
-    text-decoration: none;
-    color: #f4f1ec;
-}
-
-/*Hanggang dito lng yung css for the header*/
-
-.home {
-    background-color: aliceblue;
-    padding: 10rem 10rem;
-    border-radius: 20px;
-    background-image: url(images/homepic.jpg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    margin-bottom: 20px;
-    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
-}
-
-.home h1 {
-    margin-bottom: 5px;
-    color: #a67676;
-}
-
-.home button {
-    padding: 10px 20px;
-    border-radius: 15px;
-    background-color: #e39795;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-/*Hanggang dito lng yung Order now na pic or banner i dunno*/
-
-.featured {
-    /*background-color: bisque;*/
-    margin-bottom: 20px;
-}
-
-.featured h2 {
-    color: black;
-    margin-bottom: 30px;
-}
-
-.featured__items-wrapper {
-    height: 150px;
-    /* background-color: blueviolet; */
-    width: 100%;
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    overflow-x: auto;
-}
-
-.featured__item1 {
-    /* background-color: red; */
-    height: 90%;
-    width: 500px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 40px;
-    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
-    margin-left: 2px;
-    margin-right: 2px;
-}
-
-.featured__item2 {
-    /* background-color: red; */
-    height: 90%;
-    width: 500px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 40px;
-    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
-    margin-left: 2px;
-    margin-right: 2px;
-}
-
-/* pwede ko na pag isahin yung featured__item pero di muna for adjusting purposes para makita ko pang clean up na yon */
-
-.featured__items-picture {
-    /* background-color: chartreuse; */
-    width: 20%;
-    height: 70%;
-    margin-left: 20px;
-}
-
-.featured__items-name {
-    /*background-color: cornflowerblue; */
-    height: 100%;
-    width: 60%;
-    display: flex;
-    color: black;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+    gap: 20px;
+    background-image: url(../images/landingpic.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0,0,0,0.40);
+    background-blend-mode: overlay;
+}
+
+.landing h1 {
+    font-size: 60px;
+    color: white;
+
+}
+
+.landing p {
+    font-size: 45px;
+    color: white;
+}
+
+.landing a button {
+    padding: 20px 60px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 25px;
+    background-color: transparent;
+    border: 3px solid white;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.landing a button:hover {
+    background-color: white;
+    color: #231f20;
+}
+
+/* HANGGANG DITO LNG YUNG LANDING PICTURE OR SOMETHIGN WELCOMING ETC */
+
+.featured {
+    background-color: cyan;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.featuredname {
+    background-color: #231f20;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
 }
 
-/*Hanggang dito lng yung featured na shit*/
+.featuredname h1 {
+    font-size: 70px;
+    color: #fc0001;
+}
 
+.featuredname p {
+    color: white;
+    font-size: 30px;
+    letter-spacing: 2px;
+}
 
-.aboutus {
+.featureditemswrapper {
     background-color: white;
+    height: 70%;
     width: 100%;
-    height: 500px;
     display: flex;
-    margin-bottom: 20px;
-}
-
-.aboutus__description-wrapper {
-    background-color: chocolate;
-    height: 100%;
-    width: 50%;
-    display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-}
-
-.aboutus__description {
-    background-color: red;
-    height: 80%;
-    width: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.aboutus__description p {
-    text-align: justify;
-    font-size: 20px;
-    line-height: 26px;
-}
-
-.aboutus__description h3 {
-    text-align: center;
-}
-
-.aboutus__picture-wrapper {
-    background-color: aquamarine;
-    height: 100%;
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.aboutus__picture {
-    background-color: beige;
-    width: 80%;
-    height: 80%;
-}
-
-.aboutus__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/*Hanggang dito lng yung aboutus na design*/
-
-.partners {
-    background-color: darkgoldenrod;
-    height: 300px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.partners__title {
-    background-color: cornflowerblue;
-    width: 100%;
-    height: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.partners__title h2 {
-    font-size: 40px;
-}
-
-.partners__images-wrapper {
-    background-color: darkorange;
-    width: 100%;
-    height: 60%;
-    gap: 20px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    gap: 50px;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
     overflow-x: auto;
 }
 
-.partners__images {
-    background-color: aliceblue;
-    min-height: 150px;
-    min-width: 150px;
-    height: 150px;
-    width: 150px;
-    border-radius: 50%;
+/* .featureditemswrapper {
+    background-color: white;
+    height: 70%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 50px;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    overflow-x: auto; 
+    position: relative; 
 }
 
-.partners__picture {
+.scroll-left, .scroll-right {
+    position: absolute; 
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+    background-color: #231f20;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1; 
+    background-color: rgba(35, 31, 32, 0.8); 
+}
+
+.scroll-left {
+    left: 15px; 
+}
+
+.scroll-right {
+    right: 15px;
+}
+
+.featureditemswrapper::-webkit-scrollbar {
+    display: none; 
+} */
+
+
+.featureditem {
+    /* background-color: crimson; */
+    height: 90%;
+    min-width: 450px;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+}
+
+.featureditempic {
+    /* background-color: darkolivegreen; */
+    height: 80%;
+    width: 100%;
+    border: 3px solid #231f20;
+}
+
+.featureditempic img {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    border-radius: 50%;
 }
 
-/*hanggang dito lng yung trusted partners na design or css*/
+.featureditembox2 {
+    /* background-color: cyan; */
+    height: 20%;
+    width: 100%;
+    display: flex;
+}
+
+.featureditemname {
+    height: 100%;
+    width: 50%;
+    /* background-color: aquamarine; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px 0;
+}
+
+.featureditemname p {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.p2 {
+    font-size: 30px;
+    color: #fc0001;
+}
+
+.p2 a {
+    font-size: 30;
+    color: #fc0001;
+}
+
+.featureditemprice {
+    width: 50%;
+    height: 100%;
+    /* background-color: cornflowerblue; */
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 20px 0;
+}
+
+.featureditemprice p {
+    font-size: 30px;
+}
+
+/* HANGGANG DITO LNG YUNG FEATURED */
