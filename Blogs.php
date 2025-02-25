@@ -1,31 +1,27 @@
-<?php
-
-include_once 'Header.php';
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogs</title>
+    <title>Blogs - Weltz INC</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="./Blogs.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="blogsPage">
 
-        <!--Hanggang dito lng yung icocopy paste for the header-->
+    <?php
+        require_once 'Header.php'
+    ?>
 
     <section class="blogsheader">
         <h1>Company Blog</h1>
     </section>
 
     <section class="blogswrapper">
-
         <div class="blogs">
             <div class="blogsimg">
                 <img src="../images/logo.png" alt="blog banner">
@@ -40,6 +36,7 @@ include_once 'Header.php';
                     lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
                     </p>
                 </div>
+
                 <div class="blogslink">
                     <a href="#">Read more ></a>
                 </div>
@@ -60,11 +57,11 @@ include_once 'Header.php';
                     lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
                     </p>
                 </div>
+
                 <div class="blogslink">
                     <a href="#">Read more ></a>
                 </div>
             </div>
-
         </div>
 
         <div class="blogs2">
@@ -81,11 +78,11 @@ include_once 'Header.php';
                     lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
                     </p>
                 </div>
+                
                 <div class="blogslink">
                     <a href="#">Read more ></a>
                 </div>
             </div>
-
         </div>
 
         <div class="blogs2">
@@ -102,13 +99,12 @@ include_once 'Header.php';
                     lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
                     </p>
                 </div>
+
                 <div class="blogslink">
                     <a href="#">Read more ></a>
                 </div>
             </div>
-
         </div>
-
     </section>
 
     <!-- HANGGANG DITO LNG YUNG BLOGS NA SOMETHING -->

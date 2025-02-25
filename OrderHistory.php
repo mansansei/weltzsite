@@ -1,26 +1,24 @@
-<?php
-
-include_once 'Header.php';
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History - Weltz INC</title>
     <link rel="stylesheet" href="OrderHistory.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
-
-    <title>Order History</title>
 </head>
 <body>
 
+    <?php
+        require_once 'Header.php'
+    ?>
+
     <section class="cart">
         <div class="carttitle">
-        <h1>Order History</h1>
+            <h1>Order History</h1>
         </div>
     </section>
 
@@ -73,4 +71,5 @@ include_once 'Header.php';
             <a href="./Cart.php"><button>Return to cart</button></a>
         </div>
     </section>
-
+</body>
+</html>

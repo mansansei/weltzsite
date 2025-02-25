@@ -1,24 +1,23 @@
-<?php
-
-include_once 'Header.php';
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="Products.css">
+    <link rel="stylesheet" href="styles.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
     
-    <title>Product Catalog</title>
+    <title>Products - Weltz INC</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-black">
     
+    <?php
+        require_once 'Header.php';
+    ?>
+
     <header class="p-4 flex items-center">
         <div class="relative w-64">
             <input type="text" placeholder="Enter product..." 

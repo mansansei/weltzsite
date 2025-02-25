@@ -1,0 +1,983 @@
+/* =====GLOBAL====== */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: white;
+    color: #231f20;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+h1, h2, h3 {
+    font-family: 'Anton', sans-serif;
+    font-style: italic;
+    letter-spacing: 2px;
+}
+
+p {
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+
+
+/* =====LOGIN===== */
+
+.loginPage {
+    background-image: url(images/loginbg4.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100vh;
+}
+
+.logincontainer {
+    width: 30%;
+    height: 500px;
+    margin-right: 8rem;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.logowrapper {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    background-color: white;
+    height: 80%;
+    width: 20%;
+}
+
+.logo__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.formwrapper {
+    background-color: white;
+    height: 80%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.2);
+}
+
+.logintitle {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logintitle h1 {
+    font-size: 50px;
+    color: red;
+}
+
+.loginform {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.input2 {
+    margin-bottom: 15px;
+}
+
+.loginform input {
+    height: 13%;
+    width: 80%;
+    padding: 5px 5px;
+    border-radius: 10px;
+    border: none;
+    background-color: #F2F2F2;
+}
+
+.loginform input:focus {
+    border: none;
+    outline: none;
+}
+
+.loginform input:focus::placeholder {
+    opacity: 0;
+}
+
+.loginform button {
+    padding: 10px 30px;
+    border-radius: 20px;
+    background-color: red;
+    color: white;
+    border: none;
+}
+
+.loginform button:hover {
+    cursor: pointer;
+    transition: 0.2s;
+    background-color: gray;
+}
+
+.signuphere {
+    height: 10%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.signuphere a {
+    text-decoration: none;
+    color: red;
+}
+
+.signuphere p {
+    color: grey;
+}
+
+
+
+/* =====SIGNUP===== */
+
+.signupPage {
+    height: 100vh;
+    width: 100vw;
+    background-image: url(images/signupbg3.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    object-fit: cover;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.signup {
+    /* background-color: white; */
+    height: 80%;
+    width: 450px;
+    margin-left: 200px;
+}
+
+.logo-wrapper {
+    /* background-color: white; */
+    height: 15%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.logo {
+    /* background-color: white; */
+    height: 80%;
+    width: 20%;
+}
+
+.logo img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.form-wrapper {
+    background-color: white;
+    height: 85%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.2);
+}
+
+.title {
+    height: 15%;
+    width: 100%;
+    /* background-color: white; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.title h1 {
+    font-size: 40px;
+}
+
+.signupform {
+    height: 75%;
+    width: 80%;
+    /* background-color: darkgrey; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.row1 {
+    /* background-color: darkkhaki; */
+    height: 12.2%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.row1 input {
+    width: 48%;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #f2f2f2;
+}
+
+.row1 input:focus::placeholder {
+    opacity: 0;
+}
+
+.row2 {
+    /* background-color: fuchsia; */
+    height: 12.2%;
+    width: 100%;
+}
+
+.row2 input {
+    width: 100%;
+    height: 100%;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #f2f2f2;
+    box-sizing: border-box;
+}
+
+.row2 input:focus::placeholder {
+    opacity: 0;
+}
+
+.signupcheckbox {
+    background-color: white;
+    width: 100%;
+    height: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+}
+
+.signupcheckbox input[type="checkbox"] {
+    transform: scale(1.5);
+}
+
+.signupcheckbox label, a {
+    font-size: 15px;
+}
+
+.signupbutton {
+    background-color: white;
+    height: 15%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signupbutton button {
+    padding: 8px 30px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    background-color: red;
+    color: white;
+}
+
+.loginhere {
+    height: 10%;
+    width: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.loginhere a {
+    text-decoration: none;
+    color: red;
+}
+
+.loginhere a:hover {
+    text-decoration: underline;
+}
+
+
+/* =====NAVBAR===== */
+
+.headerwrapper {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    height: 100px;
+    width: 100%;
+    padding: 5px 40px;
+}
+
+.a {
+    display: flex;
+    align-items: center;
+    /* background-color: cyan; */
+    height: 100%;
+    width: 400px;
+}
+
+.alogo {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    /* background-color: chocolate; */
+    width: 30%;
+    height: 100%;
+}
+
+.alogowrapper {
+    /* background-color: black; */
+    height: 80%;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.alogowrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.aname {
+    height: 100%;
+    width: 70%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.aname h1 {
+    display: flex;
+    text-align: justify;
+    font-size: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.b {
+    /* background-color: blueviolet; */
+    height: 100%;
+    width: 500px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 30px;
+}
+
+.b1, .b2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.b1, .b2 p {
+    font-size: 20px;
+}
+
+.svgg {
+    color: #fc0001;
+    width: 30px;
+    height: 30px;
+    padding-bottom: 20px;
+}
+
+
+.headerwrapper2 {
+    background-color: #231f20;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+}
+
+.links {
+    /* background-color: cornflowerblue; */
+    height: 100%;
+    width: 700px;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.links a {
+    text-decoration: none;
+}
+
+.links a button {
+    font-family: inherit;
+    font-size: 25px;
+    cursor: pointer;
+    height: 100%;
+    padding: 0 20px;
+    color: white;
+    background-color: #231f20;
+    border: none;
+    transition: background-color 0.3s ease;
+    
+}
+
+.links a button:hover {
+    text-decoration: underline;
+    background-color:  #fc0001;
+}
+
+.icons {
+    /* background-color: cyan; */
+    height: 100%;
+    width: 300px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 25px;
+}
+
+.icon {
+    height: 100%;
+}
+
+.svgg2 button {
+    border: none;
+    height: 100%;
+    cursor: pointer;
+    width: 50px;
+    color: white;
+    background-color: #231f20;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.svgg2 {
+    height: 100%;
+}
+
+.svgg2 svg {
+    width: 30px;
+    height: 30px;
+}
+
+
+
+/* =====HOMEPAGE===== */
+
+/* banner */
+.landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 40px;
+    gap: 20px;
+    background-image: url(../images/landingpic.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0,0,0,0.40);
+    background-blend-mode: overlay;
+}
+
+.landing h1 {
+    font-size: 60px;
+    color: white;
+
+}
+
+.landing p {
+    font-size: 45px;
+    color: white;
+}
+
+.landing a button {
+    padding: 20px 60px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 25px;
+    background-color: transparent;
+    border: 3px solid white;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.landing a button:hover {
+    background-color: white;
+    color: #231f20;
+}
+
+/* featured products */
+.featured {
+    background-color: cyan;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.featuredname {
+    background-color: #231f20;
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.featuredname h1 {
+    font-size: 70px;
+    color: #fc0001;
+}
+
+.featuredname p {
+    color: white;
+    font-size: 30px;
+    letter-spacing: 2px;
+}
+
+.featureditemswrapper {
+    background-color: white;
+    height: 70%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 50px;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    overflow-x: auto;
+}
+
+.featureditem {
+    /* background-color: crimson; */
+    height: 90%;
+    min-width: 450px;
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+}
+
+.featureditempic {
+    /* background-color: darkolivegreen; */
+    height: 80%;
+    width: 100%;
+    border: 3px solid #231f20;
+}
+
+.featureditempic img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.featureditembox2 {
+    /* background-color: cyan; */
+    height: 20%;
+    width: 100%;
+    display: flex;
+}
+
+.featureditemname {
+    height: 100%;
+    width: 50%;
+    /* background-color: aquamarine; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px 0;
+}
+
+.featureditemname p {
+    font-size: 30px;
+    line-height: 1;
+}
+
+.p2 {
+    font-size: 30px;
+    color: #fc0001;
+}
+
+.p2 a {
+    font-size: 30;
+    color: #fc0001;
+}
+
+.featureditemprice {
+    width: 50%;
+    height: 100%;
+    /* background-color: cornflowerblue; */
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding: 20px 0;
+}
+
+.featureditemprice p {
+    font-size: 30px;
+}
+
+
+
+/* =====CART & ORDER HISTORY===== */
+
+.cart {
+    height: 100px;
+    width: 100%;
+    padding: 5px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #fc0001;
+}
+
+
+.carttitle {
+    height: 100%;
+    width: 350px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 25px;
+}
+
+.cartlink {
+    height: 100%;
+    width: 150px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 25px;
+}
+
+.cartlink a {
+    color: #fc0001;
+    text-decoration: none;
+}
+
+/* HANGGANG DITO LNG SA CARTTITLE */
+
+.cart2 {
+    /* background-color: aquamarine; */
+    height: 100vh;
+    width: 100%;
+    padding: 5px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cartdesc {
+    /* background-color: cadetblue ; */
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+    border-radius: 100px;
+    font-size: 20px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+}
+
+.cartdesc1 {
+    /* background-color: cornflowerblue; */
+    height: 100%;
+    width: 400px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+}
+
+.cartdesc2 {
+    /* background-color: crimson; */
+    height: 100%;
+    width: 800px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+    place-items: center;
+}
+.cartwrapper {
+    /* background-color: burlywood; */
+    height: 70%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 20px 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cartitemwrapper {
+    background-color: white;
+    min-height: 150px;
+    width: 100%;
+    padding: 0 30px;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    border-radius: 50px;
+}
+
+.box1 {
+    /* background-color: bisque; */
+    height: 100%;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cartitemimage {
+    /* background-color: aquamarine; */
+    height: 100%;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nyerm {
+    /* background-color: gray; */
+    height: 80%;
+    width: 80%;
+}
+
+.nyerm img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.cartitemdesc {
+    height: 100%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.cartitemdesc h1 {
+    font-size: 20px;
+}
+
+.box2 {
+    /* background-color: darkgrey; */
+    height: 100%;
+    width: 800px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    text-align: center;
+    place-items: center;
+    font-size: 20px;
+    word-break: break-word;
+}
+
+.status {
+    color: orange;
+}
+
+.action {
+    color: #fc0001;
+    text-decoration: none;
+}
+
+.return {
+    /* background-color: blanchedalmond; */
+    height: 10%;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 30px;
+}
+
+.return button {
+    padding: 10px 30px;
+    border-radius: 50px;
+    background-color: #fc0001;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 20px;
+}
+
+
+
+/* =====BLOGS===== */
+
+.blogsPage {
+    color: #231f20;
+    font-family: 'Bebas Neue', sans-serif;
+    background-image: url(../images/landingpic.jpg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgba(0,0,0,0.60);
+    background-blend-mode: overlay;
+}
+
+.blogsheader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.blogsheader h1 {
+    color: #fc0001;
+    font-size: 50px;
+    text-align: center;
+}
+
+
+.blogswrapper {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 10px;
+}
+
+
+.blogs, .blogs2 {
+    background-color: white;
+    height: 450px;
+    width: 35%;
+    min-width: 200px;
+    border-radius: 15px;
+    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.blogsimg {
+    background-color: white;
+    height: 60%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.blogsimg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.blogsewanko {
+    height: 65%;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.blogstitle {
+    height: 20%;
+    color: black;
+    font-size: 23px;
+}
+
+.blogsdesc p {
+    color: black;
+}
+
+.blogslink {
+    height: 15%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.blogslink a {
+    color: red;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+/* HANGGANG DITO LNG YUNG BUONG BLOGS PART */
+
+/* ========== Responsive Design ========== */
+
+/* Medium Screens (Tablets) */
+@media (max-width: 1024px) {
+    body {
+        padding: 0 50px; 
+    }
+
+    .blogswrapper {
+        flex-direction: column; 
+        align-items: center;
+    }
+
+    .blogs, .blogs2 {
+        width: 80%; 
+    }
+}
+
+/* Small Screens (Mobile) */
+@media (max-width: 768px) {
+    body {
+        padding: 0 20px; 
+    }
+
+    .blogsheader h1 {
+        font-size: 35px; 
+    }
+
+    .header__links {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .blogs, .blogs2 {
+        width: 100%;
+    }
+
+    .blogslink a {
+        font-size: 16px; 
+    }
+}
