@@ -31,7 +31,7 @@ p {
 /* =====LOGIN===== */
 
 .loginPage {
-    background-image: url(images/loginbg4.png);
+    background-image: url(../images/loginbg4.png);
     background-size: cover;
     background-repeat: no-repeat;
     object-fit: cover;
@@ -166,7 +166,7 @@ p {
 .signupPage {
     height: 100vh;
     width: 100vw;
-    background-image: url(images/signupbg3.png);
+    background-image: url(../images/signupbg3.png);
     background-position: center;
     background-repeat: no-repeat;
     object-fit: cover;
@@ -336,166 +336,92 @@ p {
 /* =====NAVBAR===== */
 
 .headerwrapper {
-    display: flex;
-    justify-content: space-between;
-    background-color: white;
-    height: 100px;
-    width: 100%;
-    padding: 5px 40px;
-}
-
-.a {
-    display: flex;
-    align-items: center;
-    /* background-color: cyan; */
-    height: 100%;
-    width: 400px;
-}
-
-.alogo {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    /* background-color: chocolate; */
-    width: 30%;
-    height: 100%;
-}
-
-.alogowrapper {
-    /* background-color: black; */
-    height: 80%;
-    width: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
 }
 
 .alogowrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 150px;
+    height: auto;
 }
 
-.aname {
-    height: 100%;
-    width: 70%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.aname h1 {
-    display: flex;
-    text-align: justify;
-    font-size: 30px;
+.header-title {
+    font-size: 3rem;
     margin: 0;
-    padding: 0;
 }
 
-.b {
-    /* background-color: blueviolet; */
-    height: 100%;
-    width: 500px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 30px;
+.contact-info p {
+    margin: 0 5px;
+    font-size: 1.5rem;
 }
 
-.b1, .b2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.b1, .b2 p {
-    font-size: 20px;
-}
-
-.svgg {
+.contact-info i {
     color: #fc0001;
-    width: 30px;
-    height: 30px;
-    padding-bottom: 20px;
 }
-
 
 .headerwrapper2 {
-    background-color: #231f20;
-    height: 50px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 40px;
     position: sticky;
     top: 0;
-}
-
-.links {
-    /* background-color: cornflowerblue; */
-    height: 100%;
-    width: 700px;
-    display: flex;
-    justify-content: space-between;
-}
-
-
-.links a {
-    text-decoration: none;
-}
-
-.links a button {
-    font-family: inherit;
-    font-size: 25px;
-    cursor: pointer;
-    height: 100%;
-    padding: 0 20px;
-    color: white;
     background-color: #231f20;
+}
+
+.headerwrapper2 .links a button {
     border: none;
+    background: none;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 1.5rem;
     transition: background-color 0.3s ease;
-    
 }
 
-.links a button:hover {
-    text-decoration: underline;
-    background-color:  #fc0001;
-}
-
-.icons {
-    /* background-color: cyan; */
-    height: 100%;
-    width: 300px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 25px;
-}
-
-.icon {
-    height: 100%;
-}
-
-.svgg2 button {
+.headerwrapper2 .links a button:hover {
     border: none;
-    height: 100%;
-    cursor: pointer;
-    width: 50px;
-    color: white;
-    background-color: #231f20;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: #fc0001;
+    padding: 10px 20px;
 }
 
-.svgg2 {
-    height: 100%;
+.headerwrapper2 .icons .icon a button {
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    padding: 10px 20px;
+    color: #ffffff;
 }
 
-.svgg2 svg {
-    width: 30px;
-    height: 30px;
+@media (max-width: 575.98px) {
+    .headerwrapper .header-title {
+        font-size: 1.5rem;
+        text-align: right;
+    }
+    .headerwrapper .contact-info {
+        justify-content: flex-end;
+    }
+    .headerwrapper2 .links a button{
+        justify-content: center;
+        font-size: 1rem;
+    }
+    .headerwrapper2 .icons .icon a button {
+        justify-content: center;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 961px) {
+    .headerwrapper .header-title {
+        font-size: 1.5rem;
+    }
+    .headerwrapper .contact-info p {
+        justify-content: flex-end;
+        font-size: 0.75rem;
+    }
+    .headerwrapper2 .links a button{
+        justify-content: center;
+        font-size: 1rem;
+    }
+    .headerwrapper2 .icons .icon a button {
+        justify-content: center;
+        font-size: 1rem;
+    }
 }
 
 
@@ -503,31 +429,32 @@ p {
 /* =====HOMEPAGE===== */
 
 /* banner */
+
 .landing {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 0 40px;
+    padding: 50px;
     gap: 20px;
     background-image: url(../images/landingpic.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    height: 100vh;
+    height: 650px;
     width: 100%;
     background-color: rgba(0,0,0,0.40);
     background-blend-mode: overlay;
 }
 
 .landing h1 {
-    font-size: 60px;
+    font-size: 3rem;
     color: white;
 
 }
 
 .landing p {
-    font-size: 45px;
+    font-size: 2rem;
     color: white;
 }
 
@@ -549,114 +476,89 @@ p {
 
 /* featured products */
 .featured {
-    background-color: cyan;
-    height: 100vh;
+    background-color: none;
+    height: auto;
     width: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0;
 }
 
-.featuredname {
+.featuredTitle {
     background-color: #231f20;
-    height: 30%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+    padding: 25px;
 }
 
-.featuredname h1 {
-    font-size: 70px;
+.featuredTitle h1 {
+    font-size: 3rem;
     color: #fc0001;
 }
 
-.featuredname p {
+.featuredTitle p {
     color: white;
-    font-size: 30px;
+    font-size: 2rem;
     letter-spacing: 2px;
 }
 
 .featureditemswrapper {
-    background-color: white;
     height: 70%;
     width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 50px;
-    padding-top: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
-    overflow-x: auto;
+
 }
 
-.featureditem {
-    /* background-color: crimson; */
-    height: 90%;
-    min-width: 450px;
-    width: 450px;
+.scroll-container {
+    overflow-x: auto;
+    margin: 25px;
+}
+
+.row.flex-nowrap {
     display: flex;
-    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.featuredItem {
+    width: 400px;
+    height: auto;
+    font-size: 2rem;
+    margin: 15px 15px 15px 15px;
+    background-color: #e7e7e7;
+    border-radius: 10px;
 }
 
 .featureditempic {
     /* background-color: darkolivegreen; */
-    height: 80%;
+    height: auto;
     width: 100%;
-    border: 3px solid #231f20;
 }
 
 .featureditempic img {
-    height: 100%;
+    height: auto;
     width: 100%;
     object-fit: cover;
 }
 
-.featureditembox2 {
-    /* background-color: cyan; */
-    height: 20%;
-    width: 100%;
-    display: flex;
-}
-
-.featureditemname {
-    height: 100%;
-    width: 50%;
-    /* background-color: aquamarine; */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 20px 0;
-}
-
-.featureditemname p {
-    font-size: 30px;
-    line-height: 1;
-}
-
-.p2 {
-    font-size: 30px;
+.featuredViewProduct a {
     color: #fc0001;
 }
 
-.p2 a {
-    font-size: 30;
-    color: #fc0001;
+@media (max-width: 575.98px) {
+    
 }
 
-.featureditemprice {
-    width: 50%;
-    height: 100%;
-    /* background-color: cornflowerblue; */
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-start;
-    padding: 20px 0;
-}
-
-.featureditemprice p {
-    font-size: 30px;
+@media (max-width: 961px) {
+    .featuredTitle h1 {
+        font-size: 2rem;
+    }
+    .featuredTitle p {
+        font-size: 1rem;
+    }
+    .featuredItem {
+        width: 200px;
+        font-size: 1rem;
+    }
+    .landing a button {
+        font-size: 15px;
+    }
 }
 
 

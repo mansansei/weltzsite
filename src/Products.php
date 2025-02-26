@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Weltz INC</title>
     <link rel="stylesheet" href="styles.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
-    
-    <title>Products - Weltz INC</title>
+    <?php require_once 'cssLibraries.php' ?>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-black">

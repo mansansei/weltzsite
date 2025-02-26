@@ -18,7 +18,7 @@ session_start();
 
         <div class="logowrapper">
             <div class="logo">
-                <img class="logo__image" src="images/logo.png" alt="Logo">
+                <img class="logo__image" src="../images/logo.png" alt="Logo">
             </div>
         </div>
 

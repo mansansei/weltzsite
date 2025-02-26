@@ -3,7 +3,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 
 
 function send_verification($firstname,$email,$otp) {
@@ -27,7 +27,7 @@ function send_verification($firstname,$email,$otp) {
         $mail->Body    = "<h1>Hello ".$firstname."</h1>
         <br><p>You have registered an account on our website!
         <br>Please click the link below to complete your verification:</p>
-        <br><br><h3><strong><i><a href='http://localhost/weltzsite/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
+        <br><br><h3><strong><i><a href='http://localhost/weltzsite/src/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
 
         $mail->send();
         ?>

@@ -16,7 +16,7 @@ session_start();
     <section class="signup">
         <div class="logo-wrapper">
             <div class="logo">
-                <img src="images/logo.png" alt="logo">
+                <img src="../images/logo.png" alt="logo">
             </div>
         </div>
         <div class="form-wrapper">
