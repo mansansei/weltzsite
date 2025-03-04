@@ -8,61 +8,74 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Weltz INC</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
+
+    <?php require_once 'cssLibraries.php' ?>
 </head>
 <body class="signupPage">
 <!-- Start of Sign Up Section -->
-    <section class="signup">
-        <div class="logo-wrapper">
-            <div class="logo">
-                <img src="../images/logo.png" alt="logo">
+<section class="signup container-fluid col-sm-12 col-md-12 col-lg-6">
+        <div class="form-wrapper container-fluid rounded-4 shadow p-4">
+            <div class="logo-wrapper text-center mb-3">
+                <div class="logo">
+                    <img src="../images/logo.png" alt="logo" class="img-fluid">
+                </div>
             </div>
-        </div>
-        <div class="form-wrapper">
-            <div class="title">
-                <h1>Sign Up</h1>
-            </div>
-            
-            <form class="signupform" id="signupForm" method="POST">
+            <form class="signupform" id="signupForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 
-                <div class="row1">
-                <input type="text" name="uFname" placeholder="First Name" required>
-                <input type="text" name="uLname" placeholder="Last Name" required>
+                <div class="title row mb-3 mt-3">
+                    <h1 class="text-center">Sign Up</h1>
                 </div>
 
-                <div class="row2">
-                <input type="text" name="uAdd" placeholder="Address" required>
-                </div>
-                
-                <div class="row2">
-                <input type="tel" name="uPhone" placeholder="Phone No." required>
-                </div>
-
-                <div class="row2">
-                <input type="email" name="uEmail" placeholder="Email Address" required>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input class="form-control" type="text" name="uFname" placeholder="First Name" >
+                    </div>
+                    <div class="col">
+                        <input class="form-control" type="text" name="uLname" placeholder="Last Name" >
+                    </div>
                 </div>
 
-                <div class="row2">
-                <input type="password" name="uPass" placeholder="Password" required>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input class="form-control" type="text" name="uAdd" placeholder="Address" >
+                    </div>
                 </div>
 
-                <div class="signupcheckbox">
-                <input type="checkbox" id="policy" name="policy" value="true" required>
-                <label for="policy">By checking this, you agree to our <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a></label>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input class="form-control" type="tel" name="uPhone" placeholder="Phone No." >
+                    </div>
                 </div>
 
-                <div class="signupbutton">
-                    <button type="submit" value="submit">Sign up</button>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input class="form-control" type="email" name="uEmail" placeholder="Email Address" >
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <input class="form-control" type="password" name="uPass" placeholder="Password" >
+                    </div>
+                </div>
+
+                <div class="signupcheckbox mb-3">
+                    <input type="checkbox" id="policy" name="policy" value="true" >
+                    <label for="policy">By checking this, you agree to our <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a></label>
+                </div>
+
+                <div class="signupButton mb-3 text-center">
+                    <button type="submit" class="btn btn-danger w-100 rounded-5">Sign up</button>
+                </div>
+
+                <div class="loginHere text-center">
+                    <p>Already registered? <a href="Login.php">Login here</a></p>
                 </div>
             </form>
-
-            <div class="loginhere">
-                <p>Already registered? <a href="Login.php">Login here</a></p>
-            </div>
-
         </div>
-    </section>
+</section>
+<section class="col-lg-6"></section>
 
     <!-- Privacy Policy Modal -->
     <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
@@ -105,7 +118,7 @@ session_start();
                     <p>We do not sell or share your personal information with third parties, except in the following cases:</p>
                     <ul>
                         <li>Service Providers: We may share your information with third-party service providers who assist us with order fulfillment, payment processing, and marketing.</li>
-                        <li>Legal Requirements: We may disclose your information if required by law or in response to legal processes.</li>
+                        <li>Legal Requirements: We may disclose your information if by law or in response to legal processes.</li>
                     </ul>
                 </div>
                 <div class="modal-footer">
@@ -131,7 +144,7 @@ session_start();
                     
                     <h5>1. Use of Our Services</h5>
                     <p>Eligibility: You must be at least 18 years old to use our services. By using our website, you represent and warrant that you meet this age requirement.</p>
-                    <p>Account Registration: To place orders, you may be required to create an account. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.</p>
+                    <p>Account Registration: To place orders, you may be to create an account. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.</p>
                     <p>Prohibited Activities:</p>
                     <ul>
                         <li>You agree not to engage in any activities that violate applicable laws or regulations.</li>
@@ -176,7 +189,7 @@ session_start();
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <?php require_once 'cssLibrariesJS.php' ?>
 </body>
 </html>
 
@@ -196,36 +209,107 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = 1;
     $otp = rand(000000,999999);
     $status = "Unverified";
-
     
-    if (strlen($firstname) > 50) {
-        echo "<script>alert('First name must be 50 characters or less.'); window.history.back();</script>";
-        exit();
+    if (empty($firstname) || strlen($firstname) > 50 || !preg_match('/^[a-zA-Z]+$/', $firstname)) {
+        ?>
+        <script>
+            Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "First name must be 50 characters or less and must not contain special characters or numbers.",
+            showConfirmButton: false,
+            timer: 3000
+            });
+        </script>
+        <?php
+        exit;
+    } else {
+        $firstname = htmlspecialchars($firstname);
     }
 
-    if (strlen($lastname) > 50) {
-        echo "<script>alert('Last name must be 50 characters or less.'); window.history.back();</script>";
-        exit();
+    if (empty($lastname) || strlen($lastname) > 50 || !preg_match('/^[a-zA-Z]+$/', $lastname)) {
+        ?>
+        <script>
+            Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Last name must be 50 characters or less and must not contain special characters or numbers.",
+            showConfirmButton: false,
+            timer: 3000
+            });
+        </script>
+        <?php
+        exit;
+    } else {
+        $lastname = htmlspecialchars($lastname);
     }
 
-    if (strlen($address) > 100) {
-        echo "<script>alert('Address must be 100 characters or less.'); window.history.back();</script>";
-        exit();
+    if (empty($address) || strlen($address) > 100 || !preg_match('/^[a-zA-Z]+$/', $address)) {
+        ?>
+        <script>
+            Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Address must be 100 characters or less and must not contain special characters.",
+            showConfirmButton: false,
+            timer: 3000
+            });
+        </script>
+        <?php
+        exit;
+    } else {
+        $address = htmlspecialchars($address);
     }
 
-    if (!preg_match('/^\d{11}$/', $phone)) {
-        echo "<script>alert('Phone number must be exactly 11 digits and contain only numbers.'); window.history.back();</script>";
-        exit();
+    if (empty($phone) || !preg_match('/^\d{11}$/', $phone)) {
+        ?>
+        <script>
+            Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Phone number must be exactly 11 digits and contain only numbers.",
+            showConfirmButton: false,
+            timer: 3000
+            });
+        </script>
+        <?php
+        exit;
+    } else {
+        $phone = htmlspecialchars($phone);
     }
 
-    if (strlen($email) > 50 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "<script>alert('Email must be 50 characters or less and a valid email address.'); window.history.back();</script>";
-        exit();
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        ?>
+        <script>
+            Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Email must be a valid email address.",
+            showConfirmButton: false,
+            timer: 3000
+            });
+        </script>
+        <?php
+        exit;
+    } else {
+        $email = htmlspecialchars($email);
     }
 
-    if (strlen($password) < 8 || !preg_match('/\d/', $password) || !preg_match('/[!@#$%^&*]/', $password)) {
-        echo "<script>alert('Password must be at least 8 characters long and contain at least 1 digit (0-9) and 1 special character (!@#$%^&*).'); window.history.back();</script>";
-        exit();
+    if (empty($password) || strlen($password) < 8 || !preg_match('/\d/', $password) || !preg_match('/[!@#$%^&*]/', $password)) {
+        ?>
+        <script>
+            Swal.fire({
+            position: "center",
+            icon: "error",
+            text: "Password must be at least 8 characters long and contain at least 1 digit (0-9) and 1 special character (!@#$%^&*).",
+            showConfirmButton: false,
+            timer: 3000
+            });
+        </script>
+        <?php
+        exit;
+    } else {
+        $password = htmlspecialchars($password);
     }
 
     $emailCheckQuery = "SELECT * FROM users WHERE userEmail = '$email'";
