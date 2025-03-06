@@ -5,7 +5,7 @@ require "weltz_dbconnect.php";
 
 if(isset($_GET['otp'])) {
     $otp = $_GET['otp'];
-    $verify_otp = "SELECT otp FROM users WHERE otp='$otp' LIMIT 1";
+    $verify_otp = "SELECT otp FROM users_tbl WHERE otp='$otp' LIMIT 1";
     $verify_results = $conn-> query($verify_otp);
 
     if(mysqli_num_rows($verify_results) > 0) {
@@ -14,7 +14,7 @@ if(isset($_GET['otp'])) {
         
         if($row['status'] == 0){
             $clicked_otp = $row['otp'];
-            $update_sql = "UPDATE users SET status='Verified' WHERE otp='$clicked_otp' LIMIT 1";
+            $update_sql = "UPDATE users_tbl SET status='Verified' WHERE otp='$clicked_otp' LIMIT 1";
             $update_results = $conn-> query($update_sql);
 
             if ($update_results) {

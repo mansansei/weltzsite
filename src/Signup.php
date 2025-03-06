@@ -312,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = htmlspecialchars($password);
     }
 
-    $emailCheckQuery = "SELECT * FROM users WHERE userEmail = '$email'";
+    $emailCheckQuery = "SELECT * FROM users_tbl WHERE userEmail = '$email'";
     $emailCheckResult = $conn->query($emailCheckQuery);
 
     if (mysqli_num_rows($emailCheckResult) > 0) {
@@ -324,7 +324,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $currentDateTime = date('Y-m-d H:i:s');
 
-    $insertsql = "INSERT INTO users (userFname, userLname, userAdd, userPhone, userEmail, userPass, roleID, otp, status, createdAt, updatedAt, updID)
+    $insertsql = "INSERT INTO users_tbl (userFname, userLname, userAdd, userPhone, userEmail, userPass, roleID, otp, status, createdAt, updatedAt, updID)
     VALUES ('$firstname', '$lastname', '$address', '$phone', '$email', '$hashed_password', '$role', '$otp', '$status', '$currentDateTime', '$currentDateTime', NULL)";
 
     $result = $conn->query($insertsql);

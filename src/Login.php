@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = htmlspecialchars($password);
     }
 
-    $loginsql = "SELECT * FROM users WHERE userEmail = '$email' AND userPass = '$hashed_password'";
+    $loginsql = "SELECT * FROM users_tbl WHERE userEmail = '$email' AND userPass = '$hashed_password'";
 
     $loginresult =$conn->query($loginsql);
 

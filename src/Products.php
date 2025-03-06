@@ -20,11 +20,7 @@
 
     <header class="p-4 flex items-center">
         <div class="relative w-64">
-            <input type="text" placeholder="Enter product..." 
-                class="w-full p-2 pl-10 border border-gray-300 rounded-full focus:outline-none">
-            <svg class="absolute left-3 top-2 w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1114 4.5a7.5 7.5 0 012.65 14.15z"/>
-            </svg>
+            <input type="text" name="search" placeholder="Enter product..." class="w-full p-2 pl-10 border border-gray-300 rounded-full focus:outline-none">
         </div>
         <h1 class="ml-4 text-3xl font-bold">Product Catalog</h1>
     </header>
@@ -35,92 +31,57 @@
         <!-- Sidebar -->
         <aside class="w-1/5 p-4 bg-[#fc0001] text-white rounded-lg">
             <h2 class="text-xl font-bold mb-4">Categories</h2>
+            <?php
+            require_once 'weltz_dbconnect.php';
+
+            $selectSQL = "SELECT * FROM categories_tbl";
+            $result = $conn-> query($selectSQL);
+
+            foreach ($result as $key) {
+            ?>
             <ul class="space-y-2">
-                <li><input type="checkbox" class="mr-2"> ProductCategory1</li>
-                <li><input type="checkbox" class="mr-2"> ProductCategory2</li>
-                <li><input type="checkbox" class="mr-2"> ProductCategory3</li>
-                <li><input type="checkbox" class="mr-2"> ProductCategory4</li>
-                <li><input type="checkbox" class="mr-2"> ProductCategory5</li>
+                <li><input type="checkbox" name="categoryCheck" class="mr-2"> <?php echo $key['categoryName'] ?></li>
             </ul>
+            <?php
+            }
+            ?>
         </aside>
 
         <!-- Product Grid -->
         <section class="w-4/5 p-4">
             <div class="grid grid-cols-4 gap-4">
+                <?php
+                require_once 'weltz_dbconnect.php';
+
+                $selectSQL = "SELECT * FROM products_tbl";
+
+                // Check if the search input is clicked and not null, change $selectSQL syntax
+                if(isset($_POST['search']) && $_POST['search'] != NULL){
+                    $searchinput = $_POST['search'];
+                    $selectSQL = "SELECT * FROM products_tbl WHERE productID LIKE '%".$searchinput."%' OR productName LIKE '%".$searchinput."%'
+                    OR productCategory LIKE '%".$searchinput."%'";
+                } elseif (isset($_POST['categoryCheck']) && $_POST['categoryCheck'] != NULL) {
+                    $checkInput = $_POST['categoryCheck'];
+                    $selectSQL = "SELECT * FROM products_tbl WHERE productCategory LIKE '%".$checkInput."%'";
+                } else {
+                    $selectSQL = "SELECT * FROM products_tbl ORDER BY productID DESC";
+                }
+                $result = $conn-> query($selectSQL);
+
+                foreach ($result as $key) {
+                ?>
                 <!-- Product Card -->
                 <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
+                    <img src="<?php echo $key['productIMG'] ?>" alt="<?php echo $key['productName'] ?>" class="w-full object-cover">
+                    <h3 class="font-bold text-lg"><?php echo $key['productName'] ?></h3>
+                    <p class="text-sm text-gray-600"><?php echo $key['productCategory'] ?></p>
                     <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
+                    <p class="font-bold text-[#fc0001]">Php <?php echo $key['productPrice'] ?></p>
+                    <a href="viewProduct.php?productID=<?php echo $key['productID']; ?>" class="inline-block mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">View Product</a>
                 </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <div class="border p-4 rounded-lg shadow bg-white">
-                    <img src="../images/logo.png" alt="Product" class="w-full h-24 object-cover">
-                    <h3 class="font-bold text-lg">ProductName</h3>
-                    <p class="text-sm text-gray-600">ProductCategory</p>
-                    <p class="text-sm">Stock: 0</p>
-                    <p class="font-bold text-[#fc0001]">Php 0.00</p>
-                </div>
-
-                <!-- Repeat the above div 16 times for grid -->
+                <?php
+                }
+                ?>
             </div>
 
             <!-- Pagination -->
