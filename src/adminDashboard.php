@@ -1,65 +1,57 @@
+<?php
+
+include_once('sidebarheader.php');
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./adminDashboard.css">
+
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="adminDashboard.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">Admin Panel</div>
-            <nav>
-                <ul>
-                    <li class="active">Dashboard</li>
-                    <li>Users</li>
-                    <li>Products</li>
-                    <li>Orders</li>
-                    <li>Cart</li>
-                    <li>Company Blogs</li>
-                    <li>Update Logs</li>
-                </ul>
-            </nav>
-            <div class="messages">Messages</div>
-        </aside>
 
-        <!-- Main Content -->
-        <main class="content">
-            <header class="top-bar">
-                <button class="register-btn">Register new admin</button>
-                <div class="admin-info">Admin</div>
-            </header>
+    <section class="mema">
+        <div class="memabox1">
+            1
+        </div>
+        
+        <div class="memabox2">
+            2
+        </div>
 
-            <!-- Stats Section -->
-            <section class="stats">
-                <div class="stat-box">
-                    <span class="icon">💰</span>
-                    <p>999<br>Product Sales</p>
-                </div>
-                <div class="stat-box">
-                    <span class="icon">📦</span>
-                    <p>999<br>Total Stock</p>
-                </div>
-                <div class="stat-box">
-                    <span class="icon">👥</span>
-                    <p>16<br>Total Users</p>
-                </div>
-                <div class="stat-box">
-                    <span class="icon">🏆</span>
-                    <p>1<br>Product1 Most Sales</p>
-                </div>
-            </section>
+        <div class="memabox3">
+            3
+        </div>
 
-            <!-- Charts Section -->
-            <section class="charts">
-                <div class="chart">Profit Chart</div>
-                <div class="chart">Order Ratio</div>
-                <div class="chart">Events</div>
-                <div class="chart">Site Visits</div>
-            </section>
-        </main>
-    </div>
+        <div class="memabox4">
+            4
+        </div>
+
+        <div class="memabox5">
+            5
+        </div>
+
+        <div class="memabox6">
+            6
+        </div>
+
+        <div class="memabox7">
+            7
+        </div>
+
+        <div class="memabox8">
+            8
+        </div>
+    </section>
+    
 </body>
 </html>

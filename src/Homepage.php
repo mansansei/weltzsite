@@ -21,7 +21,7 @@
         <h1>WELTZ INDUSTRIAL PHILS INC.</h1>
         <p><strong>ORDER NOW</strong>, PICK UP LATER.</p>
         <p>STOCK UP ON <strong>SAFETY!</strong></p>
-        <a href="#"><button>BROWSE PRODUCTS <i class="fa-solid fa-bag-shopping"></i></button></a>
+        <a href="Products.php"><button>BROWSE PRODUCTS <i class="fa-solid fa-bag-shopping"></i></button></a>
     </div>
 
     <!-- HANGGANG DITO LNG YUNG LANDING PICTURE OR SOMETHIGN WELCOMING ETC -->

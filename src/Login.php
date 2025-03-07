@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($role == 1) {
             header("location: Homepage.php");
         }else if ($role == 2){
-            header("location: AdminDashboard.php");
+            header("location: adminDashboard.php");
         }
     } else {
         ?>
