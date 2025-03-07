@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if($loginresult->num_rows == 1){
         $fielddata = $loginresult->fetch_assoc();
-        $role = $fielddata['roleID'];
+        $role = $fielddata['role'];
         
         if ($role == 1) {
             header("location: Homepage.php");
