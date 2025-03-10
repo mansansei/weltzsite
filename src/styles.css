@@ -709,3 +709,47 @@ form .row .col input {
         font-size: 16px; 
     }
 }
+
+/* =====ADMIN PANEL===== */
+
+.adminPanel {
+    display: flex;
+}
+  
+#sidebar {
+    min-width: 300px;
+    max-width: 300px;
+    min-height: 100vh;
+    color: #fc0001;
+}
+  
+#sidebar .nav-link {
+    color: #fff;
+}
+  
+#adminContent {
+    width: 100%;
+    padding: 20px;
+}
+  
+.components {
+    padding: 0;
+    list-style: none;
+}
+  
+.components li {
+    padding: 10px;
+}
+  
+.components a {
+    color: #333;
+    display: block;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+  
+.components a:hover {
+    color: #fc0001;
+    transform: translateX(10px);
+}
