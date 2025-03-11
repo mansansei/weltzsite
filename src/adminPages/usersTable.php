@@ -1,7 +1,9 @@
 <?php
     $con = mysqli_connect("localhost", "root", "", "weltz_db");
 
-    $sql = "SELECT userID, userFname, userLname, userAdd, userPhone, userEmail, userPass, role, createdAt, updatedAt, updID FROM users_tbl";
+    $sql = "SELECT users_tbl.userID, users_tbl.userFname, users_tbl.userLname, users_tbl.userAdd, users_tbl.userPhone, users_tbl.userEmail, users_tbl.userPass, roles_tbl.roleName AS role, users_tbl.createdAt, users_tbl.updatedAt, users_tbl.updID 
+            FROM users_tbl 
+            JOIN roles_tbl ON users_tbl.role = roles_tbl.roleID";
     $result = $con->query($sql);
 ?>
     <div class="userstitle text-end mb-3">
