@@ -41,6 +41,9 @@ input[type=number] {
     width: 75px; /* Adjust the width as needed */
 }
 
+.error {
+    color: #fc0001;
+}
 
 
 /* =====LOGIN===== */
