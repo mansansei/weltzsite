@@ -43,6 +43,7 @@ input[type=number] {
 
 .error {
     color: #fc0001;
+    font-size: 0.75rem;
 }
 
 
