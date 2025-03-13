@@ -1,22 +1,28 @@
-// DATA TABLES
-$(document).ready(function () {
-    $('#myTable').DataTable({
-        responsive: true,
-        scrollX: true
-    });
-});
-
 // ADMIN REGISTRATION
 $(document).ready(function () {
+
     // Custom validation methods
+    // Validation for no special char and num
     $.validator.addMethod("noSpecialChars", function (value, element) {
         return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
     }, "No special characters or numbers allowed.");
 
+    // Specific validation for passwords
     $.validator.addMethod("validPassword", function (value, element) {
         return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(value);
     }, "must have an upper and lowercase letter, a number, and a special character.");
 
+    // DATA TABLES
+    $('#myTable').DataTable({
+        responsive: true,
+        scrollX: true,
+        lengthMenu: [
+            [5, 10, 15, -1],
+            [5, 10, 15, 'All']
+        ]
+    });
+
+    // ADMIN REGISTRATION
     $('#adminSignupForm').validate({
         rules: {
             uFname: {
@@ -117,4 +123,5 @@ $(document).ready(function () {
             });
         }
     });
+
 });

@@ -1,10 +1,10 @@
 <?php
-    require_once 'weltz_dbconnect.php';
+require_once 'weltz_dbconnect.php';
 
-    $sql = "SELECT users_tbl.userID, users_tbl.userFname, users_tbl.userLname, users_tbl.userAdd, users_tbl.userPhone, users_tbl.userEmail, users_tbl.userPass, roles_tbl.roleName AS role, users_tbl.createdAt, users_tbl.updatedAt, users_tbl.updID 
+$usersSQL = "SELECT users_tbl.userID, users_tbl.userFname, users_tbl.userLname, users_tbl.userAdd, users_tbl.userPhone, users_tbl.userEmail, users_tbl.userPass, roles_tbl.roleName AS role, users_tbl.createdAt, users_tbl.updatedAt, users_tbl.updID 
             FROM users_tbl 
-            JOIN roles_tbl ON users_tbl.role = roles_tbl.roleID";
-    $result = $conn->query($sql);
+            JOIN roles_tbl ON users_tbl.roleID = roles_tbl.roleID";
+$usersSQLResult = $conn->query($usersSQL);
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
@@ -33,8 +33,8 @@
         </thead>
         <tbody>
             <?php
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
+            if ($usersSQLResult->num_rows > 0) {
+                while ($row = $usersSQLResult->fetch_assoc()) {
             ?>
                     <tr>
                         <td><?php echo $row['userID'] ?></td>
@@ -58,9 +58,7 @@
                 }
             } else {
                 ?>
-                <tr>
-                    <td colspan='11' class='text-center'>No users found</td>
-                </tr>
+                <h1 class="text-center">No users found</h1>
             <?php
             }
             ?>
@@ -68,6 +66,67 @@
     </table>
 </div>
 
+<!-- Register Admin Modal -->
+<div class="modal fade" id="regNewAdmin" tabindex="-1" aria-labelledby="regNewAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="regNewAdminLabel">Register a New Admin</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="signupform" id="adminSignupForm" method="POST">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="uFname" class="form-label">First Name</label>
+                            <input class="form-control" type="text" name="uFname">
+                            <label class="error-message" for="uFname"></label>
+                        </div>
+                        <div class="col">
+                            <label for="uLname" class="form-label">Last Name</label>
+                            <input class="form-control" type="text" name="uLname">
+                            <label class="error-message" for="uLname"></label>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="uAdd" class="form-label">Address</label>
+                            <input class="form-control" type="text" name="uAdd">
+                            <label class="error-message" for="uAdd"></label>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="uPhone" class="form-label">Contact No.</label>
+                            <input class="form-control" type="tel" name="uPhone">
+                            <label class="error-message" for="uPhone"></label>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="uEmail" class="form-label">Email Address</label>
+                            <input class="form-control" type="email" name="uEmail">
+                            <label class="error-message" for="uEmail"></label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="uPass" class="form-label">Password</label>
+                            <input class="form-control" type="password" name="uPass">
+                            <label class="error-message" for="uPass"></label>
+                        </div>
+                    </div>
+                    <div class='d-grid gap-2 mb-3'>
+                        <input type="hidden" id="action" name="action" value="regAdmin">
+                        <button type="submit" name="adminRegSubmit" class='btn btn-danger'>Register</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
-    $conn->close();
+$conn->close();
 ?>

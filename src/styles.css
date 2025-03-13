@@ -723,8 +723,10 @@ form .row .col input {
 #sidebar {
     min-width: 300px;
     max-width: 300px;
-    min-height: 100vh;
+    height: 100vh;
     color: #fc0001;
+    top: 0;
+    position: sticky;
 }
   
 #sidebar .nav-link {
@@ -752,8 +754,13 @@ form .row .col input {
     font-size: 1.2rem;
     transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
-  
+
 .components a:hover {
     color: #fc0001;
     transform: translateX(10px);
+}
+
+#adminHeader {
+    top: 0;
+    position: sticky;
 }

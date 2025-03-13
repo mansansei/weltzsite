@@ -91,7 +91,7 @@ function regAdmin()
     $hashed_password = md5($password);
     $currentDateTime = date('Y-m-d H:i:s');
 
-    $insertsql = "INSERT INTO users_tbl (userFname, userLname, userAdd, userPhone, userEmail, userPass, role, otp, status, createdAt, updatedAt, updID)
+    $insertsql = "INSERT INTO users_tbl (userFname, userLname, userAdd, userPhone, userEmail, userPass, roleID, otp, status, createdAt, updatedAt, updID)
                   VALUES ('$firstname', '$lastname', '$address', '$phone', '$email', '$hashed_password', '$role', '$otp', '$status', '$currentDateTime', '$currentDateTime', NULL)";
 
     if ($conn->query($insertsql) === TRUE) {
