@@ -9,8 +9,7 @@ $blogsSQL =
         b.blogTitle, 
         b.blogDesc, 
         b.createdAt, 
-        b.updatedAt, 
-        b.updID 
+        b.updatedAt 
     FROM 
         blogs_tbl b 
     JOIN 
@@ -35,7 +34,6 @@ $blogsSQLResult = $conn->query($blogsSQL);
                 <th>Description</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th>Update ID</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -52,7 +50,6 @@ $blogsSQLResult = $conn->query($blogsSQL);
                         <td><?php echo $row['blogDesc'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
-                        <td><?php echo  $row['updID'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
                                 <button class='btn btn-warning'>Edit</button>

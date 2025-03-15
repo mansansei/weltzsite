@@ -6,8 +6,7 @@ $cartsSQL =
         c.cartID, 
         CONCAT(u.userFname, ' ', u.userLname) AS userFullName,
         c.createdAt,
-        c.updatedAt,
-        c.updID 
+        c.updatedAt 
     FROM 
         carts_tbl c
     JOIN 
@@ -29,7 +28,6 @@ $cartsSQLResult = $conn->query($cartsSQL);
                 <th>Cart of</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th>Update ID</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -43,7 +41,6 @@ $cartsSQLResult = $conn->query($cartsSQL);
                         <td><?php echo $row['userFullName'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
-                        <td><?php echo  $row['updID'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
                                 <button class='btn btn-warning'>Edit</button>

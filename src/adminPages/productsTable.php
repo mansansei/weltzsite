@@ -12,8 +12,7 @@ $productsSQL =
         p.productPrice,
         p.inStock,
         p.createdAt,
-        p.updatedAt,
-        p.updID 
+        p.updatedAt
     FROM 
         products_tbl p
     JOIN 
@@ -46,7 +45,6 @@ $productsSQLResult = $conn->query($productsSQL);
                 <th>Units in Stock</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th>Update ID</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -68,7 +66,6 @@ $productsSQLResult = $conn->query($productsSQL);
                         <td><?php echo $row['inStock'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
-                        <td><?php echo  $row['updID'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
                                 <button class='btn btn-warning'>Edit</button>

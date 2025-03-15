@@ -1,3 +1,14 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
+  header('Location: Login.php');
+  exit();
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -64,9 +75,11 @@
   <div class="container-fluid" id="adminContent">
     <nav id="adminHeader" class="navbar navbar-expand-lg navbar-light bg-light mb-5 rounded-4 shadow">
       <div class="container-fluid">
-        <button type="button" id="sidebarCollapse" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#regNewAdmin">
-          <i class="fa-solid fa-user-plus"></i> Register New Admin
-        </button>
+        <a href="Logout.php">
+          <button type="button" class="btn btn-danger">
+            <i class="fa-solid fa-user-plus"></i> Logout
+          </button>
+        </a>
         <h2 class="ml-3">Admin <i class="fa-solid fa-user-tie"></i></h2>
       </div>
     </nav>
