@@ -16,6 +16,36 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `audit_logs`
+--
+
+DROP TABLE IF EXISTS `audit_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `audit_logs` (
+  `auditID` int(11) NOT NULL AUTO_INCREMENT,
+  `userID` int(11) NOT NULL DEFAULT 0,
+  `actionType` varchar(50) NOT NULL DEFAULT '',
+  `tableName` varchar(50) NOT NULL DEFAULT '',
+  `recordID` int(11) NOT NULL DEFAULT 0,
+  `oldValues` text DEFAULT NULL,
+  `newValues` text NOT NULL DEFAULT '',
+  `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`auditID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `audit_logs`
+--
+
+LOCK TABLES `audit_logs` WRITE;
+/*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
+INSERT INTO `audit_logs` VALUES (1,3,'create','users_tbl',3,NULL,'{\"userFname\":\"Ken\",\"userLname\":\"Gopez\",\"userAdd\":\"Valenzuela\",\"userPhone\":\"12345678910\",\"userEmail\":\"kristoffer.gopez.cics@ust.edu.ph\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-15 09:48:26');
+/*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `blogs_tbl`
 --
 
@@ -145,7 +175,7 @@ CREATE TABLE `modes_of_payment_tbl` (
   `updID` int(11) DEFAULT NULL,
   PRIMARY KEY (`mopID`),
   UNIQUE KEY `mopName` (`mopName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,6 +184,7 @@ CREATE TABLE `modes_of_payment_tbl` (
 
 LOCK TABLES `modes_of_payment_tbl` WRITE;
 /*!40000 ALTER TABLE `modes_of_payment_tbl` DISABLE KEYS */;
+INSERT INTO `modes_of_payment_tbl` VALUES (1,'Cash on Pickup','2025-03-15 16:29:15','2025-03-15 16:29:15',NULL);
 /*!40000 ALTER TABLE `modes_of_payment_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -291,35 +322,6 @@ INSERT INTO `roles_tbl` VALUES (1,'Customer','2025-03-07 10:37:49','2025-03-07 1
 UNLOCK TABLES;
 
 --
--- Table structure for table `update_logs_tbl`
---
-
-DROP TABLE IF EXISTS `update_logs_tbl`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `update_logs_tbl` (
-  `updID` int(11) NOT NULL AUTO_INCREMENT,
-  `updTblName` varchar(50) NOT NULL,
-  `updRecordID` int(11) NOT NULL,
-  `updColName` varchar(50) NOT NULL,
-  `updOldValue` text NOT NULL,
-  `updNewValue` text NOT NULL,
-  `userID` int(11) NOT NULL,
-  `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`updID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `update_logs_tbl`
---
-
-LOCK TABLES `update_logs_tbl` WRITE;
-/*!40000 ALTER TABLE `update_logs_tbl` DISABLE KEYS */;
-/*!40000 ALTER TABLE `update_logs_tbl` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `users_tbl`
 --
 
@@ -353,7 +355,7 @@ CREATE TABLE `users_tbl` (
 
 LOCK TABLES `users_tbl` WRITE;
 /*!40000 ALTER TABLE `users_tbl` DISABLE KEYS */;
-INSERT INTO `users_tbl` VALUES (1,'Mert','Isip','Manila','09562898062','mertalexis.isip.cics@ust.edu.ph','0192023a7bbd73250516f069df18b500',2,0,'Verified','2025-03-11 13:05:02','2025-03-11 13:05:02',NULL),(2,'Mert','Isip','Manila','09562898062','mertisepic031@gmail.com','0f05ad7e167ac3a8484979dd35913e90',1,0,'Verified','2025-03-11 13:05:21','2025-03-11 13:05:21',NULL),(3,'Ken','Gopez','Valenzuela','12345678910','kristoffer.gopez.cics@ust.edu.ph','86f686503ff41169c870faf4be188517',2,0,'Verified','2025-03-13 15:15:53','2025-03-13 15:15:53',NULL);
+INSERT INTO `users_tbl` VALUES (1,'Mert','Isip','Manila','09562898062','mertalexis.isip.cics@ust.edu.ph','0192023a7bbd73250516f069df18b500',2,0,'Verified','2025-03-11 13:05:02','2025-03-11 13:05:02',NULL),(2,'Mert','Isip','Manila','09562898062','mertisepic031@gmail.com','0f05ad7e167ac3a8484979dd35913e90',1,0,'Verified','2025-03-11 13:05:21','2025-03-11 13:05:21',NULL),(3,'Ken','Gopez','Valenzuela','12345678910','kristoffer.gopez.cics@ust.edu.ph','86f686503ff41169c870faf4be188517',2,0,'Verified','2025-03-15 09:48:26','2025-03-15 09:48:26',NULL);
 /*!40000 ALTER TABLE `users_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -366,4 +368,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-14  0:48:14
+-- Dump completed on 2025-03-15 17:00:20

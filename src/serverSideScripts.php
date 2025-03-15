@@ -18,6 +18,26 @@ if (isset($_POST['action'])) {
   print_r("No action specified.");
 }
 
+// Create audit logs function
+function createAuditLog($conn, $newUserID, $actionType, $tableName, $recordID, $oldValues, $newValues) {
+  // Prepare the SQL statement
+  $stmt = $conn->prepare("INSERT INTO audit_logs (userID, actionType, tableName, recordID, oldValues, newValues, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)");
+  
+  // Bind the parameters
+  $currentDateTime = date('Y-m-d H:i:s');
+  $stmt->bind_param("ississs", $newUserID, $actionType, $tableName, $recordID, $oldValues, $newValues, $currentDateTime);
+  $stmt->execute();
+  
+  // if ($stmt->execute() === TRUE) {
+  //   echo json_encode(['success' => true, 'message' => 'Audit log entry created successfully.']);
+  // } else {
+  //   echo json_encode(['success' => false, 'message' => 'Error: ' . $stmt->error]);
+  // }
+  
+  // Close the statement
+  $stmt->close();
+}
+
 // Function for registering a new admin
 function regAdmin()
 {
@@ -95,6 +115,14 @@ function regAdmin()
                   VALUES ('$firstname', '$lastname', '$address', '$phone', '$email', '$hashed_password', '$role', '$otp', '$status', '$currentDateTime', '$currentDateTime', NULL)";
 
     if ($conn->query($insertsql) === TRUE) {
+
+      // Get the ID of the newly created user
+      $newUserID = $conn->insert_id;
+
+      // Create audit log entry
+      $newValues = json_encode(['userFname' => $firstname, 'userLname' => $lastname, 'userAdd' => $address, 'userPhone' => $phone, 'userEmail' => $email, 'roleID' => $role, 'otp' => $otp, 'status' => $status]);
+      createAuditLog($conn, $newUserID, 'create', 'users_tbl', $newUserID, NULL, $newValues);
+
       echo json_encode(['success' => true, 'message' => 'Admin registered successfully.']);
     } else {
       echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
