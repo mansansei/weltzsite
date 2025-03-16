@@ -22,6 +22,87 @@ $(document).ready(function () {
         ]
     });
 
+    // LOGIN
+    // LOGIN FORM DATA HANDLING
+    $('#loginForm').validate({
+        rules: {
+            uEmail: {
+                required: true,
+                email: true
+            },
+            uPass: {
+                required: true,
+                minlength: 8,
+                validPassword: true
+            }
+        },
+        messages: {
+            uEmail: {
+                required: "Please enter a valid email address",
+                email: "Please enter a valid email address"
+            },
+            uPass: {
+                required: "Please provide a password",
+                minlength: "Must be at least 8 characters"
+            }
+        },
+        submitHandler: function (form) {
+            // Get form data
+            var formData = $(form).serialize();
+
+            console.log(formData);
+
+            // Send form data via AJAX
+            $.ajax({
+                type: 'POST',
+                url: 'serverSideScripts.php',
+                data: formData,
+                success: function (response) {
+                    var res = JSON.parse(response);
+                    if (res.success) {
+                        window.location.href = res.redirect;
+                        $('#adminSignupForm')[0].reset(); // Reset the form
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your request.',
+                    });
+                }
+            });
+        }
+    });
+
+    // LOGOUT
+    // LOGOUT DATA HANDLING
+    $('#logoutUserForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                var res = JSON.parse(response);
+                if (res.success) {
+                    window.location.href = res.redirect;
+                }
+            }
+        });
+    });
+
     // ADMIN REGISTRATION
     // ADMIN REGISTRATION FORM DATA HANDLING
     $('#adminSignupForm').validate({
@@ -127,7 +208,7 @@ $(document).ready(function () {
 
     // UPDATE USER
     // Handle Edit button click
-    $('.editUserBtn').click(function() {
+    $('.editUserBtn').click(function () {
         var row = $(this).closest('tr');
         var userID = row.find('td:eq(0)').text();
         var userFname = row.find('td:eq(1)').text().split(" ")[0];
@@ -232,7 +313,7 @@ $(document).ready(function () {
 
     // DELETE USER
     // Handle Delete button click
-    $('.delUserBtn').click(function() {
+    $('.delUserBtn').click(function () {
         var row = $(this).closest('tr');
         var userID = row.find('td:eq(0)').text();
         $('#deleteUserID').val(userID);
@@ -240,12 +321,10 @@ $(document).ready(function () {
     });
 
     // Handle Delete confirmation
-    $('#deleteUserForm').submit(function(e) {
+    $('#deleteUserForm').submit(function (e) {
         e.preventDefault();
 
         var formData = $(this).serialize();
-
-        console.log(formData);
 
         $.ajax({
             url: 'serverSideScripts.php',

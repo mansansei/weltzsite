@@ -32,7 +32,7 @@ CREATE TABLE `audit_logs` (
   `newValues` text DEFAULT NULL,
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`auditID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `audit_logs` (
 
 LOCK TABLES `audit_logs` WRITE;
 /*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
-INSERT INTO `audit_logs` VALUES (1,3,'CREATE','users_tbl',3,NULL,'{\"userFname\":\"Ken\",\"userLname\":\"Gopez\",\"userAdd\":\"Valenzuela\",\"userPhone\":\"12345678910\",\"userEmail\":\"kristoffer.gopez.cics@ust.edu.ph\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-15 15:08:08'),(2,2,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertisepic031@gmail.com\"}','{\"userEmail\":\"mertiscool031@gmail.com\"}','2025-03-15 16:37:05'),(3,2,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertiscool031@gmail.com\"}','{\"userEmail\":\"mertisepic031@gmail.com\"}','2025-03-15 16:50:53'),(4,5,'CREATE','users_tbl',5,NULL,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-15 20:22:49'),(5,5,'DELETE','users_tbl',5,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\"}',NULL,'2025-03-15 20:23:15');
+INSERT INTO `audit_logs` VALUES (1,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-16 10:38:10'),(2,1,'CREATE','users_tbl',3,NULL,'{\"userFname\":\"Ken\",\"userLname\":\"Gopez\",\"userAdd\":\"Valenzuela\",\"userPhone\":\"12345678910\",\"userEmail\":\"kristoffer.gopez.cics@ust.edu.ph\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:39:02'),(3,1,'CREATE','users_tbl',4,NULL,'{\"userFname\":\"Cyril\",\"userLname\":\"Labao\",\"userAdd\":\"Bacoor\",\"userPhone\":\"12345678910\",\"userEmail\":\"cyrillabao@gmail.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:39:43'),(4,1,'CREATE','users_tbl',5,NULL,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:40:21'),(5,1,'DELETE','users_tbl',5,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\"}',NULL,'2025-03-16 10:40:38'),(6,1,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertisepic031@gmail.com\"}','{\"userEmail\":\"mertiscool031@gmail.com\"}','2025-03-16 10:43:34'),(7,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-16 10:44:55');
 /*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -117,7 +117,7 @@ CREATE TABLE `carts_tbl` (
   PRIMARY KEY (`cartID`),
   KEY `cartUserFK` (`userID`),
   CONSTRAINT `cartUserFK` FOREIGN KEY (`userID`) REFERENCES `users_tbl` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,6 +126,7 @@ CREATE TABLE `carts_tbl` (
 
 LOCK TABLES `carts_tbl` WRITE;
 /*!40000 ALTER TABLE `carts_tbl` DISABLE KEYS */;
+INSERT INTO `carts_tbl` VALUES (1,2,'2025-03-16 14:25:52','2025-03-16 14:25:52');
 /*!40000 ALTER TABLE `carts_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -222,7 +223,7 @@ CREATE TABLE `orders_tbl` (
   `userID` int(11) NOT NULL,
   `productID` int(11) NOT NULL,
   `orderQuantity` int(11) NOT NULL,
-  `orderTotal` float NOT NULL,
+  `orderTotal` float NOT NULL DEFAULT 0,
   `mopID` int(11) NOT NULL,
   `statusID` int(11) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
@@ -236,7 +237,7 @@ CREATE TABLE `orders_tbl` (
   CONSTRAINT `orderStatusFK` FOREIGN KEY (`statusID`) REFERENCES `order_statuses_tbl` (`statusID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `productOrderFK` FOREIGN KEY (`productID`) REFERENCES `products_tbl` (`productID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `userOrderFK` FOREIGN KEY (`userID`) REFERENCES `users_tbl` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,6 +246,7 @@ CREATE TABLE `orders_tbl` (
 
 LOCK TABLES `orders_tbl` WRITE;
 /*!40000 ALTER TABLE `orders_tbl` DISABLE KEYS */;
+INSERT INTO `orders_tbl` VALUES (4,2,4,5,11400,1,1,'2025-03-16 14:23:00','2025-03-16 14:23:00');
 /*!40000 ALTER TABLE `orders_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,8 +260,8 @@ DROP TABLE IF EXISTS `products_tbl`;
 CREATE TABLE `products_tbl` (
   `productID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` int(11) DEFAULT NULL,
-  `productIMG` varchar(100) NOT NULL,
   `productName` varchar(50) NOT NULL,
+  `productIMG` varchar(100) NOT NULL,
   `categoryID` int(11) DEFAULT NULL,
   `productDesc` text NOT NULL,
   `productPrice` float NOT NULL,
@@ -281,7 +283,7 @@ CREATE TABLE `products_tbl` (
 
 LOCK TABLES `products_tbl` WRITE;
 /*!40000 ALTER TABLE `products_tbl` DISABLE KEYS */;
-INSERT INTO `products_tbl` VALUES (1,1,'../images/products/fire-ex_dry-chem.jpg','Dry Chemical Fire Extinguisher',1,'A dry chemical fire extinguisher is a versatile and widely used firefighting device designed to combat various types of fires. It contains a dry chemical powder, such as monoammonium phosphate, which quickly extinguishes flames by interrupting the chemical reaction of the fire. These extinguishers are effective against Class A (ordinary combustibles), Class B (flammable liquids), and Class C (electrical) fires, making them essential for homes, offices, and industrial settings.',2149,0,'2025-03-07 10:56:42','2025-03-07 10:56:42'),(2,1,'../images/products/fire-ex_HCFC-123.jpg','HCFC-123 Fire Extinguisher',1,'The HCFC-123 fire extinguisher utilizes a clean agent called hydrochlorofluorocarbon-123 (HCFC-123) to suppress fires. It is highly effective for use in areas with sensitive electronic equipment, as it leaves no residue and causes minimal damage. This extinguisher is suitable for Class A, B, and C fires, making it an ideal choice for data centers, laboratories, and telecommunications facilities.',3499,0,'2025-03-07 10:58:51','2025-03-07 10:58:51'),(4,1,'../images/products/fire-ex_AFFF.jpg','AFFF Fire Extinguisher',1,'An Aqueous Film Forming Foam (AFFF) fire extinguisher is designed to combat flammable liquid fires by creating a smothering foam blanket over the burning liquid. It is highly effective for use on Class B fires, which involve flammable liquids such as gasoline, oil, and solvents. AFFF extinguishers are commonly used in airports, industrial facilities, and fuel storage areas to provide quick and efficient fire suppression.',2280,0,'2025-03-07 11:11:22','2025-03-07 11:11:22'),(5,1,'../images/products/smoke-detect_AH-0715.jpeg','AH-0715 Smoke Detector',2,'The AH-0715 smoke detector is a combination smoke and heat detector designed for reliable fire detection. It features a twin-color LED display for easy status identification and is made of fire-proof plastic for durability. This detector is suitable for various applications, including residential and commercial buildings, and is available in 2-wire, 3-wire, and 4-wire configurations.',1299,0,'2025-03-07 11:13:26','2025-03-07 11:13:26'),(6,1,'../images/products/smoke-detect_AH-9920.jpeg','AH-9920 Smoke Detector',2,'The AH-9920 smoke detector is a mechanical fixed-temperature heat detector designed to operate on the temperature differential sensing principle. It features a UL-approved sensor and is made of high-quality, fire-proof plastic, ensuring durability and reliability even in challenging environments. This detector is suitable for locations with high temperature differentials, such as kitchens, restaurants, and boiler houses.',1399,0,'2025-03-07 11:13:54','2025-03-07 11:13:54'),(7,1,'../images/products/smoke-detect_QA05.jpeg','AQ05 Smoke Detector',2,'The QA05 smoke detector is an addressable combination smoke and heat detector designed for reliable fire detection. It features address coding by dip switch, a latching function for clear alarm identification, and a magnetic test feature for easy maintenance. Made of high endurance, fire-proof plastic, it also includes dual LEDs for 360-degree visibility and has passed strict EMC tests to minimize false alarms.',1499,0,'2025-03-07 11:17:06','2025-03-07 11:17:06');
+INSERT INTO `products_tbl` VALUES (1,1,'Dry Chemical Fire Extinguisher','../images/products/fire-ex_dry-chem.jpg',1,'A dry chemical fire extinguisher is a versatile and widely used firefighting device designed to combat various types of fires. It contains a dry chemical powder, such as monoammonium phosphate, which quickly extinguishes flames by interrupting the chemical reaction of the fire. These extinguishers are effective against Class A (ordinary combustibles), Class B (flammable liquids), and Class C (electrical) fires, making them essential for homes, offices, and industrial settings.',2149,0,'2025-03-07 10:56:42','2025-03-07 10:56:42'),(2,1,'HCFC-123 Fire Extinguisher','../images/products/fire-ex_HCFC-123.jpg',1,'The HCFC-123 fire extinguisher utilizes a clean agent called hydrochlorofluorocarbon-123 (HCFC-123) to suppress fires. It is highly effective for use in areas with sensitive electronic equipment, as it leaves no residue and causes minimal damage. This extinguisher is suitable for Class A, B, and C fires, making it an ideal choice for data centers, laboratories, and telecommunications facilities.',3499,0,'2025-03-07 10:58:51','2025-03-07 10:58:51'),(4,1,'AFFF Fire Extinguisher','../images/products/fire-ex_AFFF.jpg',1,'An Aqueous Film Forming Foam (AFFF) fire extinguisher is designed to combat flammable liquid fires by creating a smothering foam blanket over the burning liquid. It is highly effective for use on Class B fires, which involve flammable liquids such as gasoline, oil, and solvents. AFFF extinguishers are commonly used in airports, industrial facilities, and fuel storage areas to provide quick and efficient fire suppression.',2280,0,'2025-03-07 11:11:22','2025-03-07 11:11:22'),(5,1,'AH-0715 Smoke Detector','../images/products/smoke-detect_AH-0715.jpeg',2,'The AH-0715 smoke detector is a combination smoke and heat detector designed for reliable fire detection. It features a twin-color LED display for easy status identification and is made of fire-proof plastic for durability. This detector is suitable for various applications, including residential and commercial buildings, and is available in 2-wire, 3-wire, and 4-wire configurations.',1299,0,'2025-03-07 11:13:26','2025-03-07 11:13:26'),(6,1,'AH-9920 Smoke Detector','../images/products/smoke-detect_AH-9920.jpeg',2,'The AH-9920 smoke detector is a mechanical fixed-temperature heat detector designed to operate on the temperature differential sensing principle. It features a UL-approved sensor and is made of high-quality, fire-proof plastic, ensuring durability and reliability even in challenging environments. This detector is suitable for locations with high temperature differentials, such as kitchens, restaurants, and boiler houses.',1399,0,'2025-03-07 11:13:54','2025-03-07 11:13:54'),(7,1,'AQ05 Smoke Detector','../images/products/smoke-detect_QA05.jpeg',2,'The QA05 smoke detector is an addressable combination smoke and heat detector designed for reliable fire detection. It features address coding by dip switch, a latching function for clear alarm identification, and a magnetic test feature for easy maintenance. Made of high endurance, fire-proof plastic, it also includes dual LEDs for 360-degree visibility and has passed strict EMC tests to minimize false alarms.',1499,0,'2025-03-07 11:17:06','2025-03-07 11:17:06');
 /*!40000 ALTER TABLE `products_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -345,7 +347,7 @@ CREATE TABLE `users_tbl` (
 
 LOCK TABLES `users_tbl` WRITE;
 /*!40000 ALTER TABLE `users_tbl` DISABLE KEYS */;
-INSERT INTO `users_tbl` VALUES (1,'Mert','Isip','Manila','09562898062','mertalexis.isip.cics@ust.edu.ph','0192023a7bbd73250516f069df18b500',2,0,'Verified','2025-03-11 13:05:02','2025-03-11 13:05:02'),(2,'Mert','Isip','Manila','09562898062','mertisepic031@gmail.com','0f05ad7e167ac3a8484979dd35913e90',1,0,'Verified','2025-03-11 13:05:21','2025-03-15 16:50:53'),(3,'Ken','Gopez','Valenzuela','12345678910','kristoffer.gopez.cics@ust.edu.ph','86f686503ff41169c870faf4be188517',2,0,'Verified','2025-03-15 15:08:08','2025-03-15 15:08:08');
+INSERT INTO `users_tbl` VALUES (1,'Mert','Isip','Manila','09562898062','mertalexis.isip.cics@ust.edu.ph','86f686503ff41169c870faf4be188517',2,0,'Verified','2025-03-11 13:05:02','2025-03-11 13:05:02'),(2,'Mert','Isip','Manila','09562898062','mertiscool031@gmail.com','0f05ad7e167ac3a8484979dd35913e90',1,0,'Verified','2025-03-11 13:05:21','2025-03-16 10:43:34'),(3,'Ken','Gopez','Valenzuela','12345678910','kristoffer.gopez.cics@ust.edu.ph','86f686503ff41169c870faf4be188517',2,0,'Verified','2025-03-16 10:39:02','2025-03-16 10:39:02'),(4,'Cyril','Labao','Bacoor','12345678910','cyrillabao@gmail.com','86f686503ff41169c870faf4be188517',2,0,'Verified','2025-03-16 10:39:43','2025-03-16 10:39:43');
 /*!40000 ALTER TABLE `users_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -358,4 +360,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-16  4:07:35
+-- Dump completed on 2025-03-16 17:49:19

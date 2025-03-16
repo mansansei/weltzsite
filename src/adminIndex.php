@@ -75,11 +75,12 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
   <div class="container-fluid" id="adminContent">
     <nav id="adminHeader" class="navbar navbar-expand-lg navbar-light bg-light mb-5 rounded-4 shadow">
       <div class="container-fluid">
-        <a href="Logout.php">
-          <button type="button" class="btn btn-danger">
+        <form id="logoutUserForm" method="POST">
+          <input type="hidden" id="action" name="action" value="logoutUser">
+          <button type="submit" class="btn btn-danger">
             <i class="fa-solid fa-user-plus"></i> Logout
           </button>
-        </a>
+        </form>
         <h2 class="ml-3">Admin <i class="fa-solid fa-user-tie"></i></h2>
       </div>
     </nav>
@@ -123,4 +124,5 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
   </div>
   <?php require_once 'cssLibrariesJS.php' ?>
 </body>
+
 </html>

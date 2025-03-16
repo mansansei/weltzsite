@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 // Database connection
 function dbConnect()
 {
@@ -33,10 +35,101 @@ function createAuditLog($conn, $newUserID, $actionType, $tableName, $recordID, $
   $stmt->close();
 }
 
+// Login validation function
+function loginUser()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $conn = dbConnect();
+
+    $email = $_POST['uEmail'];
+    $password = $_POST['uPass'];
+    $hashed_password = md5($password);
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      echo json_encode(['success' => false, 'message' => 'Email must be a valid email address.']);
+      exit;
+    } else {
+      $email = htmlspecialchars($email);
+    }
+
+    if (empty($password) || strlen($password) < 8 || !preg_match('/\d/', $password) || !preg_match('/[!@#$%^&*]/', $password)) {
+      echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters long and contain at least 1 digit (0-9) and 1 special character (!@#$%^&*).']);
+      exit;
+    } else {
+      $password = htmlspecialchars($password);
+    }
+
+    $loginsql = "SELECT * FROM users_tbl WHERE userEmail=?";
+    $stmt = $conn->prepare($loginsql);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $loginresult = $stmt->get_result();
+    $logindata = $loginresult->fetch_assoc();
+    $stmt->close();
+
+    if ($logindata && $email == $logindata['userEmail'] && $hashed_password == $logindata['userPass']) {
+
+      // Set session variables
+      $_SESSION['username'] = $logindata['userFname'] . " " . $logindata['userLname'];
+      $_SESSION['userID'] = $logindata['userID'];
+      $_SESSION['isLoggedIn'] = true;
+
+      $role = $logindata['roleID'];
+
+      // Log the successful login attempt
+      createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], null, json_encode(['status' => 'success']));
+
+      $response = ['success' => true, 'message' => 'Login successful'];
+
+      if ($role == 1) {
+        $response['redirect'] = 'Homepage.php';
+      } else if ($role == 2) {
+        $response['redirect'] = 'adminIndex.php';
+      }
+
+      echo json_encode($response);
+    } else {
+      // Log the failed login attempt
+      createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], json_encode(['email' => $email]), json_encode(['status' => 'failed']));
+
+      echo json_encode(['success' => false, 'message' => 'Email or Password is wrong']);
+    }
+  }
+}
+
+// Logout validation function
+function logoutUser()
+{
+  // Retrieve the user ID from the session
+  $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+  // If user ID is available, create an audit log entry for the logout action
+  if ($userID) {
+    $conn = dbConnect();
+    createAuditLog($conn, $userID, 'LOGOUT', 'users_tbl', $userID, null, json_encode(['status' => 'logged out']));
+  }
+
+  // Unset all session variables
+  session_unset();
+
+  // Destroy the session
+  session_destroy();
+
+  // Prepare the response
+  $response = ['success' => true, 'message' => 'Logout successful'];
+  $response['redirect'] = 'Login.php';
+
+  // Return the response as JSON
+  echo json_encode($response);
+}
+
 // Function for registering a new admin
 function regAdmin()
 {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
 
     // Open db connection
     $conn = dbConnect();
@@ -116,7 +209,7 @@ function regAdmin()
 
       // Create audit log entry
       $newValues = json_encode(['userFname' => $firstname, 'userLname' => $lastname, 'userAdd' => $address, 'userPhone' => $phone, 'userEmail' => $email, 'roleID' => $role, 'otp' => $otp, 'status' => $status]);
-      createAuditLog($conn, $newUserID, 'CREATE', 'users_tbl', $newUserID, NULL, $newValues);
+      createAuditLog($conn, $userUpdaterID, 'CREATE', 'users_tbl', $newUserID, NULL, $newValues);
 
       echo json_encode(['success' => true, 'message' => 'Admin registered successfully.']);
     } else {
@@ -131,6 +224,8 @@ function regAdmin()
 function updateUser()
 {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
 
     // Open db connection
     $conn = dbConnect();
@@ -202,7 +297,7 @@ function updateUser()
 
       if ($stmt->execute()) {
         // Log the changes
-        createAuditLog($conn, $userID, 'UPDATE', 'users_tbl', $userID, json_encode($oldValues), json_encode($newValues));
+        createAuditLog($conn, $userUpdaterID, 'UPDATE', 'users_tbl', $userID, json_encode($oldValues), json_encode($newValues));
 
         echo json_encode(['success' => true, 'message' => 'User details updated successfully.']);
       } else {
@@ -219,6 +314,8 @@ function updateUser()
 function deleteUser()
 {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
 
     $conn = dbConnect();
 
@@ -243,7 +340,7 @@ function deleteUser()
 
     if ($stmt->execute()) {
       // Log the deletion
-      createAuditLog($conn, $userID, 'DELETE', 'users_tbl', $userID, $oldValues, null);
+      createAuditLog($conn, $userUpdaterID, 'DELETE', 'users_tbl', $userID, $oldValues, null);
 
       echo json_encode(['success' => true, 'message' => 'User deleted successfully.']);
     } else {
@@ -251,6 +348,5 @@ function deleteUser()
     }
 
     $stmt->close();
-
   }
 }

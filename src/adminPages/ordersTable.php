@@ -64,8 +64,8 @@ $ordersSQLResult = $conn->query($ordersSQL);
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <button class='btn btn-warning'>Edit</button>
-                                <button class='btn btn-danger'>Delete</button>
+                                <button class='btn btn-success'>Approve</button>
+                                <button class='btn btn-danger'>Deny</button>
                             </div>
                         </td>
                     </tr>

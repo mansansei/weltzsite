@@ -28,7 +28,6 @@ $cartsSQLResult = $conn->query($cartsSQL);
                 <th>Cart of</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -41,12 +40,6 @@ $cartsSQLResult = $conn->query($cartsSQL);
                         <td><?php echo $row['userFullName'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
-                        <td>
-                            <div class='d-grid gap-2'>
-                                <button class='btn btn-warning'>Edit</button>
-                                <button class='btn btn-danger'>Delete</button>
-                            </div>
-                        </td>
                     </tr>
                 <?php
                 }

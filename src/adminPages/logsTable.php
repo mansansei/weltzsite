@@ -28,6 +28,8 @@ $logsSQLResult = $conn->query($logsSQL);
             <?php
             if ($logsSQLResult->num_rows > 0) {
                 while ($row = $logsSQLResult->fetch_assoc()) {
+                    $oldValues = json_decode($row['oldValues'], true);
+                    $newValues = json_decode($row['newValues'], true);
             ?>
                     <tr>
                         <td><?php echo $row['auditID'] ?></td>
@@ -35,8 +37,32 @@ $logsSQLResult = $conn->query($logsSQL);
                         <td><?php echo $row['actionType'] ?></td>
                         <td><?php echo $row['tableName'] ?></td>
                         <td><?php echo $row['recordID'] ?></td>
-                        <td><?php echo $row['oldValues'] ?></td>
-                        <td><?php echo $row['newValues'] ?></td>
+                        <td>
+                            <ul style="list-style: none;">
+                                <?php
+                                if (is_array($oldValues) && !empty($oldValues)) {
+                                    foreach ($oldValues as $key => $value) {
+                                        echo "<li><strong>$key:</strong> $value</li>";
+                                    }
+                                } else {
+                                    echo "<li>No old values</li>";
+                                }
+                                ?>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul style="list-style: none;">
+                                <?php
+                                if (is_array($newValues) && !empty($newValues)) {
+                                    foreach ($newValues as $key => $value) {
+                                        echo "<li><strong>$key:</strong> $value</li>";
+                                    }
+                                } else {
+                                    echo "<li>No new values</li>";
+                                }
+                                ?>
+                            </ul>
+                        </td>
                         <td><?php echo $row['updatedAt'] ?></td>
                     </tr>
                 <?php
