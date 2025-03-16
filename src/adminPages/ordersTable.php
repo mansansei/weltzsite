@@ -44,7 +44,7 @@ $ordersSQLResult = $conn->query($ordersSQL);
                 <th>Status</th>
                 <th>Created At</th>
                 <th>Updated At</th>
-                <th>Action</th>
+                <!-- <th>Action</th> -->
             </tr>
         </thead>
         <tbody>
@@ -62,12 +62,12 @@ $ordersSQLResult = $conn->query($ordersSQL);
                         <td><?php echo $row['statusName'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
-                        <td>
+                        <!-- <td>
                             <div class='d-grid gap-2'>
                                 <button class='btn btn-success'>Approve</button>
                                 <button class='btn btn-danger'>Deny</button>
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
                 <?php
                 }

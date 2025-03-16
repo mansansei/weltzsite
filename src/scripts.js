@@ -359,4 +359,95 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    // ADD PRODUCT
+    // Add product image preview
+    $('input[name="prodIMG"]').change(function(event){
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = $('#imagePreview');
+            output.attr('src', reader.result);
+            output.show();
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    });
+
+    // Add product form handling
+    $('#addProductForm').validate({
+        rules: {
+            prodIMG: {
+                required: true
+            },
+            prodName: {
+                required: true,
+                minlength: 3
+            },
+            prodCategory: {
+                required: true
+            },
+            prodDesc: {
+                required: true,
+                minlength: 10
+            },
+            prodPrice: {
+                required: true,
+                number: true,
+                min: 0.01
+            },
+            prodStock: {
+                required: true,
+                number: true,
+                min: 1
+            }
+        },
+        messages: {
+            prodIMG: "Please select a product image",
+            prodName: "Please enter a valid product name",
+            prodCategory: "Please select a category",
+            prodDesc: "Please enter a description (at least 10 characters)",
+            prodPrice: "Please enter a valid price",
+            prodStock: "Please enter a valid stock quantity"
+        },
+        submitHandler: function(form) {
+            var formData = new FormData(form);
+            $.ajax({
+                url: 'serverSideScripts.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    var res = JSON.parse(response);
+                    if (res.success) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $('#addProductForm')[0].reset(); // Reset the form
+                        $('#addNewProdModal').modal('hide');
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your request.',
+                    });
+                }
+            });
+        }
+    });
+
 });

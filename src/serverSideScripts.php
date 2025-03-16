@@ -350,3 +350,91 @@ function deleteUser()
     $stmt->close();
   }
 }
+
+function addProduct()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+        // Open db connection
+        $conn = dbConnect();
+
+        // Initialize variables
+        $productName = $_POST['prodName'];
+        $productIMG = $_FILES['prodIMG'];
+        $categoryID = $_POST['prodCategory'];
+        $productDesc = $_POST['prodDesc'];
+        $productPrice = $_POST['prodPrice'];
+        $inStock = $_POST['prodStock'];
+
+        // Validation
+        if (empty($productName) || strlen($productName) > 100) {
+            echo json_encode(['success' => false, 'message' => 'Product name must be 100 characters or less.']);
+            exit;
+        } else {
+            $productName = htmlspecialchars($productName);
+        }
+
+        if (empty($categoryID)) {
+            echo json_encode(['success' => false, 'message' => 'Please select a category.']);
+            exit;
+        }
+
+        if (empty($productDesc) || strlen($productDesc) > 500) {
+            echo json_encode(['success' => false, 'message' => 'Description must be 500 characters or less.']);
+            exit;
+        } else {
+            $productDesc = htmlspecialchars($productDesc);
+        }
+
+        if (empty($productPrice) || !is_numeric($productPrice) || $productPrice <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Please enter a valid price.']);
+            exit;
+        }
+
+        if (empty($inStock) || !is_numeric($inStock) || $inStock < 0) {
+            echo json_encode(['success' => false, 'message' => 'Please enter a valid stock quantity.']);
+            exit;
+        }
+
+        if ($productIMG['error'] !== UPLOAD_ERR_OK) {
+            echo json_encode(['success' => false, 'message' => 'Error uploading image.']);
+            exit;
+        }
+
+        // Save the image file
+        $targetDir = "../images/products/";
+        $imageFileType = strtolower(pathinfo($productIMG['name'], PATHINFO_EXTENSION));
+        $originalFileName = pathinfo($productIMG['name'], PATHINFO_FILENAME);
+        $targetFile = $targetDir . $originalFileName . '_' . uniqid() . '.' . $imageFileType;
+
+        if (!move_uploaded_file($productIMG['tmp_name'], $targetFile)) {
+            echo json_encode(['success' => false, 'message' => 'Error saving image file.']);
+            exit;
+        }
+
+        $productIMGPath = htmlspecialchars($targetFile);
+
+        $currentDateTime = date('Y-m-d H:i:s');
+
+        $insertsql = "INSERT INTO products_tbl (userID, productName, productIMG, categoryID, productDesc, productPrice, inStock, createdAt, updatedAt)
+                      VALUES ('$userID', '$productName', '$productIMGPath', '$categoryID', '$productDesc', '$productPrice', '$inStock', '$currentDateTime', '$currentDateTime')";
+
+        if ($conn->query($insertsql) === TRUE) {
+
+            // Get the ID of the newly created product
+            $newProductID = $conn->insert_id;
+
+            // Create audit log entry
+            $newValues = json_encode(['userID' => $userID, 'productName' => $productName, 'productIMG' => $productIMGPath, 'categoryID' => $categoryID, 'productDesc' => $productDesc, 'productPrice' => $productPrice, 'inStock' => $inStock]);
+            createAuditLog($conn, $userID, 'CREATE', 'products_tbl', $newProductID, NULL, $newValues);
+
+            echo json_encode(['success' => true, 'message' => 'Product added successfully.']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+        }
+
+        $conn->close();
+    }
+}

@@ -22,10 +22,14 @@ $productsSQL =
     ";
 
 $productsSQLResult = $conn->query($productsSQL);
+
+$categoriesSQL = "SELECT * from categories_tbl";
+$categoriesSQLResult = $conn->query($categoriesSQL);
+
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
-    <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#regNewAdmin">
+    <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#addNewProdModal">
         <i class="fa-solid fa-box-open"></i> Add a New Product
     </button>
     <h1>Products Table</h1>
@@ -83,6 +87,75 @@ $productsSQLResult = $conn->query($productsSQL);
             ?>
         </tbody>
     </table>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addNewProdModal" tabindex="-1" aria-labelledby="addNewProdModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addNewProdModalLabel">Adding New Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="signupform" id="addProductForm" method="POST">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="prodIMG" class="form-label">Product Image</label>
+                            <input class="form-control" type="file" name="prodIMG" accept="images/*">
+                            <label class="error-message" for="prodIMG"></label>
+                            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; height: auto;">
+                        </div>
+                        <div class="col">
+                            <div class="mb-2">
+                                <label for="prodName" class="form-label">Product Name</label>
+                                <input class="form-control" type="text" name="prodName">
+                                <label class="error-message" for="prodName"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="prodCategory" class="form-label">Category</label>
+                                <select class="form-select" name="prodCategory">
+                                    <option selected>Choose the Category</option>
+                                    <?php
+                                        if ($categoriesSQLResult->num_rows > 0) {
+                                            while ($row = $categoriesSQLResult->fetch_assoc()) {
+                                                
+                                                ?><option value="<?php echo $row['categoryID'] ?>"><?php echo $row['categoryName'] ?></option><?php
+                                            }
+                                            ?></select><?php
+                                        } else {
+                                            echo 'No categories available.';
+                                        }
+                                    ?>
+                                </select>
+                                <label class="error-message" for="prodCategory"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="prodDesc" class="form-label">Description</label>
+                                <textarea class="form-control" name="prodDesc"></textarea>
+                                <label class="error-message" for="prodDesc"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="prodPrice" class="form-label">Unit Price</label>
+                                <input class="form-control" type="number" name="prodPrice">
+                                <label class="error-message" for="prodPrice"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="prodStock" class="form-label">Units in Stock</label>
+                                <input class="form-control" type="number" name="prodStock">
+                                <label class="error-message" for="prodStock"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='d-grid gap-2 mb-3'>
+                        <input type="hidden" id="action" name="action" value="addProduct">
+                        <button type="submit" name="addProdSubmit" class='btn btn-danger'>Add Product</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 <?php
