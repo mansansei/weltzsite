@@ -15,7 +15,8 @@ $(document).ready(function () {
     // INITIALIZE DATA TABLES
     $('#myTable').DataTable({
         responsive: true,
-        scrollX: true,
+        scrollCollapse: true,
+        scrollY: '475px',
         lengthMenu: [
             [5, 10, 15, -1],
             [5, 10, 15, 'All']
@@ -208,7 +209,7 @@ $(document).ready(function () {
 
     // UPDATE USER
     // Handle Edit button click
-    $('.editUserBtn').click(function () {
+    $(document).on('click', '.editUserBtn', function () {
         var row = $(this).closest('tr');
         var userID = row.find('td:eq(0)').text();
         var userFname = row.find('td:eq(1)').text().split(" ")[0];
@@ -216,7 +217,11 @@ $(document).ready(function () {
         var userAdd = row.find('td:eq(2)').text();
         var userPhone = row.find('td:eq(3)').text();
         var userEmail = row.find('td:eq(4)').text();
-
+    
+        // Clear or reset modal data
+        $('#editUserModal input').val('');
+    
+        // Set new data in modal
         $('#editUserLabel').text("Update User: " + userEmail /*+ userFname + " " + userLname + " (" + userID + ")"*/);
         $('#editUserID').val(userID);
         $('#editUserFname').val(userFname);
@@ -224,7 +229,8 @@ $(document).ready(function () {
         $('#editUserAdd').val(userAdd);
         $('#editUserPhone').val(userPhone);
         $('#editUserEmail').val(userEmail);
-
+    
+        // Show the modal
         $('#editUserModal').modal('show');
     });
 
@@ -290,6 +296,7 @@ $(document).ready(function () {
                             timer: 1500
                         });
                         $('#editUserForm')[0].reset(); // Reset the form
+                        $('#editUser').modal('hide');
                     } else {
                         Swal.fire({
                             position: "center",
@@ -313,7 +320,7 @@ $(document).ready(function () {
 
     // DELETE USER
     // Handle Delete button click
-    $('.delUserBtn').click(function () {
+    $(document).on('click', '.delUserBtn', function() {
         var row = $(this).closest('tr');
         var userID = row.find('td:eq(0)').text();
         $('#deleteUserID').val(userID);
@@ -340,6 +347,8 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         timer: 1500
                     });
+                    $('#deleteUserForm')[0].reset();
+                    $('#deleteUserModal').modal('hide');
                 } else {
                     Swal.fire({
                         position: "center",
@@ -360,19 +369,17 @@ $(document).ready(function () {
         });
     });
 
-
     // ADD PRODUCT
     // Add product image preview
     $('input[name="prodIMG"]').change(function(event){
         var reader = new FileReader();
         reader.onload = function(){
-            var output = $('#imagePreview');
+            var output = $('#addProdIMGPreview');
             output.attr('src', reader.result);
             output.show();
         }
         reader.readAsDataURL(event.target.files[0]);
     });
-
     // Add product form handling
     $('#addProductForm').validate({
         rules: {
@@ -450,4 +457,168 @@ $(document).ready(function () {
         }
     });
 
+    // EDIT PRODUCT
+    // Edit product image preview
+    $('input[name="editProdIMG"]').change(function(event){
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = $('#editProdIMGPreview');
+            output.attr('src', reader.result);
+            output.show();
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    });
+    // Pass row data to modal
+    $(document).on('click', '.editProdBtn', function() {
+        var row = $(this).closest('tr');
+        var productID = row.find('td:eq(0)').text();
+        var productIMG = row.find('td:eq(2) img').attr('src');
+        var productName = row.find('td:eq(3)').text();
+        var categoryName = row.find('td:eq(4)').text();
+        var productDesc = row.find('td:eq(5)').text();
+        var productPrice = row.find('td:eq(6)').text();
+        var productStock = row.find('td:eq(7)').text();
+    
+        console.log(productIMG);
+    
+        // Set new data in modal
+        $('#editProdID').val(productID);
+        $('#editProdName').val(productName);
+        $('#editProdDesc').val(productDesc);
+        $('#editProdPrice').val(productPrice);
+        $('#editProdStock').val(productStock);
+        $('#editProdIMGPreview').attr('src', productIMG).show();
+        
+        $('#editProdCategory option').each(function() {
+            if ($(this).text() == categoryName) {
+                $(this).attr('selected', 'selected');
+            } else {
+                $(this).removeAttr('selected');
+            }
+        });
+
+        $('#editProdModal').modal('show');
+    });
+    // edit product form handling
+    $('#editProductForm').validate({
+        rules: {
+            editProdIMG: {
+
+            },
+            editProdName: {
+                minlength: 3
+            },
+            editProdCategory: {
+            },
+            editProdDesc: {
+                minlength: 10
+            },
+            editProdPrice: {
+                number: true,
+                min: 0.01
+            },
+            editProdStock: {
+                number: true,
+                min: 1
+            }
+        },
+        messages: {
+            editProdIMG: "Please select a product image",
+            editProdName: "Please enter a valid product name",
+            editProdCategory: "Please select a category",
+            editProdDesc: "Please enter a description (at least 10 characters)",
+            editProdPrice: "Please enter a valid price",
+            editProdStock: "Please enter a valid stock quantity"
+        },
+        submitHandler: function(form) {
+            // Get form data
+            var formData = $(form).serialize();
+
+            // Send form data via AJAX
+            $.ajax({
+                type: 'POST',
+                url: 'serverSideScripts.php',
+                data: formData,
+                success: function(response) {
+                    var res = JSON.parse(response);
+                    if (res.success) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $('#editProductForm')[0].reset(); // Reset the form
+                        $('#editProdModal').modal('hide');
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your request.',
+                    });
+                }
+            });
+        }
+    });
+
+    // DELETE PRODUCT
+    // Handle Delete button click
+    $(document).on('click', '.delProdBtn', function() {
+        var row = $(this).closest('tr');
+        var userID = row.find('td:eq(0)').text();
+
+        $('#deleteProdID').val(userID);
+        $('#deleteProdModal').modal('show');
+    });
+
+    // Handle delete confirmation
+    $('#deleteProdForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                var res = JSON.parse(response);
+                if (res.success) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        text: res.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        text: res.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
+                });
+            }
+        });
+    });
 });

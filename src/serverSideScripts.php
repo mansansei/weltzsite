@@ -351,6 +351,7 @@ function deleteUser()
   }
 }
 
+// Function to add product
 function addProduct()
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -437,4 +438,156 @@ function addProduct()
 
         $conn->close();
     }
+}
+
+// Function to update product details
+function updateProduct()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+        // Open db connection
+        $conn = dbConnect();
+
+        // Set variables
+        $productID = $_POST['editProdID'];
+        $productName = $_POST['editProdName'];
+        $productIMG = isset($_FILES['editProdIMG']) ? $_FILES['editProdIMG'] : null;
+        $categoryID = (int)$_POST['editProdCategory'];
+        $productDesc = $_POST['editProdDesc'];
+        $productPrice = (float)$_POST['editProdPrice'];
+        $inStock = (int)$_POST['editProdStock'];
+        $updatedAt = date('Y-m-d H:i:s');
+
+        // Retrieve current product data
+        $currentDataSQL = "SELECT productName, productIMG, categoryID, productDesc, productPrice, inStock FROM products_tbl WHERE productID=?";
+        $stmt = $conn->prepare($currentDataSQL);
+        $stmt->bind_param("i", $productID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $currentData = $result->fetch_assoc();
+        $stmt->close();
+
+        // Initialize update fields and values
+        $updateFields = [];
+        $updateValues = [];
+        $oldValues = [];
+        $newValues = [];
+
+        // Compare and create oldValues and newValues arrays
+        if ($productName !== $currentData['productName'] && !empty($productName)) {
+            $updateFields[] = "productName=?";
+            $updateValues[] = $productName;
+            $oldValues['productName'] = $currentData['productName'];
+            $newValues['productName'] = $productName;
+        }
+        if ($categoryID !== (int)$currentData['categoryID'] && !empty($categoryID)) {
+            $updateFields[] = "categoryID=?";
+            $updateValues[] = $categoryID;
+            $oldValues['categoryID'] = (int)$currentData['categoryID'];
+            $newValues['categoryID'] = $categoryID;
+        }
+        if ($productDesc !== $currentData['productDesc'] && !empty($productDesc)) {
+            $updateFields[] = "productDesc=?";
+            $updateValues[] = $productDesc;
+            $oldValues['productDesc'] = $currentData['productDesc'];
+            $newValues['productDesc'] = $productDesc;
+        }
+        if ($productPrice !== (float)$currentData['productPrice'] && !empty($productPrice)) {
+            $updateFields[] = "productPrice=?";
+            $updateValues[] = $productPrice;
+            $oldValues['productPrice'] = (float)$currentData['productPrice'];
+            $newValues['productPrice'] = $productPrice;
+        }
+        if ($inStock !== (int)$currentData['inStock'] && !empty($inStock)) {
+            $updateFields[] = "inStock=?";
+            $updateValues[] = $inStock;
+            $oldValues['inStock'] = (int)$currentData['inStock'];
+            $newValues['inStock'] = $inStock;
+        }
+
+        if ($productIMG && $productIMG['error'] === UPLOAD_ERR_OK) {
+            // Save the image file
+            $targetDir = "../images/products/";
+            $imageFileType = strtolower(pathinfo($productIMG['name'], PATHINFO_EXTENSION));
+            $originalFileName = pathinfo($productIMG['name'], PATHINFO_FILENAME);
+            $targetFile = $targetDir . $originalFileName . '_' . uniqid() . '.' . $imageFileType;
+
+            if (move_uploaded_file($productIMG['tmp_name'], $targetFile)) {
+                $productIMGPath = htmlspecialchars($targetFile);
+                $updateFields[] = "productIMG=?";
+                $updateValues[] = $productIMGPath;
+                $oldValues['productIMG'] = $currentData['productIMG'];
+                $newValues['productIMG'] = $productIMGPath;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error saving image file.']);
+                exit;
+            }
+        }
+
+        if (!empty($updateFields)) {
+            $updateFields[] = "updatedAt=?";
+            $updateValues[] = $updatedAt;
+            $updateValues[] = $productID;
+
+            // Insert product detail changes
+            $updateSQL = "UPDATE products_tbl SET " . implode(", ", $updateFields) . " WHERE productID=?";
+            $stmt = $conn->prepare($updateSQL);
+            $stmt->bind_param(str_repeat('s', count($updateValues) - 1) . 'i', ...$updateValues);
+
+            if ($stmt->execute()) {
+                // Log the changes
+                createAuditLog($conn, $userID, 'UPDATE', 'products_tbl', $productID, json_encode($oldValues), json_encode($newValues));
+
+                echo json_encode(['success' => true, 'message' => 'Product details updated successfully.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+            }
+            $stmt->close();
+        } else {
+            echo json_encode(['success' => false, 'message' => 'No data to update.']);
+        }
+    }
+}
+
+// Function to delete a product
+function deleteProduct()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    $conn = dbConnect();
+
+    $productID = $_POST['productID'];
+
+    // Retrieve current product data before deletion
+    $currentDataSQL = "SELECT productID, productName, productIMG, categoryID, productDesc, productPrice, inStock FROM products_tbl WHERE productID=?";
+    $stmt = $conn->prepare($currentDataSQL);
+    $stmt->bind_param("i", $productID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $currentData = $result->fetch_assoc();
+    $stmt->close();
+
+    // Convert current data to JSON for logging
+    $oldValues = json_encode($currentData);
+
+    // Delete product record
+    $deleteSQL = "DELETE FROM products_tbl WHERE productID=?";
+    $stmt = $conn->prepare($deleteSQL);
+    $stmt->bind_param("i", $productID);
+
+    if ($stmt->execute()) {
+      // Log the deletion
+      createAuditLog($conn, $userUpdaterID, 'DELETE', 'products_tbl', $productID, $oldValues, null);
+
+      echo json_encode(['success' => true, 'message' => 'Product deleted successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $stmt->close();
+  }
 }

@@ -35,7 +35,7 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
     <h1>Products Table</h1>
 </div>
 
-<div class="container-fluid bg-light p-5 rounded shadow">
+<div class="table-container container-fluid bg-light p-5 rounded shadow">
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -63,17 +63,15 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                         <td><img src="<?php echo $row['productIMG'] ?>" alt="<?php echo $row['productName'] ?>" style="width:100px"></td>
                         <td><?php echo $row['productName'] ?></td>
                         <td><?php echo $row['categoryName'] ?></td>
-                        <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                            <?php echo $row['productDesc'] ?>
-                        </td>
+                        <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $row['productDesc'] ?></td>
                         <td><?php echo $row['productPrice'] ?></td>
                         <td><?php echo $row['inStock'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <button class='btn btn-warning'>Edit</button>
-                                <button class='btn btn-danger'>Delete</button>
+                                <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
+                                <button class='delProdBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteProdModal">Delete</button>
                             </div>
                         </td>
                     </tr>
@@ -104,7 +102,7 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                             <label for="prodIMG" class="form-label">Product Image</label>
                             <input class="form-control" type="file" name="prodIMG" accept="images/*">
                             <label class="error-message" for="prodIMG"></label>
-                            <img id="imagePreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; height: auto;">
+                            <img id="addProdIMGPreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; height: auto;">
                         </div>
                         <div class="col">
                             <div class="mb-2">
@@ -115,20 +113,19 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                             <div class="mb-2">
                                 <label for="prodCategory" class="form-label">Category</label>
                                 <select class="form-select" name="prodCategory">
-                                    <option selected>Choose the Category</option>
+                                    <option value="" selected>Choose the Category</option>
                                     <?php
-                                        if ($categoriesSQLResult->num_rows > 0) {
-                                            while ($row = $categoriesSQLResult->fetch_assoc()) {
-                                                
-                                                ?><option value="<?php echo $row['categoryID'] ?>"><?php echo $row['categoryName'] ?></option><?php
-                                            }
-                                            ?></select><?php
-                                        } else {
-                                            echo 'No categories available.';
+                                    if ($categoriesSQLResult->num_rows > 0) {
+                                        while ($row = $categoriesSQLResult->fetch_assoc()) {
+
+                                    ?><option value="<?php echo $row['categoryID'] ?>"><?php echo $row['categoryName'] ?></option><?php
                                         }
+                                    } else {
+                                        ?><option disabled>No categories available.</option><?php
+                                    }
                                     ?>
-                                </select>
-                                <label class="error-message" for="prodCategory"></label>
+                            </select>
+                            <label class="error-message" for="prodCategory"></label>
                             </div>
                             <div class="mb-2">
                                 <label for="prodDesc" class="form-label">Description</label>
@@ -158,6 +155,100 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
     </div>
 </div>
 
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProdModal" tabindex="-1" aria-labelledby="editProdModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editProdModalLabel">Editing Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="signupform" id="editProductForm" method="POST">
+                    <div class="row mb-2">
+                        <div class="col">
+                            <label for="editProdIMG" class="form-label">Product Image</label>
+                            <input class="form-control" type="file" id="editProdIMG" name="editProdIMG" accept="images/*">
+                            <label class="error-message" for="editProdIMG"></label>
+                            <img id="editProdIMGPreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; height: auto;">
+                        </div>
+                        <div class="col">
+                            <div class="mb-2">
+                                <label for="editProdName" class="form-label">Product Name</label>
+                                <input class="form-control" type="text" id="editProdName" name="editProdName">
+                                <label class="error-message" for="editProdName"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="editProdCategory" class="form-label">Category</label>
+                                <select class="form-select" id="editProdCategory" name="editProdCategory">
+                                    <option value="" selected>Choose the Category</option>
+                                    <?php
+                                            // Reset the result pointer to ensure the categories are fetched correctly
+                                            $categoriesSQLResult->data_seek(0);
+                                            
+                                            if ($categoriesSQLResult->num_rows > 0) {
+                                                while ($catRow = $categoriesSQLResult->fetch_assoc()) {
+                                                    ?><option value="<?php echo $catRow['categoryID'] ?>"><?php echo $catRow['categoryName'] ?></option><?php
+                                                }
+                                            } else {
+                                                ?><option disabled>No categories available.</option><?php
+                                            }
+                                        ?>
+                            </select>
+                            <label class="error-message" for="editProdCategory"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="editProdDesc" class="form-label">Description</label>
+                                <textarea class="form-control" id="editProdDesc" name="editProdDesc"></textarea>
+                                <label class="error-message" for="editProdDesc"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="editProdPrice" class="form-label">Unit Price</label>
+                                <input class="form-control" type="number" id="editProdPrice" name="editProdPrice">
+                                <label class="error-message" for="editProdPrice"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="editProdStock" class="form-label">Units in Stock</label>
+                                <input class="form-control" type="number" id="editProdStock" name="editProdStock">
+                                <label class="error-message" for="editProdStock"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='d-grid gap-2 mb-3'>
+                        <input type="hidden" id="editProdID" name="editProdID">
+                        <input type="hidden" id="action" name="action" value="updateProduct">
+                        <button type="submit" name="editProdSubmit" class='btn btn-warning'>Save Changes</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Products Modal -->
+<div class="modal fade" id="deleteProdModal" tabindex="-1" aria-labelledby="deleteProdModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="deleteProdForm" method="POST">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteProdModalLabel">Delete Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="fs-3">Are you sure you want to delete this product?</p>
+                    <p class="fs-5 text-danger m-0">This action is irreversable</p>
+                    <input type="hidden" id="deleteProdID" name="productID">
+                    <input type="hidden" id="action" name="action" value="deleteProduct">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <?php
 $conn->close();
 ?>

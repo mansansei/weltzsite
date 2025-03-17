@@ -14,7 +14,7 @@ $usersSQLResult = $conn->query($usersSQL);
     <h1>Users Table</h1>
 </div>
 
-<div class="container-fluid bg-light p-5 rounded shadow">
+<div class="table-container container-fluid bg-light p-5 rounded shadow">
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>

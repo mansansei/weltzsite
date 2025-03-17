@@ -16,7 +16,9 @@ body {
     font-family: 'Bebas Neue', sans-serif;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: 'Anton', sans-serif;
     letter-spacing: 2px;
 }
@@ -26,10 +28,10 @@ p {
 }
 
 input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 input[type=number] {
     -moz-appearance: textfield;
@@ -38,12 +40,35 @@ input[type=number] {
 .inline-form-control {
     display: inline-block;
     vertical-align: baseline;
-    width: 75px; /* Adjust the width as needed */
+    width: 75px;
+    /* Adjust the width as needed */
 }
 
 .error {
     color: #fc0001;
     font-size: 0.75rem;
+}
+
+/* Custom Scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 
@@ -155,10 +180,14 @@ form .row .col input {
 }
 
 @media (max-width: 500px) {
-    .signupcheckbox label, .signupcheckbox a {
+
+    .signupcheckbox label,
+    .signupcheckbox a {
         font-size: 0.75rem;
     }
-    .loginHere, .loginHere a {
+
+    .loginHere,
+    .loginHere a {
         font-size: 0.75rem;
     }
 }
@@ -223,13 +252,16 @@ form .row .col input {
         font-size: 1.5rem;
         text-align: right;
     }
+
     .headerwrapper .contact-info {
         justify-content: flex-end;
     }
-    .headerwrapper2 .links a button{
+
+    .headerwrapper2 .links a button {
         justify-content: center;
         font-size: 1rem;
     }
+
     .headerwrapper2 .icons .icon a button {
         justify-content: center;
         font-size: 1rem;
@@ -240,14 +272,17 @@ form .row .col input {
     .headerwrapper .header-title {
         font-size: 1.5rem;
     }
+
     .headerwrapper .contact-info p {
         justify-content: flex-end;
         font-size: 0.75rem;
     }
-    .headerwrapper2 .links a button{
+
+    .headerwrapper2 .links a button {
         justify-content: center;
         font-size: 1rem;
     }
+
     .headerwrapper2 .icons .icon a button {
         justify-content: center;
         font-size: 1rem;
@@ -273,7 +308,7 @@ form .row .col input {
     background-position: center;
     height: 650px;
     width: 100%;
-    background-color: rgba(0,0,0,0.40);
+    background-color: rgba(0, 0, 0, 0.40);
     background-blend-mode: overlay;
 }
 
@@ -371,21 +406,22 @@ form .row .col input {
     color: #fc0001;
 }
 
-@media (max-width: 575.98px) {
-    
-}
+@media (max-width: 575.98px) {}
 
 @media (max-width: 961px) {
     .featuredTitle h1 {
         font-size: 2rem;
     }
+
     .featuredTitle p {
         font-size: 1rem;
     }
+
     .featuredItem {
         width: 200px;
         font-size: 1rem;
     }
+
     .landing a button {
         font-size: 15px;
     }
@@ -450,7 +486,7 @@ form .row .col input {
     padding: 0 40px;
     border-radius: 100px;
     font-size: 20px;
-    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    box-shadow: 1px 0px 7px 0px rgba(0, 0, 0, 0.5);
 }
 
 .cartdesc1 {
@@ -472,6 +508,7 @@ form .row .col input {
     text-align: center;
     place-items: center;
 }
+
 .cartwrapper {
     /* background-color: burlywood; */
     height: 70%;
@@ -490,7 +527,7 @@ form .row .col input {
     padding: 0 30px;
     display: flex;
     justify-content: space-between;
-    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    box-shadow: 1px 0px 7px 0px rgba(0, 0, 0, 0.5);
     border-radius: 50px;
 }
 
@@ -589,7 +626,7 @@ form .row .col input {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-color: rgba(0,0,0,0.60);
+    background-color: rgba(0, 0, 0, 0.60);
     background-blend-mode: overlay;
 }
 
@@ -616,13 +653,14 @@ form .row .col input {
 }
 
 
-.blogs, .blogs2 {
+.blogs,
+.blogs2 {
     background-color: white;
     height: 450px;
     width: 35%;
     min-width: 200px;
     border-radius: 15px;
-    box-shadow: 1px 0px 7px 0px rgba(0,0,0,0.5);
+    box-shadow: 1px 0px 7px 0px rgba(0, 0, 0, 0.5);
     overflow: hidden;
 }
 
@@ -677,27 +715,28 @@ form .row .col input {
 /* Medium Screens (Tablets) */
 @media (max-width: 1024px) {
     body {
-        padding: 0 50px; 
+        padding: 0 50px;
     }
 
     .blogswrapper {
-        flex-direction: column; 
+        flex-direction: column;
         align-items: center;
     }
 
-    .blogs, .blogs2 {
-        width: 80%; 
+    .blogs,
+    .blogs2 {
+        width: 80%;
     }
 }
 
 /* Small Screens (Mobile) */
 @media (max-width: 768px) {
     body {
-        padding: 0 20px; 
+        padding: 0 20px;
     }
 
     .blogsheader h1 {
-        font-size: 35px; 
+        font-size: 35px;
     }
 
     .header__links {
@@ -705,12 +744,13 @@ form .row .col input {
         gap: 5px;
     }
 
-    .blogs, .blogs2 {
+    .blogs,
+    .blogs2 {
         width: 100%;
     }
 
     .blogslink a {
-        font-size: 16px; 
+        font-size: 16px;
     }
 }
 
@@ -719,7 +759,7 @@ form .row .col input {
 .adminPanel {
     display: flex;
 }
-  
+
 #sidebar {
     min-width: 300px;
     max-width: 300px;
@@ -728,25 +768,25 @@ form .row .col input {
     top: 0;
     position: sticky;
 }
-  
+
 #sidebar .nav-link {
     color: #fff;
 }
-  
+
 #adminContent {
     width: 100%;
     padding: 20px;
 }
-  
+
 .components {
     padding: 0;
     list-style: none;
 }
-  
+
 .components li {
     padding: 10px;
 }
-  
+
 .components a {
     color: #333;
     display: block;
@@ -763,4 +803,9 @@ form .row .col input {
 #adminHeader {
     top: 0;
     position: sticky;
+}
+
+.table-container {
+    height: 775px;
+    max-height: 875px;
 }
