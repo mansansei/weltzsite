@@ -195,17 +195,16 @@ form .row .col input {
 /* =====NAVBAR===== */
 
 .headerwrapper {
-    padding: 20px;
     background-color: #ffffff;
 }
 
 .alogowrapper img {
-    width: 150px;
+    width: 125px;
     height: auto;
 }
 
 .header-title {
-    font-size: 3rem;
+    font-size: 2rem;
     margin: 0;
 }
 
