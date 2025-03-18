@@ -183,7 +183,10 @@ $(document).ready(function () {
                             icon: "success",
                             text: res.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1500,
+                            willClose: () => {
+                                location.reload();
+                            }
                         });
                         $('#adminSignupForm')[0].reset(); // Reset the form
                     } else {
@@ -293,7 +296,10 @@ $(document).ready(function () {
                             icon: "success",
                             text: res.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1500,
+                            willClose: () => {
+                                location.reload();
+                            }
                         });
                         $('#editUserForm')[0].reset(); // Reset the form
                         $('#editUser').modal('hide');
@@ -345,7 +351,10 @@ $(document).ready(function () {
                         icon: "success",
                         text: res.message,
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 1500,
+                        willClose: () => {
+                            location.reload();
+                        }
                     });
                     $('#deleteUserForm')[0].reset();
                     $('#deleteUserModal').modal('hide');
@@ -432,7 +441,10 @@ $(document).ready(function () {
                             icon: "success",
                             text: res.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1500,
+                            willClose: () => {
+                                location.reload();
+                            }
                         });
                         $('#addProductForm')[0].reset(); // Reset the form
                         $('#addNewProdModal').modal('hide');
@@ -547,7 +559,10 @@ $(document).ready(function () {
                             icon: "success",
                             text: res.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 1500,
+                            willClose: () => {
+                                location.reload();
+                            }
                         });
                         $('#editProductForm')[0].reset(); // Reset the form
                         $('#editProdModal').modal('hide');
@@ -600,7 +615,10 @@ $(document).ready(function () {
                         icon: "success",
                         text: res.message,
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 1500,
+                        willClose: () => {
+                            location.reload();
+                        }
                     });
                 } else {
                     Swal.fire({
