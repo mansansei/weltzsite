@@ -83,7 +83,7 @@ function loginUser()
       $response = ['success' => true, 'message' => 'Login successful'];
 
       if ($role == 1) {
-        $response['redirect'] = 'Homepage.php';
+        $response['redirect'] = 'Home.php';
       } else if ($role == 2) {
         $response['redirect'] = 'adminIndex.php';
       }

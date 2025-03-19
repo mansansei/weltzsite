@@ -10,7 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
     <?php require_once 'cssLibraries.php' ?>
-    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
@@ -114,6 +113,17 @@
         }
         ?>
     </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p class="mb-1">&copy; 2025 WELTZ INDUSTRIAL PHILS INC. All Rights Reserved.</p>
+            <p>
+                <a href="?page=homePage">Home</a> |
+                <a href="?page=aboutUsPage">About Us</a> |
+                <a href="?page=contactPage">Contact Us</a>
+            </p>
+        </div>
+    </footer>
 
     <?php require_once 'cssLibrariesJS.php' ?>
 </body>

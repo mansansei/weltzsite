@@ -49,6 +49,11 @@ input[type=number] {
     font-size: 0.75rem;
 }
 
+/* Quantity counter */
+.quantity-counter .input-group {
+    max-width: 200px; /* Adjust the width as needed */
+}
+
 /* Custom Scrollbar */
 
 /* width */
@@ -220,6 +225,7 @@ form .row .col input {
 .headerwrapper2 {
     position: sticky;
     top: 0;
+    z-index: 1000;
     background-color: #231f20;
 }
 
@@ -424,6 +430,42 @@ form .row .col input {
     .landing a button {
         font-size: 15px;
     }
+}
+
+
+
+/* =====PRODUCTS===== */
+
+.card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-img-top {
+    height: auto;
+}
+
+/* View product */
+
+.productBoxTitle {
+    background-image: url(../images/landingpic.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: rgba(0, 0, 0, 0.40);
+    background-blend-mode: overlay;
+}
+
+/* Quantity counter */
+.quantity-counter .input-group {
+    max-width: 200px; /* Adjust the width as needed */
 }
 
 

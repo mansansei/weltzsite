@@ -11,6 +11,51 @@ $(document).ready(function () {
         return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(value);
     }, "must have an upper and lowercase letter, a number, and a special character.");
 
+    // CART CHECK ALL
+    $('#checkAll').click(function () {
+        $('.item-check').prop('checked', this.checked);
+    });
+    $('.item-check').click(function () {
+        if ($('.item-check:checked').length == $('.item-check').length) {
+            $('#checkAll').prop('checked', true);
+        } else {
+            $('#checkAll').prop('checked', false);
+        }
+    });
+
+    // QUANTITY COUNTER
+    // Increase quantity counter function
+    $('#increaseQuantity').on('click', function() {
+        var quantityInput = $('#quantityInput');
+        quantityInput.val(parseInt(quantityInput.val()) + 1);
+    });
+
+    // Decrease quantity counter function
+    $('#decreaseQuantity').on('click', function() {
+        var quantityInput = $('#quantityInput');
+        if (parseInt(quantityInput.val()) > 1) {
+            quantityInput.val(parseInt(quantityInput.val()) - 1);
+        }
+    });
+
+    // VIEW PRODUCT MODAL
+    // Pass data of product details to order details
+    $('[data-bs-target="#placeOrderModal"]').on('click', function() {
+        var productIMG = $('#productIMG').attr('src');
+        var productName = $('#productName').text();
+        var productCategory = $('#productCategory').text();
+        var productPrice = $('#productPrice').text();
+        var quantity = $('#quantityInput').val();
+        var totalPrice = (parseFloat(productPrice) * parseInt(quantity)).toFixed(2);
+
+        $('#modalProductImage').attr('src', productIMG).show();
+        $('#modalProductName').text(productName);
+        $('#modalProductCategory').text(productCategory);
+        $('#modalProductPrice').text(productPrice);
+        $('#modalQuantity').text(quantity);
+        $('#modalTotalPrice').text(totalPrice);
+    });
+
     // DATA TABLES
     // INITIALIZE DATA TABLES
     $('#myTable').DataTable({

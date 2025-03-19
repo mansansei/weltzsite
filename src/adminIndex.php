@@ -57,7 +57,7 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
           <a class="fs-5" href="?page=products"><i class="fa-solid fa-box-open"></i> Products</a>
         </li>
         <li>
-          <a class="fs-5" href="?page=orders"><i class="fa-solid fa-receipt"></i> Orders</a>
+          <a class="fs-5" href="?page=cartItems"><i class="fa-solid fa-receipt"></i> Cart Items</a>
         </li>
         <li>
           <a class="fs-5" href="?page=carts"><i class="fa-solid fa-cart-shopping"></i> Carts</a>
@@ -102,8 +102,8 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
         case 'products':
           include 'adminPages/productsTable.php';
           break;
-        case 'orders':
-          include 'adminPages/ordersTable.php';
+        case 'cartItems':
+          include 'adminPages/cartItemsTable.php';
           break;
         case 'carts':
           include 'adminPages/cartsTable.php';

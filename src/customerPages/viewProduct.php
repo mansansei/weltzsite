@@ -5,7 +5,7 @@ require_once 'weltz_dbconnect.php';
 if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     $productID = $_GET['productID'];
     $selectSQL =
-    "SELECT
+        "SELECT
         p.productID, 
         p.productIMG, 
         p.productName, 
@@ -29,26 +29,43 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
 
     if ($product) {
 ?>
+        <!-- Product Name -->
+        <div class="productBoxTitle container-fluid text-center text-white m-0 p-5">
+            <h1 class="fs-1"><?php echo $product['productName'] ?></h1>
+        </div>
+
         <!-- Product Details Container -->
-        <div class="productBox container border-dark-subtle mt-5 border rounded-5 shadow">
-            <div class="row d-flex align-items-center">
-                <div class="col-6 p-4 ">
-                    <img src="<?php echo $product['productIMG'] ?>" alt="<?php echo $product['productName'] ?>" class="img-fluid shadow rounded-5">
+        <div class="productBox container border-dark-subtle mt-5 mb-5 border rounded-5 shadow">
+            <div class="row d-flex align-items-center flex-column flex-md-row">
+                <div class="col-12 col-md-6 p-5 order-md-1 order-1">
+                    <img src="<?php echo $product['productIMG'] ?>" alt="<?php echo $product['productName'] ?>" id="productIMG" class="img-fluid shadow rounded-5">
                 </div>
-                <div class="col-6 p-5">
-                    <h3 class="fs-2" id="productName"><?php echo $product['productName'] ?></h3>
-                    <p class="fs-3" id="productCategory"><?php echo $product['categoryName'] ?></p>
-                    <p class="fs-5" id="productDesc"><?php echo $product['productDesc'] ?></p>
-                    <p class="fs-3">Stock: 0</p>
-                    <p class="fs-3 fw-bold">Php <span id="productPrice"><?php echo $product['productPrice'] ?></span></p>
+                <div class="col-12 col-md-6 p-5 order-md-2 order-2">
+                    <div class="mb-3">
+                        <h3 class="fs-2" id="productName"><?php echo $product['productName'] ?></h3>
+                        <p class="fs-3" id="productCategory"><?php echo $product['categoryName'] ?></p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="fs-5" id="productDesc"><?php echo $product['productDesc'] ?></p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="fs-3">Stock: 0</p>
+                        <p class="fs-3 fw-bold">Php <span id="productPrice"><?php echo $product['productPrice'] ?></span></p>
+                    </div>
                     <div class="quantity-counter mb-5">
                         <p class="fs-3">Quantity</p>
-                        <button type="button" class="btn btn-secondary inline-form-control fs-2" id="decreaseQuantity"><i class="fa-solid fa-minus"></i></button>
-                        <input type="number" id="quantityInput" class="fs-2 form-control inline-form-control text-center" value="1" min="1">
-                        <button type="button" class="btn btn-secondary inline-form-control fs-2" id="increaseQuantity"><i class="fa-solid fa-plus"></i></button>
+                        <div class="input-group input-group-lg">
+                            <button type="button" class="btn btn-secondary" id="decreaseQuantity">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                            <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1">
+                            <button type="button" class="btn btn-secondary" id="increaseQuantity">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-primary fs-2 mt-3" data-bs-toggle="modal" data-bs-target="#placeOrderModal">
-                        Place Order
+                    <button type="button" class="btn btn-danger fs-2 mt-3" data-bs-toggle="modal" data-bs-target="#placeOrderModal">
+                        Add to Cart
                     </button>
                 </div>
             </div>
@@ -66,7 +83,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="placeOrderModalLabel">Order Detais</h1>
+                <h1 class="modal-title fs-5" id="placeOrderModalLabel">Add to Cart Details</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -75,11 +92,15 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
                         <img id="modalProductImage" src="" alt="" class="img-fluid shadow rounded-5">
                     </div>
                     <div class="col-6 p-5 text-end">
-                        <h3 class="fs-2" id="modalProductName"></h3>
-                        <p class="fs-3" id="modalProductCategory"></p>
-                        <p class="fs-3">Price: Php <span id="modalProductPrice"></span></p>
-                        <p class="fs-3">Quantity: <span id="modalQuantity"></span></p>
-                        <p class="fs-3">Total Price: Php <span id="modalTotalPrice"></span></p>
+                        <div class="mb-3">
+                            <h3 class="fs-2" id="modalProductName"></h3>
+                            <p class="fs-3" id="modalProductCategory"></p>
+                        </div>
+                        <div class="mb-3">
+                            <p class="fs-3">Price: Php <span id="modalProductPrice"></span></p>
+                            <p class="fs-3">Quantity: <span id="modalQuantity"></span></p>
+                            <p class="fs-3">Total Price: Php <span id="modalTotalPrice"></span></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -90,41 +111,3 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
         </div>
     </div>
 </div>
-<script>
-    //Increase quantity counter function
-    document.getElementById('increaseQuantity').addEventListener('click', function() {
-        var quantityInput = document.getElementById('quantityInput');
-        quantityInput.value = parseInt(quantityInput.value) + 1;
-    });
-
-    //Decrease quantity counter function
-    document.getElementById('decreaseQuantity').addEventListener('click', function() {
-        var quantityInput = document.getElementById('quantityInput');
-        if (parseInt(quantityInput.value) > 1) {
-            quantityInput.value = parseInt(quantityInput.value) - 1;
-        }
-    });
-
-    //Pass data of product details to order details
-    document.querySelector('[data-bs-target="#placeOrderModal"]').addEventListener('click', function() {
-        var productName = document.getElementById('productName').textContent;
-        var productCategory = document.getElementById('productCategory').textContent;
-        var productPrice = document.getElementById('productPrice').textContent;
-        var quantity = document.getElementById('quantityInput').value;
-        var totalPrice = (parseFloat(productPrice) * parseInt(quantity)).toFixed(2);
-
-        document.getElementById('modalProductImage').src = "<?php echo $product['productIMG'] ?>";
-        document.getElementById('modalProductImage').alt = productName;
-        document.getElementById('modalProductName').textContent = productName;
-        document.getElementById('modalProductCategory').textContent = productCategory;
-        document.getElementById('modalProductPrice').textContent = productPrice;
-        document.getElementById('modalQuantity').textContent = quantity;
-        document.getElementById('modalTotalPrice').textContent = totalPrice;
-    });
-
-    //Dynamically change doc title with name of product
-    document.addEventListener('DOMContentLoaded', function() {
-        var productName = document.getElementById('productName').textContent;
-        document.title = productName + " - Product Details";
-    });
-</script>

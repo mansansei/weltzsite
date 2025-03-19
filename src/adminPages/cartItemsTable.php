@@ -2,46 +2,41 @@
 require_once 'weltz_dbconnect.php';
 
 $ordersSQL =
-    "SELECT
-        o.orderID, 
-        CONCAT(u.userFname, ' ', u.userLname) AS userFullName, 
-        p.productName, 
-        o.orderQuantity, 
-        o.orderTotal, 
-        mop.mopName, 
-        os.statusName, 
-        o.createdAt, 
-        o.updatedAt 
-    FROM 
-        orders_tbl o 
-    JOIN 
-        users_tbl u ON o.userID = u.userID 
-    JOIN 
-        products_tbl p ON o.productID = p.productID 
-    JOIN 
-        order_statuses_tbl os ON o.statusID = os.statusID 
-    JOIN 
-        modes_of_payment_tbl mop ON o.mopID = mop.mopID
+    "SELECT 
+            ci.*, 
+            c.*, 
+            p.productName, 
+            CONCAT(u.userFname, ' ', u.userLname) AS userFullName, 
+            cat.categoryName 
+        FROM 
+            cart_items_tbl AS ci
+        JOIN 
+            carts_tbl AS c ON ci.cartID = c.cartID
+        JOIN 
+            products_tbl AS p ON ci.productID = p.productID
+        JOIN 
+            users_tbl AS u ON c.userID = u.userID
+        JOIN 
+            categories_tbl AS cat ON p.categoryID = cat.categoryID
     ";
 
 $ordersSQLResult = $conn->query($ordersSQL);
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
-    <h1>Orders Table</h1>
+    <h1>Cart Items Table</h1>
 </div>
 
 <div class="table-container container-fluid bg-light p-5 rounded shadow">
     <table id="myTable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
+                <th>Cart Item ID</th>
+                <th>Cart ID</th>
+                <th>Cart Owner</th>
                 <th>Product</th>
                 <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Mode of Payment</th>
-                <th>Status</th>
+                <th>Total</th>
                 <th>Created At</th>
                 <th>Updated At</th>
                 <!-- <th>Action</th> -->
@@ -53,13 +48,12 @@ $ordersSQLResult = $conn->query($ordersSQL);
                 while ($row = $ordersSQLResult->fetch_assoc()) {
             ?>
                     <tr>
-                        <td><?php echo $row['orderID'] ?></td>
+                        <td><?php echo $row['cartItemID'] ?></td>
+                        <td><?php echo $row['cartID'] ?></td>
                         <td><?php echo $row['userFullName'] ?></td>
                         <td><?php echo $row['productName'] ?></td>
-                        <td><?php echo $row['orderQuantity'] ?></td>
-                        <td><?php echo $row['orderTotal'] ?></td>
-                        <td><?php echo $row['mopName'] ?></td>
-                        <td><?php echo $row['statusName'] ?></td>
+                        <td><?php echo $row['cartItemQuantity'] ?></td>
+                        <td><?php echo $row['cartItemTotal'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <!-- <td>

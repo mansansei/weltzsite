@@ -1,132 +1,78 @@
-<section class="cart">
-    <div class="carttitle">
-        <h1>Customer's Cart</h1>
-    </div>
-    <div class="cartlink">
-        <a href="?page=OrderHistory">Order History ➤</a>
-    </div>
-</section>
-
-<!-- HANGGANG DITO LNG SA TITLE -->
-
-<section class="cart2">
-
-    <div class="cartdesc">
-        <div class="cartdesc1">
-            <p>Product</p>
+<div class="container-fluid p-5">
+    <div class="row mb-4 border-bottom border-danger">
+        <div class="col-md-9">
+            <h1 class="fs-1">Customer's Cart</h1>
         </div>
-        <div class="cartdesc2">
-            <p>Unit Price</p>
-            <p>Quantity</p>
-            <p>Total Price</p>
-            <p>Status</p>
-            <p>Action</p>
-        </div>
-    </div>
-
-    <div class="cartwrapper">
-
-        <div class="cartitemwrapper">
-            <div class="box1">
-                <div class="cartitemimage">
-                    <div class="nyerm">
-                        <img src="../images/logo.png" alt="Product">
+        <div class="col-md-3">
+            <form class="form-inline" method="POST">
+                <div class="input-group">
+                    <input class="form-control" type="search" name="productSearch" placeholder="Search products" aria-label="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-danger" type="submit" name="searchSubmit">Search</button>
                     </div>
                 </div>
-
-                <div class="cartitemdesc">
-                    <h1>ProductName</h1>
-                    <p>ProductCategory</p>
-                    <p>Brand</p>
-                </div>
-            </div>
-
-            <div class="box2">
-                <p>00.00</p>
-                <p>00</p>
-                <p>00.00</p>
-                <p class="status">For Pick Up</p>
-                <a class="action" href="#">Cancel</a>
-            </div>
+            </form>
         </div>
-
-        <div class="cartitemwrapper">
-            <div class="box1">
-                <div class="cartitemimage">
-                    <div class="nyerm">
-                        <img src="../images/logo.png" alt="Product">
-                    </div>
-                </div>
-
-                <div class="cartitemdesc">
-                    <h1>ProductName</h1>
-                    <p>ProductCategory</p>
-                    <p>Brand</p>
-                </div>
-            </div>
-
-            <div class="box2">
-                <p>00.00</p>
-                <p>00</p>
-                <p>00.00</p>
-                <p class="status">For Pick Up</p>
-                <a class="action" href="#">Cancel</a>
-            </div>
-        </div>
-
-        <div class="cartitemwrapper">
-            <div class="box1">
-                <div class="cartitemimage">
-                    <div class="nyerm">
-                        <img src="../images/logo.png" alt="Product">
-                    </div>
-                </div>
-
-                <div class="cartitemdesc">
-                    <h1>ProductName</h1>
-                    <p>ProductCategory</p>
-                    <p>Brand</p>
-                </div>
-            </div>
-
-            <div class="box2">
-                <p>00.00</p>
-                <p>00</p>
-                <p>00.00</p>
-                <p class="status">For Pick Up</p>
-                <a class="action" href="#">Cancel</a>
-            </div>
-        </div>
-
-        <div class="cartitemwrapper">
-            <div class="box1">
-                <div class="cartitemimage">
-                    <div class="nyerm">
-                        <img src="../images/logo.png" alt="Product">
-                    </div>
-                </div>
-
-                <div class="cartitemdesc">
-                    <h1>ProductName</h1>
-                    <p>ProductCategory</p>
-                    <p>Brand</p>
-                </div>
-            </div>
-
-            <div class="box2">
-                <p>00.00</p>
-                <p>00</p>
-                <p>00.00</p>
-                <p class="status">For Pick Up</p>
-                <a class="action" href="#">Cancel</a>
-            </div>
-        </div>
-
-        <!-- copy paste lng to add more -->
-
     </div>
 
-    <div class="return">
-        <a href="?page=productsPage"><button>Return to shop</button></a>
+    <div class="container mt-5">
+        <div class="cart-header bg-danger text-white mb-3">
+            <div class="row align-items-center p-3">
+                <div class="col-lg-1 text-center">
+                    <input type="checkbox" class="form-check-input item-check" id="checkAll">
+                </div>
+                <div class="col-lg-4">
+                    <p class="fs-5 mb-0">Product</p>
+                </div>
+                <div class="col-lg-2 text-center">
+                    <p class="fs-5 mb-0">Unit Price</p>
+                </div>
+                <div class="col-lg-2 text-center">
+                    <p class="fs-5 mb-0">Quantity</p>
+                </div>
+                <div class="col-lg-2 text-center">
+                    <p class="fs-5 mb-0">Total</p>
+                </div>
+                <div class="col-lg-1 text-center">
+                    <p class="fs-5 mb-0">Action</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-item bg-light">
+            <div class="row align-items-center p-3">
+                <div class="col-lg-1 d-flex justify-content-center">
+                    <input type="checkbox" class="form-check-input item-check">
+                </div>
+                <div class="col-lg-4 d-flex">
+                    <img src="https://via.placeholder.com/50" alt="Product Image" class="me-2">
+                    <div class="d-flex flex-column justify-content-center">
+                        <span>Product Name</span>
+                        <span class="text-secondary">Category: Electronics</span>
+                        <span class="text-secondary">Brand: ExampleBrand</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-center">
+                    <span class="unit-price">$10.00</span>
+                </div>
+                <div class="col-lg-2 text-center">
+                    <div class="input-group input-group">
+                        <button type="button" class="btn btn-secondary" id="decreaseQuantity">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
+                        <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1">
+                        <button type="button" class="btn btn-secondary" id="increaseQuantity">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-2 text-center">
+                    <span class="total-price">$10.00</span>
+                </div>
+                <div class="col-lg-1 text-center">
+                    <button class="btn btn-danger">Remove</button>
+                </div>
+            </div>
+        </div>
     </div>
-</section>
+</div>
