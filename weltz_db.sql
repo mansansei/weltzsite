@@ -32,7 +32,7 @@ CREATE TABLE `audit_logs` (
   `newValues` text DEFAULT NULL,
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`auditID`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `audit_logs` (
 
 LOCK TABLES `audit_logs` WRITE;
 /*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
-INSERT INTO `audit_logs` VALUES (1,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-16 10:38:10'),(2,1,'CREATE','users_tbl',3,NULL,'{\"userFname\":\"Ken\",\"userLname\":\"Gopez\",\"userAdd\":\"Valenzuela\",\"userPhone\":\"12345678910\",\"userEmail\":\"kristoffer.gopez.cics@ust.edu.ph\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:39:02'),(3,1,'CREATE','users_tbl',4,NULL,'{\"userFname\":\"Cyril\",\"userLname\":\"Labao\",\"userAdd\":\"Bacoor\",\"userPhone\":\"12345678910\",\"userEmail\":\"cyrillabao@gmail.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:39:43'),(4,1,'CREATE','users_tbl',5,NULL,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:40:21'),(5,1,'DELETE','users_tbl',5,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\"}',NULL,'2025-03-16 10:40:38'),(6,1,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertisepic031@gmail.com\"}','{\"userEmail\":\"mertiscool031@gmail.com\"}','2025-03-16 10:43:34'),(7,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-16 10:44:55'),(8,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-16 12:25:26'),(9,1,'CREATE','products_tbl',8,NULL,'{\"userID\":1,\"productName\":\"testProduct\",\"productIMG\":\"..\\/images\\/products\\/low-poly-fire-hydrant-03_67d6b75b28f3e.jpg\",\"categoryID\":\"1\",\"productDesc\":\"this is a test description for test product\",\"productPrice\":\"1000000\",\"inStock\":\"1\"}','2025-03-16 12:34:51'),(10,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-16 13:27:39'),(11,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 10:09:03'),(12,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 10:09:28'),(13,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 12:31:47'),(14,1,'UPDATE','products_tbl',1,'{\"categoryID\":1,\"inStock\":0}','{\"categoryID\":\"1\",\"inStock\":\"10\"}','2025-03-17 13:02:00'),(15,1,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertiscool031@gmail.com\"}','{\"userEmail\":\"mertisepic031@gmail.com\"}','2025-03-17 13:17:14'),(16,1,'UPDATE','products_tbl',2,'{\"categoryID\":1,\"inStock\":0}','{\"categoryID\":\"1\",\"inStock\":\"10\"}','2025-03-17 13:26:59'),(17,1,'UPDATE','products_tbl',1,'{\"categoryID\":1,\"inStock\":10}','{\"categoryID\":\"1\",\"inStock\":\"10\"}','2025-03-17 13:27:26'),(18,1,'UPDATE','products_tbl',4,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:31:06'),(19,1,'UPDATE','products_tbl',5,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:31:10'),(20,1,'UPDATE','products_tbl',7,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:31:15'),(21,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 13:31:25'),(22,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 13:31:54'),(23,1,'UPDATE','products_tbl',6,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:34:10'),(24,1,'DELETE','products_tbl',8,'{\"productID\":8,\"productName\":\"testProduct\",\"productIMG\":\"..\\/images\\/products\\/low-poly-fire-hydrant-03_67d6b75b28f3e.jpg\",\"categoryID\":1,\"productDesc\":\"this is a test description for test product\",\"productPrice\":\"1000000.00\",\"inStock\":1}',NULL,'2025-03-17 14:14:12'),(25,1,'CREATE','products_tbl',9,NULL,'{\"userID\":1,\"productName\":\"testProduct\",\"productIMG\":\"..\\/images\\/products\\/low-poly-fire-hydrant-03_67d82143cef2e.jpg\",\"categoryID\":\"1\",\"productDesc\":\"this is a description for test product\",\"productPrice\":\"1000000\",\"inStock\":\"1\"}','2025-03-17 14:18:59'),(26,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 14:19:39'),(27,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 14:22:58'),(28,1,'CREATE','users_tbl',6,NULL,'{\"userFname\":\"Admin\",\"userLname\":\"User\",\"userAdd\":\"AdminCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"admin@example.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-17 14:23:33'),(29,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 14:23:47'),(30,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 14:29:43'),(31,1,'DELETE','users_tbl',6,'{\"userFname\":\"Admin\",\"userLname\":\"User\",\"userAdd\":\"AdminCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"admin@example.com\"}',NULL,'2025-03-17 14:29:58'),(32,1,'CREATE','users_tbl',7,NULL,'{\"userFname\":\"Admin\",\"userLname\":\"User\",\"userAdd\":\"AdminCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"admin@example.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-17 14:32:59');
+INSERT INTO `audit_logs` VALUES (1,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-16 10:38:10'),(2,1,'CREATE','users_tbl',3,NULL,'{\"userFname\":\"Ken\",\"userLname\":\"Gopez\",\"userAdd\":\"Valenzuela\",\"userPhone\":\"12345678910\",\"userEmail\":\"kristoffer.gopez.cics@ust.edu.ph\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:39:02'),(3,1,'CREATE','users_tbl',4,NULL,'{\"userFname\":\"Cyril\",\"userLname\":\"Labao\",\"userAdd\":\"Bacoor\",\"userPhone\":\"12345678910\",\"userEmail\":\"cyrillabao@gmail.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:39:43'),(4,1,'CREATE','users_tbl',5,NULL,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-16 10:40:21'),(5,1,'DELETE','users_tbl',5,'{\"userFname\":\"Dummy\",\"userLname\":\"Admin\",\"userAdd\":\"DummyCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"dummy@email.com\"}',NULL,'2025-03-16 10:40:38'),(6,1,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertisepic031@gmail.com\"}','{\"userEmail\":\"mertiscool031@gmail.com\"}','2025-03-16 10:43:34'),(7,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-16 10:44:55'),(8,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-16 12:25:26'),(9,1,'CREATE','products_tbl',8,NULL,'{\"userID\":1,\"productName\":\"testProduct\",\"productIMG\":\"..\\/images\\/products\\/low-poly-fire-hydrant-03_67d6b75b28f3e.jpg\",\"categoryID\":\"1\",\"productDesc\":\"this is a test description for test product\",\"productPrice\":\"1000000\",\"inStock\":\"1\"}','2025-03-16 12:34:51'),(10,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-16 13:27:39'),(11,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 10:09:03'),(12,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 10:09:28'),(13,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 12:31:47'),(14,1,'UPDATE','products_tbl',1,'{\"categoryID\":1,\"inStock\":0}','{\"categoryID\":\"1\",\"inStock\":\"10\"}','2025-03-17 13:02:00'),(15,1,'UPDATE','users_tbl',2,'{\"userEmail\":\"mertiscool031@gmail.com\"}','{\"userEmail\":\"mertisepic031@gmail.com\"}','2025-03-17 13:17:14'),(16,1,'UPDATE','products_tbl',2,'{\"categoryID\":1,\"inStock\":0}','{\"categoryID\":\"1\",\"inStock\":\"10\"}','2025-03-17 13:26:59'),(17,1,'UPDATE','products_tbl',1,'{\"categoryID\":1,\"inStock\":10}','{\"categoryID\":\"1\",\"inStock\":\"10\"}','2025-03-17 13:27:26'),(18,1,'UPDATE','products_tbl',4,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:31:06'),(19,1,'UPDATE','products_tbl',5,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:31:10'),(20,1,'UPDATE','products_tbl',7,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:31:15'),(21,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 13:31:25'),(22,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 13:31:54'),(23,1,'UPDATE','products_tbl',6,'{\"inStock\":0}','{\"inStock\":10}','2025-03-17 13:34:10'),(24,1,'DELETE','products_tbl',8,'{\"productID\":8,\"productName\":\"testProduct\",\"productIMG\":\"..\\/images\\/products\\/low-poly-fire-hydrant-03_67d6b75b28f3e.jpg\",\"categoryID\":1,\"productDesc\":\"this is a test description for test product\",\"productPrice\":\"1000000.00\",\"inStock\":1}',NULL,'2025-03-17 14:14:12'),(25,1,'CREATE','products_tbl',9,NULL,'{\"userID\":1,\"productName\":\"testProduct\",\"productIMG\":\"..\\/images\\/products\\/low-poly-fire-hydrant-03_67d82143cef2e.jpg\",\"categoryID\":\"1\",\"productDesc\":\"this is a description for test product\",\"productPrice\":\"1000000\",\"inStock\":\"1\"}','2025-03-17 14:18:59'),(26,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 14:19:39'),(27,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 14:22:58'),(28,1,'CREATE','users_tbl',6,NULL,'{\"userFname\":\"Admin\",\"userLname\":\"User\",\"userAdd\":\"AdminCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"admin@example.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-17 14:23:33'),(29,1,'LOGOUT','users_tbl',1,NULL,'{\"status\":\"logged out\"}','2025-03-17 14:23:47'),(30,1,'LOGIN','users_tbl',1,NULL,'{\"status\":\"success\"}','2025-03-17 14:29:43'),(31,1,'DELETE','users_tbl',6,'{\"userFname\":\"Admin\",\"userLname\":\"User\",\"userAdd\":\"AdminCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"admin@example.com\"}',NULL,'2025-03-17 14:29:58'),(32,1,'CREATE','users_tbl',7,NULL,'{\"userFname\":\"Admin\",\"userLname\":\"User\",\"userAdd\":\"AdminCity\",\"userPhone\":\"12345678910\",\"userEmail\":\"admin@example.com\",\"roleID\":2,\"otp\":0,\"status\":\"Verified\"}','2025-03-17 14:32:59'),(33,7,'LOGIN','users_tbl',7,NULL,'{\"status\":\"success\"}','2025-03-18 19:33:29'),(34,7,'LOGOUT','users_tbl',7,NULL,'{\"status\":\"logged out\"}','2025-03-18 20:01:01'),(35,2,'LOGIN','users_tbl',2,NULL,'{\"status\":\"success\"}','2025-03-18 20:01:13'),(36,2,'LOGIN','users_tbl',2,NULL,'{\"status\":\"success\"}','2025-03-18 20:01:35');
 /*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,11 +86,17 @@ DROP TABLE IF EXISTS `cart_items_tbl`;
 CREATE TABLE `cart_items_tbl` (
   `cartItemID` int(11) NOT NULL AUTO_INCREMENT,
   `cartID` int(11) NOT NULL,
-  `orderID` int(11) NOT NULL,
+  `productID` int(11) NOT NULL,
+  `cartItemQuantity` int(11) NOT NULL,
+  `cartItemTotal` decimal(10,2) NOT NULL DEFAULT 0.00,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`cartItemID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`cartItemID`) USING BTREE,
+  KEY `cartItemCartFK` (`cartID`),
+  KEY `cartItemProductFK` (`productID`),
+  CONSTRAINT `cartItemCartFK` FOREIGN KEY (`cartID`) REFERENCES `carts_tbl` (`cartID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cartItemProductFK` FOREIGN KEY (`productID`) REFERENCES `products_tbl` (`productID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,6 +105,7 @@ CREATE TABLE `cart_items_tbl` (
 
 LOCK TABLES `cart_items_tbl` WRITE;
 /*!40000 ALTER TABLE `cart_items_tbl` DISABLE KEYS */;
+INSERT INTO `cart_items_tbl` VALUES (1,1,1,10,21490.00,'2025-03-19 02:52:09','2025-03-19 02:52:09');
 /*!40000 ALTER TABLE `cart_items_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -219,25 +226,13 @@ DROP TABLE IF EXISTS `orders_tbl`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `orders_tbl` (
-  `orderID` int(11) NOT NULL AUTO_INCREMENT,
-  `userID` int(11) NOT NULL,
-  `productID` int(11) NOT NULL,
-  `orderQuantity` int(11) NOT NULL,
-  `orderTotal` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `mopID` int(11) NOT NULL,
-  `statusID` int(11) NOT NULL,
+  `cartItemID` int(11) NOT NULL AUTO_INCREMENT,
+  `cartID` int(11) NOT NULL,
+  `orderID` int(11) NOT NULL,
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`orderID`),
-  KEY `productOrderFK` (`productID`) USING BTREE,
-  KEY `userOrderFK` (`userID`) USING BTREE,
-  KEY `orderStatusFK` (`statusID`) USING BTREE,
-  KEY `mopOrderFK` (`mopID`),
-  CONSTRAINT `mopOrderFK` FOREIGN KEY (`mopID`) REFERENCES `modes_of_payment_tbl` (`mopID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `orderStatusFK` FOREIGN KEY (`statusID`) REFERENCES `order_statuses_tbl` (`statusID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `productOrderFK` FOREIGN KEY (`productID`) REFERENCES `products_tbl` (`productID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `userOrderFK` FOREIGN KEY (`userID`) REFERENCES `users_tbl` (`userID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`cartItemID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +241,6 @@ CREATE TABLE `orders_tbl` (
 
 LOCK TABLES `orders_tbl` WRITE;
 /*!40000 ALTER TABLE `orders_tbl` DISABLE KEYS */;
-INSERT INTO `orders_tbl` VALUES (4,2,4,5,11400.00,1,1,'2025-03-16 14:23:00','2025-03-16 14:23:00');
 /*!40000 ALTER TABLE `orders_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -360,4 +354,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-03-18 20:31:31
+-- Dump completed on 2025-03-19 12:15:46
