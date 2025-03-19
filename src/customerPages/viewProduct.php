@@ -64,7 +64,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
                             </button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-danger fs-2 mt-3" data-bs-toggle="modal" data-bs-target="#placeOrderModal">
+                    <button type="button" class="btn btn-danger fs-2 mt-3" id="addToCartBtn" data-product-id="<?php echo $product['productID'] ?>">
                         Add to Cart
                     </button>
                 </div>

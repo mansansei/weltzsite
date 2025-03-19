@@ -24,23 +24,63 @@ $(document).ready(function () {
     });
 
     // QUANTITY COUNTER
-    // Increase quantity counter function
-    $('#increaseQuantity').on('click', function() {
-        var quantityInput = $('#quantityInput');
-        quantityInput.val(parseInt(quantityInput.val()) + 1);
+    $('#decreaseQuantity').click(function () {
+        var quantity = parseInt($('#quantityInput').val());
+        if (quantity > 1) {
+            $('#quantityInput').val(quantity - 1);
+        }
+    });
+    $('#increaseQuantity').click(function () {
+        var quantity = parseInt($('#quantityInput').val());
+        $('#quantityInput').val(quantity + 1);
     });
 
-    // Decrease quantity counter function
-    $('#decreaseQuantity').on('click', function() {
-        var quantityInput = $('#quantityInput');
-        if (parseInt(quantityInput.val()) > 1) {
-            quantityInput.val(parseInt(quantityInput.val()) - 1);
-        }
+    // ADD TO CART
+    $('#addToCartBtn').click(function () {
+        var productID = $(this).data('product-id');
+        var quantity = $('#quantityInput').val();
+        var price = parseFloat($('#productPrice').text());
+        var totalPrice = quantity * price;
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            method: 'POST',
+            data: {
+                action: 'addToCart',
+                productID: productID,
+                quantity: quantity,
+                totalPrice: totalPrice
+            },
+            success: function (response) {
+                var result = JSON.parse(response);
+                if (result.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Cart',
+                        text: 'The item has been added to your cart.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: result.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        timer: 1500
+                    });
+                }
+            }
+        });
     });
 
     // VIEW PRODUCT MODAL
     // Pass data of product details to order details
-    $('[data-bs-target="#placeOrderModal"]').on('click', function() {
+    $('[data-bs-target="#placeOrderModal"]').on('click', function () {
         var productIMG = $('#productIMG').attr('src');
         var productName = $('#productName').text();
         var productCategory = $('#productCategory').text();
@@ -262,10 +302,10 @@ $(document).ready(function () {
         var userAdd = row.find('td:eq(2)').text();
         var userPhone = row.find('td:eq(3)').text();
         var userEmail = row.find('td:eq(4)').text();
-    
+
         // Clear or reset modal data
         $('#editUserModal input').val('');
-    
+
         // Set new data in modal
         $('#editUserLabel').text("Update User: " + userEmail /*+ userFname + " " + userLname + " (" + userID + ")"*/);
         $('#editUserID').val(userID);
@@ -274,7 +314,7 @@ $(document).ready(function () {
         $('#editUserAdd').val(userAdd);
         $('#editUserPhone').val(userPhone);
         $('#editUserEmail').val(userEmail);
-    
+
         // Show the modal
         $('#editUserModal').modal('show');
     });
@@ -365,7 +405,7 @@ $(document).ready(function () {
 
     // DELETE USER
     // Handle Delete button click
-    $(document).on('click', '.delUserBtn', function() {
+    $(document).on('click', '.delUserBtn', function () {
         var row = $(this).closest('tr');
         var userID = row.find('td:eq(0)').text();
         $('#deleteUserID').val(userID);
@@ -416,9 +456,9 @@ $(document).ready(function () {
 
     // ADD PRODUCT
     // Add product image preview
-    $('input[name="prodIMG"]').change(function(event){
+    $('input[name="prodIMG"]').change(function (event) {
         var reader = new FileReader();
-        reader.onload = function(){
+        reader.onload = function () {
             var output = $('#addProdIMGPreview');
             output.attr('src', reader.result);
             output.show();
@@ -461,7 +501,7 @@ $(document).ready(function () {
             prodPrice: "Please enter a valid price",
             prodStock: "Please enter a valid stock quantity"
         },
-        submitHandler: function(form) {
+        submitHandler: function (form) {
             var formData = new FormData(form);
             $.ajax({
                 url: 'serverSideScripts.php',
@@ -469,7 +509,7 @@ $(document).ready(function () {
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(response) {
+                success: function (response) {
                     var res = JSON.parse(response);
                     if (res.success) {
                         Swal.fire({
@@ -491,7 +531,7 @@ $(document).ready(function () {
                         });
                     }
                 },
-                error: function() {
+                error: function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -504,9 +544,9 @@ $(document).ready(function () {
 
     // EDIT PRODUCT
     // Edit product image preview
-    $('input[name="editProdIMG"]').change(function(event){
+    $('input[name="editProdIMG"]').change(function (event) {
         var reader = new FileReader();
-        reader.onload = function(){
+        reader.onload = function () {
             var output = $('#editProdIMGPreview');
             output.attr('src', reader.result);
             output.show();
@@ -514,7 +554,7 @@ $(document).ready(function () {
         reader.readAsDataURL(event.target.files[0]);
     });
     // Pass row data to modal
-    $(document).on('click', '.editProdBtn', function() {
+    $(document).on('click', '.editProdBtn', function () {
         var row = $(this).closest('tr');
         var productID = row.find('td:eq(0)').text();
         var productIMG = row.find('td:eq(2) img').attr('src');
@@ -523,9 +563,9 @@ $(document).ready(function () {
         var productDesc = row.find('td:eq(5)').text();
         var productPrice = row.find('td:eq(6)').text();
         var productStock = row.find('td:eq(7)').text();
-    
+
         console.log(productIMG);
-    
+
         // Set new data in modal
         $('#editProdID').val(productID);
         $('#editProdName').val(productName);
@@ -533,8 +573,8 @@ $(document).ready(function () {
         $('#editProdPrice').val(productPrice);
         $('#editProdStock').val(productStock);
         $('#editProdIMGPreview').attr('src', productIMG).show();
-        
-        $('#editProdCategory option').each(function() {
+
+        $('#editProdCategory option').each(function () {
             if ($(this).text() == categoryName) {
                 $(this).attr('selected', 'selected');
             } else {
@@ -575,7 +615,7 @@ $(document).ready(function () {
             editProdPrice: "Please enter a valid price",
             editProdStock: "Please enter a valid stock quantity"
         },
-        submitHandler: function(form) {
+        submitHandler: function (form) {
             // Get form data
             var formData = $(form).serialize();
 
@@ -584,7 +624,7 @@ $(document).ready(function () {
                 type: 'POST',
                 url: 'serverSideScripts.php',
                 data: formData,
-                success: function(response) {
+                success: function (response) {
                     var res = JSON.parse(response);
                     if (res.success) {
                         Swal.fire({
@@ -606,7 +646,7 @@ $(document).ready(function () {
                         });
                     }
                 },
-                error: function() {
+                error: function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -619,7 +659,7 @@ $(document).ready(function () {
 
     // DELETE PRODUCT
     // Handle Delete button click
-    $(document).on('click', '.delProdBtn', function() {
+    $(document).on('click', '.delProdBtn', function () {
         var row = $(this).closest('tr');
         var userID = row.find('td:eq(0)').text();
 
