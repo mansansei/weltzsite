@@ -844,9 +844,65 @@ form .row .col input {
 #adminHeader {
     top: 0;
     position: sticky;
+    z-index: 2;
 }
 
 .table-container {
     height: 775px;
     max-height: 875px;
+    z-index: 1;
+}
+
+/* Star Rating Styles */
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 40px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #f5c518;
+}
+
+
+
+.aboutus {
+    border-bottom: 4px solid #fc0001;
+}
+
+.aboutusdesc {
+    text-align: justify;
+    letter-spacing: 1px;
+    font-size: 20px;
+}
+
+.aboutusdesc3 p {
+    font-size: 23px;
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1;
+}
+
+.aboutusimg {
+    min-height: 300px;
+    min-width: 400px;
+}
+
+.aboutusimg img {
+    height: 300px;
+    width: 400px;
+    object-fit: cover;
 }

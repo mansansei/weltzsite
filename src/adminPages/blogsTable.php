@@ -20,6 +20,9 @@ $blogsSQLResult = $conn->query($blogsSQL);
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
+    <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#addNewBlogModal">
+        <i class="fa-solid fa-scroll"></i> Post a New Blog
+    </button>
     <h1>Blogs Table</h1>
 </div>
 
