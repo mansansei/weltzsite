@@ -675,3 +675,112 @@ form .row .col input {
     max-height: 875px;
     z-index: 1;
 }
+
+/* Star Rating Styles */
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 10px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 40px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input:checked ~ label {
+    color: #f5c518;
+}
+
+.usettings {
+    display: flex; /* Enable flexbox layout */
+    gap: 20px; /* Add spacing between sidebar and content */
+    align-items: flex-start; /* Align items to the top */
+    height: 100vh; /* Full viewport height */
+}
+
+.usidebarwrapper {
+    min-width: 300px; /* Set a fixed width for the sidebar */
+    flex-shrink: 0; /* Prevent the sidebar from shrinking */
+    background-color: #f8f9fa; /* Optional: Add background color */
+    padding: 20px; /* Optional: Add padding */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    height: 100%; /* Full height of the parent */
+    overflow-y: auto; /* Add scroll if content overflows */
+}
+
+.ucontent {
+    flex-grow: 1; /* Allow the content area to take up remaining space */
+    background-color: #ffffff; /* Optional: Add background color */
+    padding: 20px; /* Optional: Add padding */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
+    height: 100%; /* Full height of the parent */
+    overflow-y: auto; /* Add scroll if content overflows */
+}
+
+.ubox1 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ubox1 img {
+    height: 100px;
+    width: 100px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.ubox1info {
+    max-width: 250px;
+    text-align: justify;
+    word-break: break-word;
+    overflow-wrap: break-word; 
+}
+
+.ubox1info h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.ubox1info p {
+    font-size: 14px;
+    color: inherit;
+    margin: 0;
+}
+
+.nav-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nav-button {
+    display: block;
+    padding: 10px 15px;
+    color: #343a40;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #e9ecef;
+}
+
+.logout-button {
+    margin-top: auto;
+}
+
+.usersettingsactive {
+    border-left: 5px solid #fc0001;
+}
