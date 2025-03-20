@@ -3,7 +3,11 @@
 * {
     padding: 0;
     margin: 0;
-    box-sizing: border-box;
+    font-family: "Oswald", sans-serif;
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
 }
 
 html {
@@ -13,18 +17,6 @@ html {
 body {
     background-color: white;
     color: #231f20;
-    font-family: 'Bebas Neue', sans-serif;
-}
-
-h1,
-h2,
-h3 {
-    font-family: 'Anton', sans-serif;
-    letter-spacing: 2px;
-}
-
-p {
-    font-family: 'Bebas Neue', sans-serif;
 }
 
 input[type=number]::-webkit-outer-spin-button,
@@ -51,7 +43,8 @@ input[type=number] {
 
 /* Quantity counter */
 .quantity-counter .input-group {
-    max-width: 200px; /* Adjust the width as needed */
+    max-width: 200px;
+    /* Adjust the width as needed */
 }
 
 /* Custom Scrollbar */
@@ -465,7 +458,8 @@ form .row .col input {
 
 /* Quantity counter */
 .quantity-counter .input-group {
-    max-width: 200px; /* Adjust the width as needed */
+    max-width: 200px;
+    /* Adjust the width as needed */
 }
 
 
@@ -695,36 +689,54 @@ form .row .col input {
 }
 
 .star-rating label:hover,
-.star-rating label:hover ~ label,
-.star-rating input:checked ~ label {
+.star-rating label:hover~label,
+.star-rating input:checked~label {
     color: #f5c518;
 }
 
 .usettings {
-    display: flex; /* Enable flexbox layout */
-    gap: 20px; /* Add spacing between sidebar and content */
-    align-items: flex-start; /* Align items to the top */
-    height: 100vh; /* Full viewport height */
+    display: flex;
+    /* Enable flexbox layout */
+    gap: 20px;
+    /* Add spacing between sidebar and content */
+    align-items: flex-start;
+    /* Align items to the top */
+    height: 100vh;
+    /* Full viewport height */
 }
 
 .usidebarwrapper {
-    min-width: 300px; /* Set a fixed width for the sidebar */
-    flex-shrink: 0; /* Prevent the sidebar from shrinking */
-    background-color: #f8f9fa; /* Optional: Add background color */
-    padding: 20px; /* Optional: Add padding */
-    border-radius: 8px; /* Optional: Add rounded corners */
-    height: 100%; /* Full height of the parent */
-    overflow-y: auto; /* Add scroll if content overflows */
+    min-width: 300px;
+    /* Set a fixed width for the sidebar */
+    flex-shrink: 0;
+    /* Prevent the sidebar from shrinking */
+    background-color: #f8f9fa;
+    /* Optional: Add background color */
+    padding: 20px;
+    /* Optional: Add padding */
+    border-radius: 8px;
+    /* Optional: Add rounded corners */
+    height: 100%;
+    /* Full height of the parent */
+    overflow-y: auto;
+    /* Add scroll if content overflows */
 }
 
 .ucontent {
-    flex-grow: 1; /* Allow the content area to take up remaining space */
-    background-color: #ffffff; /* Optional: Add background color */
-    padding: 20px; /* Optional: Add padding */
-    border-radius: 8px; /* Optional: Add rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
-    height: 100%; /* Full height of the parent */
-    overflow-y: auto; /* Add scroll if content overflows */
+    flex-grow: 1;
+    /* Allow the content area to take up remaining space */
+    background-color: #ffffff;
+    /* Optional: Add background color */
+    padding: 20px;
+    /* Optional: Add padding */
+    border-radius: 8px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Optional: Add shadow */
+    height: 100%;
+    /* Full height of the parent */
+    overflow-y: auto;
+    /* Add scroll if content overflows */
 }
 
 .ubox1 {
@@ -744,7 +756,7 @@ form .row .col input {
     max-width: 250px;
     text-align: justify;
     word-break: break-word;
-    overflow-wrap: break-word; 
+    overflow-wrap: break-word;
 }
 
 .ubox1info h1 {
