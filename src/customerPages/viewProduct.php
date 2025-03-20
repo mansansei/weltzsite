@@ -78,6 +78,50 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     echo "Invalid product ID.";
 }
 ?>
+
+<section class="reviewsec container py-5">
+    <div class="reviewsectitle text-center mb-5">
+        <h1>Reviews</h1>
+    </div>
+
+    <div class="reviewswrapper bg-light p-4 rounded shadow-sm mb-5 text-center">
+        <p>No reviews yet...</p>
+    </div>
+
+    <div class="addreview p-4 rounded shadow-sm">
+        <h2 class="font-weight-bold mb-3">Add a review</h2>
+        <p class="note mb-3">(your email address will not be published)</p>
+        <form>
+            <div class="rating-wrapper mb-3">
+                <label class="d-block mb-2">Your rating</label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="rating" value="5" />
+                    <label for="star5" title="5 stars">&#9733;</label>
+
+                    <input type="radio" id="star4" name="rating" value="4" />
+                    <label for="star4" title="4 stars">&#9733;</label>
+
+                    <input type="radio" id="star3" name="rating" value="3" />
+                    <label for="star3" title="3 stars">&#9733;</label>
+
+                    <input type="radio" id="star2" name="rating" value="2" />
+                    <label for="star2" title="2 stars">&#9733;</label>
+
+                    <input type="radio" id="star1" name="rating" value="1" />
+                    <label for="star1" title="1 star">&#9733;</label>
+                </div>
+            </div>
+
+            <div class="reviewdesc">
+                <label for="review" class="review-label d-block mb-2">Review</label>
+                <textarea id="review" class="review-textarea form-control mb-3" rows="4"></textarea>
+
+                <button type="submit" class="submit-btn btn btn-danger">Submit</button>
+            </div>
+        </form>
+    </div>
+</section>
+
 <!-- Order Details Modal -->
 <div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

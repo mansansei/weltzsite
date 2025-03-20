@@ -45,7 +45,7 @@ session_start();
             <div class="col-12 col-md-8">
                 <div class="links d-flex flex-wrap">
                     <a class="active" href="?page=homePage"><button>HOME</button></a>
-                    <a class="active2" href="?page=aboutUsPage"><button>ABOUT US</button></a>
+                    <a class="active2" href="?page=homePage#Aboutus"><button>ABOUT US</button></a>
                     <a class="active3" href="?page=productsPage"><button>PRODUCTS</button></a>
                     <a class="active4" href="?page=contactPage"><button>CONTACT</button></a>
                     <a class="active5" href="?page=blogsPage"><button>BLOGS</button></a>
@@ -92,7 +92,7 @@ session_start();
         // Include the corresponding page content
         switch ($page) {
             case 'aboutUsPage':
-                include 'customerPages/aboutUsPage.php';
+                include 'customerPages/homePage.php';
                 break;
             case 'productsPage':
                 include 'customerPages/productsPage.php';
