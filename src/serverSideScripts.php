@@ -162,7 +162,7 @@ function addToCart()
     $productID = $_POST['productID'];
     $quantity = $_POST['quantity'];
     $totalPrice = $_POST['totalPrice'];
-    $status = 4; // Active
+    $status = 5; // Active
 
     // Validation
     if (empty($productID) || !is_numeric($productID)) {
@@ -329,12 +329,28 @@ function placeOrder()
     // Open db connection
     $conn = dbConnect();
 
-    // Step 1: Retrieve data from the checkout page
+    // Initialize variables
     $cartItems = $_POST['cartItems'];
     $totalAmount = $_POST['totalAmount'];
     $mopID = $_POST['mopID'];
 
-    // Get the cartID of the currently logged in user
+    // Validation
+    if (empty($cartItems)) {
+      echo json_encode(['success' => false, 'message' => 'No items in the cart.']);
+      exit;
+    }
+
+    if (empty($totalAmount) || !is_numeric($totalAmount) || $totalAmount <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Invalid total amount.']);
+      exit;
+    }
+
+    if (empty($mopID) || !is_numeric($mopID)) {
+      echo json_encode(['success' => false, 'message' => 'Invalid payment method.']);
+      exit;
+    }
+
+    // Step 2: Retrieve the cartID of the currently logged in user
     $selectCartSQL = "SELECT cartID FROM carts_tbl WHERE userID = '$userID' LIMIT 1";
     $cartResult = $conn->query($selectCartSQL);
 
@@ -346,62 +362,98 @@ function placeOrder()
       exit;
     }
 
-    // Validation
-    if (empty($cartItems) || !is_array($cartItems)) {
-      echo json_encode(['success' => false, 'message' => 'No items for checkout.']);
-      exit;
-    }
+    // Step 3: Create a new order in the orders_tbl
+    $referenceNum = generateRefNum();
+    $statusID = 1; // Assuming 1 is the status for a new order
 
-    if (empty($totalAmount) || !is_numeric($totalAmount) || $totalAmount <= 0) {
-      echo json_encode(['success' => false, 'message' => 'Invalid total amount.']);
-      exit;
-    }
+    $insertOrderSQL = "INSERT INTO orders_tbl (referenceNum, userID, totalAmount, mopID, statusID) VALUES ('$referenceNum', '$userID', '$totalAmount', '$mopID', '$statusID')";
 
-    if (empty($mopID) || !is_numeric($mopID)) {
-      echo json_encode(['success' => false, 'message' => 'Invalid mode of payment.']);
-      exit;
-    }
-
-    // Step 2: Create a new order in the orders_tbl
-    $refNumber = generateRefNum();
-    $statusID = 1; // Processing
-    $orderSQL = "INSERT INTO orders_tbl (referenceNum, userID, totalAmount, mopID, statusID) VALUES ('$refNumber', '$userID', '$totalAmount', '$mopID', '$statusID')";
-
-    if ($conn->query($orderSQL) === TRUE) {
+    if ($conn->query($insertOrderSQL) === TRUE) {
       $orderID = $conn->insert_id;
 
-      // Step 3: Insert each cart item into the order_items_tbl
+      // Audit log for Step 3
+      createAuditLog($conn, $userID, 'INSERT', 'orders_tbl', $orderID, NULL, json_encode(['referenceNum' => $referenceNum, 'userID' => $userID, 'totalAmount' => $totalAmount, 'mopID' => $mopID, 'statusID' => $statusID]));
+
+      // Step 4: Iteratively insert each cart item into the order_items_tbl
       foreach ($cartItems as $item) {
         $productID = $item['productID'];
         $quantity = $item['quantity'];
-        $total = floatval($item['total']); // Ensure total is a float
+        $total = floatval($item['total']);
 
-        $orderItemSQL = "INSERT INTO order_items_tbl (orderID, productID, orderItemQuantity, orderItemTotal) VALUES ('$orderID', '$productID', '$quantity', '$total')";
+        $insertOrderItemSQL = "INSERT INTO order_items_tbl (orderID, productID, orderItemQuantity, orderItemTotal) VALUES ('$orderID', '$productID', '$quantity', '$total')";
 
-        if ($conn->query($orderItemSQL) === TRUE) {
-          // Step 4: Subtract the inStock in products_tbl
-          $updateStockSQL = "UPDATE products_tbl SET inStock = inStock - '$quantity', prodSold = prodSold + '$quantity' WHERE productID = '$productID'";
-          $conn->query($updateStockSQL);
+        if ($conn->query($insertOrderItemSQL) === TRUE) {
+          $orderItemID = $conn->insert_id;
+
+          // Audit log for Step 4
+          createAuditLog($conn, $userID, 'INSERT', 'order_items_tbl', $orderItemID, NULL, json_encode(['orderID' => $orderID, 'productID' => $productID, 'orderItemQuantity' => $quantity, 'orderItemTotal' => $total]));
         } else {
-          echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+          echo json_encode(['success' => false, 'message' => 'Error inserting order items: ' . $conn->error]);
+          exit;
+        }
+
+        // Step 5: Subtract the inStock in products_tbl based on the quantity of the product that was ordered
+        // Retrieve old values before updating
+        $selectProductSQL = "SELECT inStock, prodSold FROM products_tbl WHERE productID = '$productID'";
+        $productResult = $conn->query($selectProductSQL);
+        $productRow = $productResult->fetch_assoc();
+        $oldInStock = $productRow['inStock'];
+        $oldProdSold = $productRow['prodSold'];
+
+        $updateProductStockSQL = "UPDATE products_tbl SET inStock = inStock - '$quantity', prodSold = prodSold + '$quantity' WHERE productID = '$productID'";
+
+        if ($conn->query($updateProductStockSQL) === TRUE) {
+          // Audit log for Step 5
+          createAuditLog($conn, $userID, 'UPDATE', 'products_tbl', $productID, json_encode(['inStock' => $oldInStock, 'prodSold' => $oldProdSold]), json_encode(['inStock' => $oldInStock - $quantity, 'prodSold' => $oldProdSold + $quantity]));
+        } else {
+          echo json_encode(['success' => false, 'message' => 'Error updating product stock: ' . $conn->error]);
           exit;
         }
       }
 
-      // Step 5: Clear the items from the cart_items_tbl
-      $clearCartSQL = "DELETE FROM cart_items_tbl WHERE cartID = '$cartID'";
-      if ($conn->query($clearCartSQL) === TRUE) {
-        echo json_encode(['success' => true, 'message' => 'Order placed successfully.']);
-      } else {
-        echo json_encode(['success' => false, 'message' => 'Error clearing cart items: ' . $conn->error]);
+      // Step 6: Update the statusID of all ordered items in cart_items_tbl to 6 (Removed)
+      foreach ($cartItems as $item) {
+        $productID = $item['productID'];
+
+        // Update the statusID for each item in the cart
+        $updateCartItemsSQL = "UPDATE cart_items_tbl SET statusID = 6 WHERE cartID = '$cartID' AND productID = '$productID'";
+
+        if ($conn->query($updateCartItemsSQL) === FALSE) {
+          echo json_encode(['success' => false, 'message' => 'Error updating cart items status: ' . $conn->error]);
+          exit;
+        }
       }
+
+      // Step 7: Clear the items with removed status from the cart_items_tbl
+      // Retrieve old values before deleting
+      $selectCartItemsSQL = "SELECT * FROM cart_items_tbl WHERE cartID = '$cartID' AND statusID = 6";
+      $cartItemsResult = $conn->query($selectCartItemsSQL);
+      $cartItemsData = [];
+      while ($row = $cartItemsResult->fetch_assoc()) {
+        $cartItemsData[] = $row;
+      }
+
+      $deleteCartItemsSQL = "DELETE FROM cart_items_tbl WHERE cartID = '$cartID' AND statusID = 6";
+
+      if ($conn->query($deleteCartItemsSQL) === TRUE) {
+        // Audit log for Step 7
+        foreach ($cartItemsData as $cartItem) {
+          createAuditLog($conn, $userID, 'DELETE', 'cart_items_tbl', $cartItem['cartItemID'], json_encode($cartItem), NULL);
+        }
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error deleting cart items: ' . $conn->error]);
+        exit;
+      }
+
+      echo json_encode(['success' => true, 'message' => 'Order placed successfully.']);
     } else {
-      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+      echo json_encode(['success' => false, 'message' => 'Error creating order: ' . $conn->error]);
     }
 
     $conn->close();
   }
 }
+
 
 // Function for registering a new admin
 function regAdmin()

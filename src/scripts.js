@@ -261,7 +261,7 @@ $(document).ready(function () {
         $('.itemsToOrder').each(function () {
             let productID = $(this).data('productid');
             let quantity = $(this).find('.quantity').text().split(': ')[1];
-            let total = $(this).find('.price').text().split(' ')[1].replace(/[^0-9.-]+/g, "");
+            let total = $(this).find('.price').text().replace(/[^0-9.-]+/g, "")
 
             cartItems.push({
                 productID: productID,
@@ -270,6 +270,8 @@ $(document).ready(function () {
             });
         });
         let paymentMethod = $('input[name="paymentMethod"]:checked').val();
+
+        console.log(cartItems);
 
         if (!paymentMethod) {
             Swal.fire({
@@ -298,6 +300,11 @@ $(document).ready(function () {
                             icon: 'success',
                             title: 'Order placed!',
                             text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            // Redirect after the SweetAlert is closed
+                            window.location.href = 'Home.php?page=cartPage';
                         });
                     } else {
                         Swal.fire({
