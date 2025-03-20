@@ -9,12 +9,13 @@ function dbConnect()
 }
 
 // Reference number generator
-function generateRefNum($length = 10) {
+function generateRefNum($length = 11)
+{
   $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   $charactersLength = strlen($characters);
   $referenceNumber = '';
   for ($i = 0; $i < $length; $i++) {
-      $referenceNumber .= $characters[rand(0, $charactersLength - 1)];
+    $referenceNumber .= $characters[rand(0, $charactersLength - 1)];
   }
   return $referenceNumber;
 }
@@ -29,6 +30,18 @@ if (isset($_POST['action'])) {
   }
 } else {
   print_r("No action specified.");
+}
+
+// Check login status function
+function checkLoginStatus()
+{
+  $response = array('loggedIn' => false);
+
+  if (isset($_SESSION['userID'])) {
+    $response['loggedIn'] = true;
+  }
+
+  echo json_encode($response);
 }
 
 // Create audit logs function
@@ -222,6 +235,49 @@ function addToCart()
   }
 }
 
+// Update Cart Item Quantity function
+function updateCartItemQuantity()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    // Open db connection
+    $conn = dbConnect();
+
+    // Initialize variables
+    $cartItemID = $_POST['cartItemID'];
+    $newQuantity = $_POST['newQuantity'];
+    $newTotalPrice = $_POST['newTotalPrice'];
+
+    // Validation
+    if (empty($cartItemID) || !is_numeric($cartItemID)) {
+      echo json_encode(['success' => false, 'message' => 'Invalid cart item ID.']);
+      exit;
+    }
+
+    if (empty($newQuantity) || !is_numeric($newQuantity) || $newQuantity <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Please enter a valid quantity.']);
+      exit;
+    }
+
+    if (empty($newTotalPrice) || !is_numeric($newTotalPrice) || $newTotalPrice <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Invalid total price.']);
+      exit;
+    }
+
+    // Update the cart item quantity and total price
+    $updatedAt = date('Y-m-d H:i:s');
+    $updateCartItemSQL = "UPDATE cart_items_tbl SET cartItemQuantity = '$newQuantity', cartItemTotal = '$newTotalPrice', updatedAt = '$updatedAt' WHERE cartItemID = '$cartItemID'";
+
+    if ($conn->query($updateCartItemSQL) === TRUE) {
+      echo json_encode(['success' => true, 'message' => 'Cart item quantity updated successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $conn->close();
+  }
+}
+
 // Delete cart item function
 function deleteCartItem()
 {
@@ -260,6 +316,90 @@ function deleteCartItem()
     }
 
     $stmt->close();
+  }
+}
+
+// Place Order function
+function placeOrder()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    // Open db connection
+    $conn = dbConnect();
+
+    // Step 1: Retrieve data from the checkout page
+    $cartItems = $_POST['cartItems'];
+    $totalAmount = $_POST['totalAmount'];
+    $mopID = $_POST['mopID'];
+
+    // Get the cartID of the currently logged in user
+    $selectCartSQL = "SELECT cartID FROM carts_tbl WHERE userID = '$userID' LIMIT 1";
+    $cartResult = $conn->query($selectCartSQL);
+
+    if ($cartResult->num_rows > 0) {
+      $cartRow = $cartResult->fetch_assoc();
+      $cartID = $cartRow['cartID'];
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Cart not found for the current user.']);
+      exit;
+    }
+
+    // Validation
+    if (empty($cartItems) || !is_array($cartItems)) {
+      echo json_encode(['success' => false, 'message' => 'No items for checkout.']);
+      exit;
+    }
+
+    if (empty($totalAmount) || !is_numeric($totalAmount) || $totalAmount <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Invalid total amount.']);
+      exit;
+    }
+
+    if (empty($mopID) || !is_numeric($mopID)) {
+      echo json_encode(['success' => false, 'message' => 'Invalid mode of payment.']);
+      exit;
+    }
+
+    // Step 2: Create a new order in the orders_tbl
+    $refNumber = generateRefNum();
+    $statusID = 1; // Processing
+    $orderSQL = "INSERT INTO orders_tbl (referenceNum, userID, totalAmount, mopID, statusID) VALUES ('$refNumber', '$userID', '$totalAmount', '$mopID', '$statusID')";
+
+    if ($conn->query($orderSQL) === TRUE) {
+      $orderID = $conn->insert_id;
+
+      // Step 3: Insert each cart item into the order_items_tbl
+      foreach ($cartItems as $item) {
+        $productID = $item['productID'];
+        $quantity = $item['quantity'];
+        $total = floatval($item['total']); // Ensure total is a float
+
+        $orderItemSQL = "INSERT INTO order_items_tbl (orderID, productID, orderItemQuantity, orderItemTotal) VALUES ('$orderID', '$productID', '$quantity', '$total')";
+
+        if ($conn->query($orderItemSQL) === TRUE) {
+          // Step 4: Subtract the inStock in products_tbl
+          $updateStockSQL = "UPDATE products_tbl SET inStock = inStock - '$quantity', prodSold = prodSold + '$quantity' WHERE productID = '$productID'";
+          $conn->query($updateStockSQL);
+        } else {
+          echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+          exit;
+        }
+      }
+
+      // Step 5: Clear the items from the cart_items_tbl
+      $clearCartSQL = "DELETE FROM cart_items_tbl WHERE cartID = '$cartID'";
+      if ($conn->query($clearCartSQL) === TRUE) {
+        echo json_encode(['success' => true, 'message' => 'Order placed successfully.']);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error clearing cart items: ' . $conn->error]);
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $conn->close();
   }
 }
 

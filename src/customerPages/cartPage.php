@@ -116,13 +116,13 @@
         <?php
                     }
                 } else {
-                    echo '<p>No items in your cart.</p>';
+                    echo '<p class="text-center fs-1">No items in your cart.</p>';
                 }
             } else {
-                echo '<p>No cart found for the user.</p>';
+                echo '<p class="text-center fs-1">No cart found for the user.</p>';
             }
         } else {
-            echo '<p>You need to log in to view your cart.</p>';
+            echo '<p class="text-center fs-1">You need to log in to view your cart.</p>';
         }
         ?>
     </div>

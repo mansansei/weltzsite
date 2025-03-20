@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    // CUSTOM VALIDATION FUNCTIONS
+    // CUSTOM VALIDATIONS==================================================
     // Validation for no special char and num
     $.validator.addMethod("noSpecialChars", function (value, element) {
         return this.optional(element) || /^[a-zA-Z\s]+$/.test(value);
@@ -12,7 +12,7 @@ $(document).ready(function () {
     }, "must have an upper and lowercase letter, a number, and a special character.");
 
 
-    // VIEW PRODUCTS
+    // VIEW PRODUCTS==================================================
     // quantity counter
     $('#decreaseQuantity').click(function () {
         var quantity = parseInt($('#quantityInput').val());
@@ -24,6 +24,7 @@ $(document).ready(function () {
         var quantity = parseInt($('#quantityInput').val());
         $('#quantityInput').val(quantity + 1);
     });
+
     // add to cart
     $('#addToCartBtn').click(function () {
         var productID = $(this).data('product-id');
@@ -31,56 +32,82 @@ $(document).ready(function () {
         var price = parseFloat($('#productPrice').text());
         var totalPrice = quantity * price;
 
+        // Check if user is logged in
         $.ajax({
             url: 'serverSideScripts.php',
             method: 'POST',
             data: {
-                action: 'addToCart',
-                productID: productID,
-                quantity: quantity,
-                totalPrice: totalPrice
+                action: 'checkLoginStatus'
             },
             success: function (response) {
                 var result = JSON.parse(response);
-                if (result.success) {
-                    Swal.fire({
-                        title: 'Added to Cart',
-                        text: 'The item has been added to your cart.',
-                        showConfirmButton: false,
-                        backdrop: false,
-                        position: 'top',
-                        showClass: {
-                            popup: `
-                              animate__animated
-                              animate__fadeInDown
-                              animate__faster
-                            `
+                if (result.loggedIn) {
+                    // User is logged in, proceed to add to cart
+                    $.ajax({
+                        url: 'serverSideScripts.php',
+                        method: 'POST',
+                        data: {
+                            action: 'addToCart',
+                            productID: productID,
+                            quantity: quantity,
+                            totalPrice: totalPrice
                         },
-                        hideClass: {
-                            popup: `
-                              animate__animated
-                              animate__fadeOutUp
-                              animate__faster
-                            `
-                        },
-                        timer: 1500
+                        success: function (response) {
+                            var result = JSON.parse(response);
+                            if (result.success) {
+                                Swal.fire({
+                                    title: 'Added to Cart',
+                                    text: 'The item has been added to your cart.',
+                                    showConfirmButton: false,
+                                    backdrop: false,
+                                    position: 'top',
+                                    showClass: {
+                                        popup: `
+                                          animate__animated
+                                          animate__fadeInDown
+                                          animate__faster
+                                        `
+                                    },
+                                    hideClass: {
+                                        popup: `
+                                          animate__animated
+                                          animate__fadeOutUp
+                                          animate__faster
+                                        `
+                                    },
+                                    timer: 1500
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: result.message,
+                                    showConfirmButton: false,
+                                    backdrop: false,
+                                    position: 'top',
+                                    timer: 1500
+                                });
+                            }
+                        }
                     });
                 } else {
+                    // User is not logged in, show alert and redirect to login
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: result.message,
+                        title: 'Please login to add item to cart',
+                        icon: 'warning',
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
                         timer: 1500
+                    }).then(() => {
+                        window.location.href = 'login.php';
                     });
                 }
             }
         });
     });
 
-    // CART
+    // CART==================================================
     // cart check all
     $('#checkAll').click(function () {
         $('.item-check').prop('checked', this.checked);
@@ -102,8 +129,8 @@ $(document).ready(function () {
         $quantityInput.val(quantity + 1);
         updateTotal($(this).closest('.cart-item'));
         updateFooterTotal();
+        updateQuantityInDatabase($(this).closest('.cart-item'), quantity + 1);
     });
-
     $('.decreaseQuantity').click(function () {
         var $quantityInput = $(this).siblings('.quantityInput');
         var quantity = parseInt($quantityInput.val());
@@ -111,8 +138,33 @@ $(document).ready(function () {
             $quantityInput.val(quantity - 1);
             updateTotal($(this).closest('.cart-item'));
             updateFooterTotal();
+            updateQuantityInDatabase($(this).closest('.cart-item'), quantity - 1);
         }
     });
+
+    // Function to update quantity in the database
+    function updateQuantityInDatabase($cartItem, newQuantity) {
+        var cartItemID = $cartItem.data('item-id');
+        var unitPrice = parseFloat($cartItem.data('unit-price'));
+        var newTotalPrice = unitPrice * newQuantity;
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            method: 'POST',
+            data: {
+                action: 'updateCartItemQuantity',
+                cartItemID: cartItemID,
+                newQuantity: newQuantity,
+                newTotalPrice: newTotalPrice,
+            },
+            success: function (response) {
+                var result = JSON.parse(response);
+                if (!result.success) {
+                    alert(result.message);
+                }
+            }
+        });
+    }
 
     // update total of individual cart item
     function updateTotal($cartItem) {
@@ -166,7 +218,7 @@ $(document).ready(function () {
                 // Handle success response
                 if (res.success) {
                     // Remove the cart-item div from the DOM
-                    cartItemDiv.remove();
+                    location.reload();
                 } else {
                     // Handle failure response
                     console.log('Failed to remove item from cart: ' + res.message);
@@ -179,7 +231,100 @@ $(document).ready(function () {
         });
     });
 
-    // DATA TABLES
+    // Checkout button click event
+    $('#checkoutButton').click(function () {
+        var selectedItems = [];
+        $('.item-check:checked').each(function () {
+            var cartItemID = $(this).closest('.cart-item').data('item-id');
+            selectedItems.push(cartItemID);
+        });
+
+        if (selectedItems.length > 0) {
+            // Redirect to the checkout page with selected cartItemIDs
+            window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                text: 'No items selected for checkout',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+
+    // CHECKOUT PAGE==================================================
+    $('#confirmCheckout').on('click', function () {
+        let totalAmount = $('.confirmCheckout').data('totalamount');
+        let sanitizedAmount = totalAmount.replace(/,/g, ''); // Remove commas
+        let totalAmountFloat = parseFloat(sanitizedAmount);
+        let cartItems = [];
+        $('.itemsToOrder').each(function () {
+            let productID = $(this).data('productid');
+            let quantity = $(this).find('.quantity').text().split(': ')[1];
+            let total = $(this).find('.price').text().split(' ')[1].replace(/[^0-9.-]+/g, "");
+
+            cartItems.push({
+                productID: productID,
+                quantity: parseInt(quantity),
+                total: parseFloat(total)
+            });
+        });
+        let paymentMethod = $('input[name="paymentMethod"]:checked').val();
+
+        if (!paymentMethod) {
+            Swal.fire({
+                icon: 'warning',
+                text: 'Please select a payment method to proceed with the checkout.',
+                showConfirmButton: false,
+                timer: 1500
+            });
+            return;
+        }
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            method: 'POST',
+            data: {
+                action: 'placeOrder',
+                cartItems: cartItems,
+                totalAmount: totalAmountFloat.toFixed(2),
+                mopID: paymentMethod
+            },
+            success: function (response) {
+                try {
+                    var res = JSON.parse(response);
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Order placed!',
+                            text: res.message,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: res.message
+                        });
+                    }
+                } catch (e) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while placing the order. Please try again.'
+                    });
+                    console.log('Response:', response);
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'An error occurred while placing the order. Please try again.'
+                });
+            }
+        });
+    });
+
+    // DATA TABLES==================================================
     // INITIALIZE DATA TABLES
     $('#myTable').DataTable({
         responsive: true,
@@ -191,7 +336,7 @@ $(document).ready(function () {
         ]
     });
 
-    // LOGIN
+    // LOGIN==================================================
     // LOGIN FORM DATA HANDLING
     $('#loginForm').validate({
         rules: {
@@ -252,7 +397,7 @@ $(document).ready(function () {
         }
     });
 
-    // LOGOUT
+    // LOGOUT==================================================
     // LOGOUT DATA HANDLING
     $('#logoutUserForm').submit(function (e) {
         e.preventDefault();
@@ -272,7 +417,7 @@ $(document).ready(function () {
         });
     });
 
-    // ADMIN REGISTRATION
+    // ADMIN REGISTRATION==================================================
     // ADMIN REGISTRATION FORM DATA HANDLING
     $('#adminSignupForm').validate({
         rules: {
@@ -378,7 +523,7 @@ $(document).ready(function () {
         }
     });
 
-    // UPDATE USER
+    // UPDATE USER==================================================
     // Handle Edit button click
     $(document).on('click', '.editUserBtn', function () {
         var row = $(this).closest('tr');
@@ -492,7 +637,7 @@ $(document).ready(function () {
         }
     });
 
-    // DELETE USER
+    // DELETE USER==================================================
     // Handle Delete button click
     $(document).on('click', '.delUserBtn', function () {
         var row = $(this).closest('tr');
@@ -500,7 +645,6 @@ $(document).ready(function () {
         $('#deleteUserID').val(userID);
         $('#deleteUserModal').modal('show');
     });
-
     // Handle Delete confirmation
     $('#deleteUserForm').submit(function (e) {
         e.preventDefault();
@@ -546,7 +690,7 @@ $(document).ready(function () {
         });
     });
 
-    // ADD PRODUCT
+    // ADD PRODUCT==================================================
     // Add product image preview
     $('input[name="prodIMG"]').change(function (event) {
         var reader = new FileReader();
@@ -637,7 +781,7 @@ $(document).ready(function () {
         }
     });
 
-    // EDIT PRODUCT
+    // EDIT PRODUCT==================================================
     // Edit product image preview
     $('input[name="editProdIMG"]').change(function (event) {
         var reader = new FileReader();
@@ -755,7 +899,7 @@ $(document).ready(function () {
         }
     });
 
-    // DELETE PRODUCT
+    // DELETE PRODUCT==================================================
     // Handle Delete button click
     $(document).on('click', '.delProdBtn', function () {
         var row = $(this).closest('tr');
@@ -764,7 +908,6 @@ $(document).ready(function () {
         $('#deleteProdID').val(userID);
         $('#deleteProdModal').modal('show');
     });
-
     // Handle delete confirmation
     $('#deleteProdForm').submit(function (e) {
         e.preventDefault();
