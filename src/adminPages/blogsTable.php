@@ -48,15 +48,15 @@ $blogsSQLResult = $conn->query($blogsSQL);
                     <tr>
                         <td><?php echo $row['blogID'] ?></td>
                         <td><?php echo $row['userFullName'] ?></td>
-                        <td><?php echo $row['blogIMG'] ?></td>
+                        <td><img src="<?php echo $row['blogIMG'] ?>" alt="<?php echo $row['blogTitle'] ?>" style="width:100px"></td>
                         <td><?php echo $row['blogTitle'] ?></td>
                         <td><?php echo $row['blogDesc'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <button class='btn btn-warning'>Edit</button>
-                                <button class='btn btn-danger'>Delete</button>
+                                <button class='btn btn-warning' data-bs-toggle="modal" data-bs-target="#editBlogModal">Edit</button>
+                                <button class='btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteBlogModal">Delete</button>
                             </div>
                         </td>
                     </tr>

@@ -11,19 +11,9 @@ $(document).ready(function () {
         return this.optional(element) || /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(value);
     }, "must have an upper and lowercase letter, a number, and a special character.");
 
-    // CART CHECK ALL
-    $('#checkAll').click(function () {
-        $('.item-check').prop('checked', this.checked);
-    });
-    $('.item-check').click(function () {
-        if ($('.item-check:checked').length == $('.item-check').length) {
-            $('#checkAll').prop('checked', true);
-        } else {
-            $('#checkAll').prop('checked', false);
-        }
-    });
 
-    // QUANTITY COUNTER
+    // VIEW PRODUCTS
+    // quantity counter
     $('#decreaseQuantity').click(function () {
         var quantity = parseInt($('#quantityInput').val());
         if (quantity > 1) {
@@ -34,8 +24,7 @@ $(document).ready(function () {
         var quantity = parseInt($('#quantityInput').val());
         $('#quantityInput').val(quantity + 1);
     });
-
-    // ADD TO CART
+    // add to cart
     $('#addToCartBtn').click(function () {
         var productID = $(this).data('product-id');
         var quantity = $('#quantityInput').val();
@@ -55,12 +44,25 @@ $(document).ready(function () {
                 var result = JSON.parse(response);
                 if (result.success) {
                     Swal.fire({
-                        icon: 'success',
                         title: 'Added to Cart',
                         text: 'The item has been added to your cart.',
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
+                        showClass: {
+                            popup: `
+                              animate__animated
+                              animate__fadeInDown
+                              animate__faster
+                            `
+                        },
+                        hideClass: {
+                            popup: `
+                              animate__animated
+                              animate__fadeOutUp
+                              animate__faster
+                            `
+                        },
                         timer: 1500
                     });
                 } else {
@@ -78,22 +80,103 @@ $(document).ready(function () {
         });
     });
 
-    // VIEW PRODUCT MODAL
-    // Pass data of product details to order details
-    $('[data-bs-target="#placeOrderModal"]').on('click', function () {
-        var productIMG = $('#productIMG').attr('src');
-        var productName = $('#productName').text();
-        var productCategory = $('#productCategory').text();
-        var productPrice = $('#productPrice').text();
-        var quantity = $('#quantityInput').val();
-        var totalPrice = (parseFloat(productPrice) * parseInt(quantity)).toFixed(2);
+    // CART
+    // cart check all
+    $('#checkAll').click(function () {
+        $('.item-check').prop('checked', this.checked);
+        updateFooterTotal();
+    });
+    $('.item-check').click(function () {
+        if ($('.item-check:checked').length == $('.item-check').length) {
+            $('#checkAll').prop('checked', true);
+        } else {
+            $('#checkAll').prop('checked', false);
+        }
+        updateFooterTotal();
+    });
 
-        $('#modalProductImage').attr('src', productIMG).show();
-        $('#modalProductName').text(productName);
-        $('#modalProductCategory').text(productCategory);
-        $('#modalProductPrice').text(productPrice);
-        $('#modalQuantity').text(quantity);
-        $('#modalTotalPrice').text(totalPrice);
+    // quantity counter
+    $('.increaseQuantity').click(function () {
+        var $quantityInput = $(this).siblings('.quantityInput');
+        var quantity = parseInt($quantityInput.val());
+        $quantityInput.val(quantity + 1);
+        updateTotal($(this).closest('.cart-item'));
+        updateFooterTotal();
+    });
+
+    $('.decreaseQuantity').click(function () {
+        var $quantityInput = $(this).siblings('.quantityInput');
+        var quantity = parseInt($quantityInput.val());
+        if (quantity > 1) {
+            $quantityInput.val(quantity - 1);
+            updateTotal($(this).closest('.cart-item'));
+            updateFooterTotal();
+        }
+    });
+
+    // update total of individual cart item
+    function updateTotal($cartItem) {
+        var unitPrice = parseFloat($cartItem.data('unit-price'));
+        var quantity = parseInt($cartItem.find('.quantityInput').val());
+        var totalPrice = unitPrice * quantity;
+        $cartItem.find('.total-price').text(totalPrice.toFixed(2));
+    };
+
+    // update total in footer
+    function updateFooterTotal() {
+        var totalItems = 0;
+        var totalPrice = 0.0;
+
+        $('.item-check:checked').each(function () {
+            totalItems++;
+            var $cartItem = $(this).closest('.cart-item');
+            var itemTotalPrice = parseFloat($cartItem.find('.total-price').text().replace(/,/g, ''));
+
+            if (!isNaN(itemTotalPrice)) {
+                totalPrice += itemTotalPrice;
+            }
+        });
+
+        $('#totalText').text('Total (' + totalItems + '): PHP ' + totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    };
+
+    // Remove cart item
+    // Event listener for the remove button
+    $('.cart-item').on('click', '#delCartItemBtn', function () {
+        // Get the parent cart-item div
+        var cartItemDiv = $(this).closest('.cart-item');
+
+        // Extract the cartItemID
+        var cartItemID = cartItemDiv.data('item-id');
+
+        console.log(cartItemID);
+
+        // Send the cartItemID to the PHP function via AJAX
+        $.ajax({
+            url: 'serverSideScripts.php',
+            type: 'POST',
+            data: {
+                action: 'deleteCartItem',
+                cartItemID: cartItemID
+            },
+            success: function (response) {
+                // Parse the JSON response
+                var res = JSON.parse(response);
+
+                // Handle success response
+                if (res.success) {
+                    // Remove the cart-item div from the DOM
+                    cartItemDiv.remove();
+                } else {
+                    // Handle failure response
+                    console.log('Failed to remove item from cart: ' + res.message);
+                }
+            },
+            error: function () {
+                // Handle AJAX error
+                console.log('An error occurred while trying to remove the item from cart.');
+            }
+        });
     });
 
     // DATA TABLES

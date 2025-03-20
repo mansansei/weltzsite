@@ -8,6 +8,17 @@ function dbConnect()
   return (mysqli_connect("localhost", "root", "", "weltz_db"));
 }
 
+// Reference number generator
+function generateRefNum($length = 10) {
+  $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  $charactersLength = strlen($characters);
+  $referenceNumber = '';
+  for ($i = 0; $i < $length; $i++) {
+      $referenceNumber .= $characters[rand(0, $charactersLength - 1)];
+  }
+  return $referenceNumber;
+}
+
 // Determines which function to execute depending on 'action' parameter
 if (isset($_POST['action'])) {
   $action = $_POST['action'];
@@ -138,6 +149,7 @@ function addToCart()
     $productID = $_POST['productID'];
     $quantity = $_POST['quantity'];
     $totalPrice = $_POST['totalPrice'];
+    $status = 4; // Active
 
     // Validation
     if (empty($productID) || !is_numeric($productID)) {
@@ -176,19 +188,30 @@ function addToCart()
       $cartItemRow = $cartItemResult->fetch_assoc();
       $newQuantity = $cartItemRow['cartItemQuantity'] + $quantity;
       $newTotalPrice = $cartItemRow['cartItemTotal'] + $totalPrice;
+      $updatedAt = date('Y-m-d H:i:s');
 
-      $updateCartItemSQL = "UPDATE cart_items_tbl SET cartItemQuantity = '$newQuantity', cartItemTotal = '$newTotalPrice' WHERE cartID = '$cartID' AND productID = '$productID'";
+      $updateCartItemSQL = "UPDATE cart_items_tbl SET cartItemQuantity = '$newQuantity', cartItemTotal = '$newTotalPrice', updatedAt = '$updatedAt' WHERE cartID = '$cartID' AND productID = '$productID'";
 
       if ($conn->query($updateCartItemSQL) === TRUE) {
+        // Create audit log entry for UPDATE
+        $newValues = json_encode(['cartItemQuantity' => $newQuantity, 'cartItemTotal' => $newTotalPrice]);
+        $oldValues = json_encode(['cartItemQuantity' => $cartItemRow['cartItemQuantity'], 'cartItemTotal' => $cartItemRow['cartItemTotal']]);
+        createAuditLog($conn, $userID, 'UPDATE', 'cart_items_tbl', $cartItemRow['cartItemID'], $oldValues, $newValues);
+
         echo json_encode(['success' => true, 'message' => 'Cart item updated successfully.']);
       } else {
         echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
       }
     } else {
       // Insert a new cart item
-      $insertsql = "INSERT INTO cart_items_tbl (cartID, productID, cartItemQuantity, cartItemTotal) VALUES ('$cartID', '$productID', '$quantity', '$totalPrice')";
+      $insertsql = "INSERT INTO cart_items_tbl (cartID, productID, cartItemQuantity, cartItemTotal, statusID) VALUES ('$cartID', '$productID', '$quantity', '$totalPrice', '$status')";
 
       if ($conn->query($insertsql) === TRUE) {
+        // Create audit log entry for INSERT
+        $newCartItemID = $conn->insert_id;
+        $newValues = json_encode(['cartID' => $cartID, 'productID' => $productID, 'cartItemQuantity' => $quantity, 'cartItemTotal' => $totalPrice]);
+        createAuditLog($conn, $userID, 'INSERT', 'cart_items_tbl', $newCartItemID, NULL, $newValues);
+
         echo json_encode(['success' => true, 'message' => 'Item added to cart successfully.']);
       } else {
         echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
@@ -196,6 +219,47 @@ function addToCart()
     }
 
     $conn->close();
+  }
+}
+
+// Delete cart item function
+function deleteCartItem()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    $conn = dbConnect();
+
+    $cartItemID = $_POST['cartItemID'];
+
+    // Retrieve current cart item data before deletion
+    $currentDataSQL = "SELECT cartItemID, cartID, productID, cartItemQuantity, cartItemTotal FROM cart_items_tbl WHERE cartItemID=?";
+    $stmt = $conn->prepare($currentDataSQL);
+    $stmt->bind_param("i", $cartItemID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $currentData = $result->fetch_assoc();
+    $stmt->close();
+
+    // Convert current data to JSON for logging
+    $oldValues = json_encode($currentData);
+
+    // Delete cart item record
+    $deleteSQL = "DELETE FROM cart_items_tbl WHERE cartItemID=?";
+    $stmt = $conn->prepare($deleteSQL);
+    $stmt->bind_param("i", $cartItemID);
+
+    if ($stmt->execute()) {
+      // Log the deletion
+      createAuditLog($conn, $userUpdaterID, 'DELETE', 'cart_items_tbl', $cartItemID, $oldValues, null);
+
+      echo json_encode(['success' => true, 'message' => 'Cart item deleted successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $stmt->close();
   }
 }
 

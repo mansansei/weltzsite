@@ -1,5 +1,5 @@
 <div class="container-fluid p-5">
-    <div class="row mb-4 border-bottom border-danger">
+    <div class="row border-bottom border-danger mb-4">
         <div class="col-md-9">
             <h1>
                 <?php
@@ -23,11 +23,11 @@
         </div>
     </div>
 
-    <div class="container mt-5">
+    <div class="container mt-5 h-75">
         <div class="cart-header bg-danger text-white mb-3">
             <div class="row align-items-center p-3">
                 <div class="col-lg-1 text-center">
-                    <input type="checkbox" class="form-check-input item-check" id="checkAll">
+                    <input type="checkbox" class="form-check-input" id="checkAll">
                 </div>
                 <div class="col-lg-4">
                     <p class="fs-5 mb-0">Product</p>
@@ -78,7 +78,7 @@
                     while ($itemRow = $itemsResult->fetch_assoc()) {
                         // Display the cart item
         ?>
-                        <div class="cart-item bg-light">
+                        <div class="cart-item bg-light border-bottom border-gray" data-item-id="<?php echo $itemRow['cartItemID']; ?>" data-unit-price="<?php echo $itemRow['cartItemTotal'] / $itemRow['cartItemQuantity']; ?>">
                             <div class="row align-items-center p-3">
                                 <div class="col-lg-1 d-flex justify-content-center">
                                     <input type="checkbox" class="form-check-input item-check">
@@ -96,11 +96,11 @@
                                 </div>
                                 <div class="col-lg-2 text-center">
                                     <div class="input-group input-group">
-                                        <button type="button" class="btn btn-secondary" id="decreaseQuantity">
+                                        <button type="button" class="btn btn-secondary decreaseQuantity">
                                             <i class="fa-solid fa-minus"></i>
                                         </button>
-                                        <input type="number" id="quantityInput" class="form-control text-center" value="<?php echo intval($itemRow['cartItemQuantity']) ?>" min="1">
-                                        <button type="button" class="btn btn-secondary" id="increaseQuantity">
+                                        <input type="number" class="form-control text-center quantityInput" value="<?php echo intval($itemRow['cartItemQuantity']) ?>" min="1">
+                                        <button type="button" class="btn btn-secondary increaseQuantity">
                                             <i class="fa-solid fa-plus"></i>
                                         </button>
                                     </div>
@@ -109,7 +109,7 @@
                                     <span class="total-price"><?php echo number_format($itemRow['cartItemTotal'], 2) ?></span>
                                 </div>
                                 <div class="col-lg-1 text-center">
-                                    <button class="btn btn-danger">Remove</button>
+                                    <button class="btn btn-danger" id="delCartItemBtn">Remove</button>
                                 </div>
                             </div>
                         </div>
@@ -125,5 +125,11 @@
             echo '<p>You need to log in to view your cart.</p>';
         }
         ?>
+    </div>
+    <div class="cartCheckout container bg-light text-end my-0 py-4">
+        <div class="container">
+            <strong><span id="totalText">Total (0): PHP 0.00</span></strong>
+            <button class="btn btn-danger" id="checkoutButton">Checkout</button>
+        </div>
     </div>
 </div>
