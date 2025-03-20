@@ -61,9 +61,9 @@ session_start();
                         </a>
                     </div>
                     <div class="icon ml-3">
-                        <a class="svgg2" href="Login.php">
+                        <a class="svgg2" href="?page=userSettingsPage">
                             <button class="butt2">
-                                <i class="fa-solid fa-right-to-bracket"></i>
+                                <i class="fa-solid fa-cog"></i>
                             </button>
                         </a>
                     </div>
@@ -111,6 +111,15 @@ session_start();
                 break;
             case 'OrderHistory':
                 include 'customerPages/OrderHistory.php';
+                break;
+            case 'userSettingsPage':
+                include 'customerPages/userSettingsPage.php';
+                break;
+            case 'userSettings':
+                include 'customerPages/userSettings.php';
+                break;
+            case 'userOrders':
+                include 'customerPages/userOrders.php';
                 break;
             case 'homePage':
             default:
