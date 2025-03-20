@@ -26,9 +26,14 @@
 
         <!-- Logout Button -->
         <div class="logout-button mt-4">
-            <a href="Login.php" class="btn btn-danger w-100 fs-5">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
+            <form id="logoutUserForm" method="POST">
+                <input type="hidden" id="action" name="action" value="logoutUser">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa-solid fa-user-plus"></i> Logout
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

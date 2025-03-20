@@ -68,7 +68,6 @@ function loginUser()
 
     $email = $_POST['uEmail'];
     $password = $_POST['uPass'];
-    $hashed_password = md5($password);
 
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
       echo json_encode(['success' => false, 'message' => 'Email must be a valid email address.']);
@@ -92,8 +91,8 @@ function loginUser()
     $logindata = $loginresult->fetch_assoc();
     $stmt->close();
 
-    if ($logindata && $email == $logindata['userEmail'] && $hashed_password == $logindata['userPass']) {
-
+    // Check if user exists and verify the password
+    if ($logindata && password_verify($password, $logindata['userPass'])) {
       // Set session variables
       $_SESSION['username'] = $logindata['userFname'] . " " . $logindata['userLname'];
       $_SESSION['userID'] = $logindata['userID'];
@@ -115,7 +114,12 @@ function loginUser()
       echo json_encode($response);
     } else {
       // Log the failed login attempt
-      createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], json_encode(['email' => $email]), json_encode(['status' => 'failed']));
+      if ($logindata) {
+        createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], json_encode(['email' => $email]), json_encode(['status' => 'failed']));
+      } else {
+        // If user does not exist, log the attempt without userID
+        createAuditLog($conn, null, 'LOGIN', 'users_tbl', null, json_encode(['email' => $email]), json_encode(['status' => 'failed']));
+      }
 
       echo json_encode(['success' => false, 'message' => 'Email or Password is wrong']);
     }
@@ -454,6 +458,150 @@ function placeOrder()
   }
 }
 
+// Function for registering customer
+function regCustomer()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    include_once 'send_verification.php';
+
+    // Open db connection
+    $conn = dbConnect();
+    if (!$conn) {
+      echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
+      exit;
+    }
+
+    // Initialize variables
+    $firstname = $_POST['uFname'];
+    $lastname = $_POST['uLname'];
+    $address = $_POST['uAdd'];
+    $phone = $_POST['uPhone'];
+    $email = $_POST['uEmail'];
+    $password = $_POST['uPass'];
+    $role = 1; // Role for customer
+    $otp = rand(100000, 999999); // Generate OTP for verification
+    $status = "Unverified"; // Initial status for customer
+
+    // Validation
+    if (empty($firstname) || strlen($firstname) > 50 || !preg_match('/^[a-zA-Z]+$/', $firstname)) {
+      echo json_encode(['success' => false, 'message' => 'First name must be 50 characters or less and must not contain special characters or numbers.']);
+      exit;
+    } else {
+      $firstname = htmlspecialchars($firstname);
+    }
+
+    if (empty($lastname) || strlen($lastname) > 50 || !preg_match('/^[a-zA-Z]+$/', $lastname)) {
+      echo json_encode(['success' => false, 'message' => 'Last name must be 50 characters or less and must not contain special characters or numbers.']);
+      exit;
+    } else {
+      $lastname = htmlspecialchars($lastname);
+    }
+
+    if (empty($address) || strlen($address) > 100) {
+      echo json_encode(['success' => false, 'message' => 'Address must be 100 characters or less.']);
+      exit;
+    } else {
+      $address = htmlspecialchars($address);
+    }
+
+    if (empty($phone) || !preg_match('/^\d{11}$/', $phone)) {
+      echo json_encode(['success' => false, 'message' => 'Phone number must be exactly 11 digits and contain only numbers.']);
+      exit;
+    } else {
+      $phone = htmlspecialchars($phone);
+    }
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      echo json_encode(['success' => false, 'message' => 'Email must be a valid email address.']);
+      exit;
+    } else {
+      $email = htmlspecialchars($email);
+    }
+
+    if (empty($password) || strlen($password) < 8 || !preg_match('/\d/', $password) || !preg_match('/[!@#$%^&*]/', $password)) {
+      echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters long and contain at least 1 digit (0-9) and 1 special character (!@#$%^&*).']);
+      exit;
+    } else {
+      $password = htmlspecialchars($password);
+    }
+
+    // Check if email already exists using prepared statement
+    $stmt = $conn->prepare("SELECT * FROM users_tbl WHERE userEmail = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $emailCheckResult = $stmt->get_result();
+
+    if ($emailCheckResult->num_rows > 0) {
+      echo json_encode(['success' => false, 'message' => 'Email already exists. Please use a different email.']);
+      exit;
+    }
+
+    // Hash the password using password_hash
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Get current date and time
+    $currentDateTime = date('Y-m-d H:i:s');
+
+    // Insert query using prepared statement for users_tbl
+    $stmt = $conn->prepare("INSERT INTO users_tbl (userFname, userLname, userAdd, userPhone, userEmail, userPass, roleID, otp, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssissiisss", $firstname, $lastname, $address, $phone, $email, $hashed_password, $role, $otp, $status, $currentDateTime, $currentDateTime);
+
+    if ($stmt->execute()) {
+      // Get the last inserted user ID
+      $userID = $conn->insert_id;
+
+      // Create audit log for the new user
+      $actionType = 'CREATE';
+      $tableName = 'users_tbl';
+      $recordID = $userID;
+      $oldValues = null; // No old values for a new record
+      $newValues = json_encode([
+        'userFname' => $firstname,
+        'userLname' => $lastname,
+        'userAdd' => $address,
+        'userPhone' => $phone,
+        'userEmail' => $email,
+        'roleID' => $role,
+        'otp' => $otp,
+        'status' => $status,
+        'createdAt' => $currentDateTime,
+        'updatedAt' => $currentDateTime
+      ]);
+
+      createAuditLog($conn, $userID, $actionType, $tableName, $recordID, $oldValues, $newValues);
+
+      // Create a cart for the newly registered user
+      $cartStmt = $conn->prepare("INSERT INTO carts_tbl (userID) VALUES (?)");
+      $cartStmt->bind_param("i", $userID);
+
+      if ($cartStmt->execute()) {
+        // Create audit log for the cart creation
+        $actionType = 'CREATE';
+        $tableName = 'carts_tbl';
+        $recordID = $conn->insert_id; // Get the last inserted cart ID
+        $oldValues = null; // No old values for a new record
+        $newValues = json_encode(['cartID' => $recordID, 'userID' => $userID]);
+
+        createAuditLog($conn, $userID, $actionType, $tableName, $recordID, $oldValues, $newValues);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error creating cart: ' . $cartStmt->error]);
+        $cartStmt->close();
+        $stmt->close();
+        $conn->close();
+        exit;
+      }
+      $cartStmt->close();
+
+      // Send verification email
+      send_verification($firstname, $email, $otp);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conn->close();
+  }
+}
 
 // Function for registering a new admin
 function regAdmin()
@@ -527,7 +675,7 @@ function regAdmin()
       exit;
     }
 
-    $hashed_password = md5($password);
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $currentDateTime = date('Y-m-d H:i:s');
 
     $insertsql = "INSERT INTO users_tbl (userFname, userLname, userAdd, userPhone, userEmail, userPass, roleID, otp, status, createdAt, updatedAt)

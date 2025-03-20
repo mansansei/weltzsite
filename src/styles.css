@@ -694,6 +694,34 @@ form .row .col input {
     color: #f5c518;
 }
 
+.aboutus {
+    border-bottom: 4px solid #fc0001;
+}
+
+.aboutusdesc {
+    text-align: justify;
+    letter-spacing: 1px;
+    font-size: 20px;
+}
+
+.aboutusdesc3 p {
+    font-size: 23px;
+    font-family: 'Anton', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1;
+}
+
+.aboutusimg {
+    min-height: 300px;
+    min-width: 400px;
+}
+
+.aboutusimg img {
+    height: 300px;
+    width: 600px;
+    object-fit: cover;
+}
+
 .usettings {
     display: flex;
     /* Enable flexbox layout */

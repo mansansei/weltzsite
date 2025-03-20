@@ -424,6 +424,129 @@ $(document).ready(function () {
         });
     });
 
+    // CUSTOMER REGISTRATION
+    // Customer registration form handling
+    $('#customerSignupForm').validate({
+        rules: {
+            uFname: {
+                required: true,
+                minlength: 3,
+                noSpecialChars: true
+            },
+            uLname: {
+                required: true,
+                minlength: 3,
+                noSpecialChars: true
+            },
+            uAdd: {
+                required: true,
+                minlength: 5,
+                noSpecialChars: true
+            },
+            uPhone: {
+                required: true,
+                digits: true,
+                minlength: 11,
+            },
+            uEmail: {
+                required: true,
+                email: true
+            },
+            uPass: {
+                required: true,
+                minlength: 8,
+                validPassword: true
+            },
+            policy: {
+                required: true
+            }
+        },
+        messages: {
+            uFname: {
+                required: "Please enter your first name",
+                minlength: "Must be at least 3 characters"
+            },
+            uLname: {
+                required: "Please enter your last name",
+                minlength: "Mst be at least 3 characters"
+            },
+            uAdd: {
+                required: "Please enter your address",
+                minlength: "Must be at least 5 characters",
+                noSpecialChars: "No special characters allowed"
+            },
+            uPhone: {
+                required: "Please provide a contact number",
+                digits: "Please enter only digits",
+                minlength: "Must be at least 11 digits long",
+            },
+            uEmail: {
+                required: "Please enter a valid email address",
+                email: "Please enter a valid email address"
+            },
+            uPass: {
+                required: "Please provide a password",
+                minlength: "Must be at least 8 characters"
+            },
+            policy: {
+                required: "You must agree to the terms and conditions"
+            },
+        },
+        errorPlacement: function(error, element) {
+            if (element.attr("name") === "policy") {
+                // Place the error message below the checkbox wrapper
+                error.insertAfter("#checkboxWrapper");
+            } else {
+                // Default behavior: place error after the input element
+                error.insertAfter(element);
+            }
+        },
+        submitHandler: function (form) {
+            // Get form data
+            var formData = $(form).serialize();
+
+            console.log(formData);
+
+            // Send form data via AJAX
+            $.ajax({
+                type: 'POST',
+                url: 'serverSideScripts.php',
+                data: formData,
+                success: function (response) {
+                    var res = JSON.parse(response);
+                    if (res.success) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            willClose: () => {
+                                location.reload();
+                            }
+                        });
+                        $('#adminSignupForm')[0].reset(); // Reset the form
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            text: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your request.',
+                    });
+                }
+            });
+        }
+    });
+
     // ADMIN REGISTRATION==================================================
     // ADMIN REGISTRATION FORM DATA HANDLING
     $('#adminSignupForm').validate({
