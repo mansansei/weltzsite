@@ -20,9 +20,6 @@ $blogsSQLResult = $conn->query($blogsSQL);
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
-    <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#addNewBlogModal">
-        <i class="fa-solid fa-scroll"></i> Post a New Blog
-    </button>
     <h1>Blogs Table</h1>
 </div>
 
@@ -48,15 +45,15 @@ $blogsSQLResult = $conn->query($blogsSQL);
                     <tr>
                         <td><?php echo $row['blogID'] ?></td>
                         <td><?php echo $row['userFullName'] ?></td>
-                        <td><img src="<?php echo $row['blogIMG'] ?>" alt="<?php echo $row['blogTitle'] ?>" style="width:100px"></td>
+                        <td><?php echo $row['blogIMG'] ?></td>
                         <td><?php echo $row['blogTitle'] ?></td>
                         <td><?php echo $row['blogDesc'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <button class='btn btn-warning' data-bs-toggle="modal" data-bs-target="#editBlogModal">Edit</button>
-                                <button class='btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteBlogModal">Delete</button>
+                                <button class='btn btn-warning'>Edit</button>
+                                <button class='btn btn-danger'>Delete</button>
                             </div>
                         </td>
                     </tr>

@@ -30,10 +30,13 @@ function send_verification($firstname,$email,$otp) {
         <br><br><h3><strong><i><a href='http://localhost/weltzsite/src/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
 
         $mail->send();
-        
-        echo json_encode(['success' => true, 'message' => 'Verification email succesfully sent! Please check your email for verification.']);
+        ?>
+            <script>
+                alert("Verification Link Successfully Sent! Please check your email.")
+            </script>
+        <?php
     } catch (Exception $e) {
-        echo json_encode(['success' => false, 'message' => 'Error: ' . $mail->ErrorInfo]);
+        echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
     }
 }
 

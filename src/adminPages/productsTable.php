@@ -11,7 +11,6 @@ $productsSQL =
         p.productDesc,
         p.productPrice,
         p.inStock,
-        p.prodSold, 
         p.createdAt,
         p.updatedAt
     FROM 
@@ -48,7 +47,6 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                 <th>Description</th>
                 <th>Unit Price</th>
                 <th>Units in Stock</th>
-                <th>Products Sold</th>
                 <th>Created At</th>
                 <th>Updated At</th>
                 <th>Action</th>
@@ -68,7 +66,6 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                         <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $row['productDesc'] ?></td>
                         <td><?php echo $row['productPrice'] ?></td>
                         <td><?php echo $row['inStock'] ?></td>
-                        <td><?php echo $row['prodSold'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
