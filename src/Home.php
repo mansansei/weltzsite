@@ -1,14 +1,20 @@
+<?php
+
+session_start();
+
+?>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Weltz INC</title>
+    <title>Weltz INC</title>
     <link rel="stylesheet" href="styles.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
     <?php require_once 'cssLibraries.php' ?>
 </head>
 
@@ -39,7 +45,7 @@
             <div class="col-12 col-md-8">
                 <div class="links d-flex flex-wrap">
                     <a class="active" href="?page=homePage"><button>HOME</button></a>
-                    <a class="active2" href="?page=aboutUsPage"><button>ABOUT US</button></a>
+                    <a class="active2" href="?page=homePage#Aboutus"><button>ABOUT US</button></a>
                     <a class="active3" href="?page=productsPage"><button>PRODUCTS</button></a>
                     <a class="active4" href="?page=contactPage"><button>CONTACT</button></a>
                     <a class="active5" href="?page=blogsPage"><button>BLOGS</button></a>
@@ -55,9 +61,9 @@
                         </a>
                     </div>
                     <div class="icon ml-3">
-                        <a class="svgg2" href="Login.php">
+                        <a class="svgg2" href="?page=userSettingsPage">
                             <button class="butt2">
-                                <i class="fa-solid fa-right-to-bracket"></i>
+                                <i class="fa-solid fa-cog"></i>
                             </button>
                         </a>
                     </div>
@@ -86,7 +92,7 @@
         // Include the corresponding page content
         switch ($page) {
             case 'aboutUsPage':
-                include 'customerPages/aboutUsPage.php';
+                include 'customerPages/homePage.php';
                 break;
             case 'productsPage':
                 include 'customerPages/productsPage.php';
@@ -105,6 +111,15 @@
                 break;
             case 'OrderHistory':
                 include 'customerPages/OrderHistory.php';
+                break;
+            case 'userSettingsPage':
+                include 'customerPages/userSettingsPage.php';
+                break;
+            case 'userSettings':
+                include 'customerPages/userSettings.php';
+                break;
+            case 'userOrders':
+                include 'customerPages/userOrders.php';
                 break;
             case 'homePage':
             default:
