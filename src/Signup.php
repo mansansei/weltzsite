@@ -15,62 +15,66 @@ session_start();
 </head>
 
 <body class="signupPage">
-    <!-- Start of Sign Up Section -->
-    <section class="signup container-fluid col-sm-12 col-md-12 col-lg-6">
-        <div class="form-wrapper container-fluid rounded-4 shadow p-4">
-            <div class="logo-wrapper text-center mb-3">
-                <div class="logo">
-                    <img src="../images/logo.png" alt="logo" class="img-fluid">
+    <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
+    <div class="row w-100 d-flex justify-content-center">
+        <!-- Start of Sign Up Section -->
+        <div class="signup container-fluid col-sm-12 col-md-12 col-lg-6">
+            <div class="form-wrapper container-fluid rounded-4 shadow p-4">
+                <div class="logo-wrapper text-center mb-3">
+                    <div class="logo">
+                        <img src="../images/logo.png" alt="logo" class="img-fluid">
+                    </div>
                 </div>
-            </div>
-            <form class="signupform" id="customerSignupForm" method="POST">
+                <form class="signupform" id="customerSignupForm" method="POST">
 
-                <div class="title row mb-3 mt-3">
-                    <h1 class="text-center">Sign Up</h1>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input class="form-control" type="text" name="uFname" placeholder="First Name">
+                    <div class="title row mb-3 mt-3">
+                        <h1 class="text-center">Sign Up</h1>
                     </div>
-                    <div class="col">
-                        <input class="form-control" type="text" name="uLname" placeholder="Last Name">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input class="form-control" type="text" name="uFname" placeholder="First Name">
+                        </div>
+                        <div class="col">
+                            <input class="form-control" type="text" name="uLname" placeholder="Last Name">
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input class="form-control" type="text" name="uAdd" placeholder="Address">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input class="form-control" type="text" name="uAdd" placeholder="Address">
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input class="form-control" type="tel" name="uPhone" placeholder="Phone No.">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input class="form-control" type="tel" name="uPhone" placeholder="Phone No.">
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input class="form-control" type="email" name="uEmail" placeholder="Email Address">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input class="form-control" type="email" name="uEmail" placeholder="Email Address">
+                        </div>
                     </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input class="form-control" type="password" name="uPass" placeholder="Password">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input class="form-control" type="password" name="uPass" placeholder="Password">
+                        </div>
                     </div>
-                </div>
-                <div class="signupcheckbox" id="checkboxWrapper">
-                    <input type="checkbox" id="policy" name="policy" value="true">
-                    <label for="policy">By checking this, you agree to our <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a></label>
-                </div>
-                <div class="signupButton mb-3 text-center">
-                    <input type="hidden" id="action" name="action" value="regCustomer">
-                    <button type="submit" class="btn btn-danger w-100 rounded-5">Sign up</button>
-                </div>
-                <div class="loginHere text-center">
-                    <p>Already registered? <a href="Login.php">Login here</a></p>
-                </div>
-            </form>
+                    <div class="signupcheckbox" id="checkboxWrapper">
+                        <input type="checkbox" id="policy" name="policy" value="true">
+                        <label for="policy">By checking this, you agree to our <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a></label>
+                    </div>
+                    <div class="signupButton mb-3 text-center">
+                        <input type="hidden" id="action" name="action" value="regCustomer">
+                        <button type="submit" class="btn btn-danger w-100 rounded-5">Sign up</button>
+                    </div>
+                    <div class="loginHere text-center">
+                        <p>Already registered? <a href="Login.php">Login here</a></p>
+                    </div>
+                </form>
+            </div>
         </div>
-    </section>
-    <section class="col-lg-6"></section>
+        <div class="col-lg-6"></div>
+    </div>
+    </div>
 
     <!-- Privacy Policy Modal -->
     <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
@@ -185,6 +189,25 @@ session_start();
     </div>
 
     <?php require_once 'cssLibrariesJS.php' ?>
+    <script>
+        $(document).ready(function() {
+            let otpMessage = sessionStorage.getItem("otp_message");
+
+            if (otpMessage) {
+                let response = JSON.parse(otpMessage);
+
+                Swal.fire({
+                    icon: response.status === "success" ? "success" : "error",
+                    title: response.status === "success" ? "Success" : "Error",
+                    text: response.message,
+                    confirmButtonText: "OK"
+                });
+
+                // Clear session storage after displaying the message
+                sessionStorage.removeItem("otp_message");
+            }
+        });
+    </script>
 </body>
 
 </html>
