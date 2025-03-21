@@ -61,19 +61,50 @@ session_start();
                         </a>
                     </div>
                     <div class="icon ml-3">
-                        <a class="svgg2" href="?page=userSettingsPage">
+                        <a class="svgg2" href="?page=userProfile">
                             <button class="butt2">
                                 <i class="fa-solid fa-cog"></i>
                             </button>
                         </a>
                     </div>
+                    <?php
+                    include 'weltz_dbconnect.php';
+
+                    if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
+                        $userID = $_SESSION['userID'];
+
+                        $unreadSQL = "SELECT COUNT(*) AS unreadCount FROM notifs_tbl WHERE userID = '$userID' AND statusID = 9";
+                        $unreadResult = $conn->query($unreadSQL);
+                        $unreadCount = 0;
+
+                        if ($unreadResult->num_rows > 0) {
+                            $row = $unreadResult->fetch_assoc();
+                            $unreadCount = $row['unreadCount'];
+                        }
+                    ?>
+                        <div class="icon ml-3">
+                            <a class="svgg2" href="?page=notifs">
+                                <button class="butt3 position-relative">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <?php if ($unreadCount > 0): ?>
+                                        <span class="position-absolute top-1 start-75 translate-middle badge rounded-pill bg-danger fs-6">
+                                            <?php echo $unreadCount; ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </button>
+                            </a>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
                     <div class="icon ml-3">
-                        <a class="svgg2" href="#">
-                            <button class="butt3">
+                        <a class="svgg2" href="?page=notifs">
+                            <button class="butt3 position-relative">
                                 <i class="fa-solid fa-bell"></i>
                             </button>
                         </a>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -81,51 +112,48 @@ session_start();
 
     <div class="container-fluid m-0 p-0">
         <?php
-        // Default page
-        $page = 'homePage';
+    // Default page
+    $page = 'homePage';
 
-        // Check if 'page' parameter is set in the query string
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
+    // Check if 'page' parameter is set in the query string
+    if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+    }
 
-        // Include the corresponding page content
-        switch ($page) {
-            case 'aboutUsPage':
-                include 'customerPages/homePage.php';
-                break;
-            case 'productsPage':
-                include 'customerPages/productsPage.php';
-                break;
-            case 'contactPage':
-                include 'customerPages/contactPage.php';
-                break;
-            case 'blogsPage':
-                include 'customerPages/blogsPage.php';
-                break;
-            case 'cartPage':
-                include 'customerPages/cartPage.php';
-                break;
-            case 'viewProduct':
-                include 'customerPages/viewProduct.php';
-                break;
-            case 'OrderHistory':
-                include 'customerPages/OrderHistory.php';
-                break;
-            case 'userSettingsPage':
-                include 'customerPages/userSettingsPage.php';
-                break;
-            case 'userSettings':
-                include 'customerPages/userSettings.php';
-                break;
-            case 'userOrders':
-                include 'customerPages/userOrders.php';
-                break;
-            case 'homePage':
-            default:
-                include 'customerPages/homePage.php';
-                break;
-        }
+    // Include the corresponding page content
+    switch ($page) {
+        case 'aboutUsPage':
+            include 'customerPages/homePage.php';
+            break;
+        case 'productsPage':
+            include 'customerPages/productsPage.php';
+            break;
+        case 'contactPage':
+            include 'customerPages/contactPage.php';
+            break;
+        case 'blogsPage':
+            include 'customerPages/blogsPage.php';
+            break;
+        case 'cartPage':
+            include 'customerPages/cartPage.php';
+            break;
+        case 'viewProduct':
+            include 'customerPages/viewProduct.php';
+            break;
+        case 'OrderHistory':
+            include 'customerPages/OrderHistory.php';
+            break;
+        case 'userProfile':
+            include 'customerPages/userProfile.php';
+            break;
+        case 'notifs':
+            include 'customerPages/notifsPage.php';
+            break;
+        case 'homePage':
+        default:
+            include 'customerPages/homePage.php';
+            break;
+    }
         ?>
     </div>
 

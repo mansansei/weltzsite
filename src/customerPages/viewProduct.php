@@ -121,37 +121,3 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
         </form>
     </div>
 </section>
-
-<!-- Order Details Modal -->
-<div class="modal fade" id="placeOrderModal" tabindex="-1" aria-labelledby="placeOrderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="placeOrderModalLabel">Add to Cart Details</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-6 p-4">
-                        <img id="modalProductImage" src="" alt="" class="img-fluid shadow rounded-5">
-                    </div>
-                    <div class="col-6 p-5 text-end">
-                        <div class="mb-3">
-                            <h3 class="fs-2" id="modalProductName"></h3>
-                            <p class="fs-3" id="modalProductCategory"></p>
-                        </div>
-                        <div class="mb-3">
-                            <p class="fs-3">Price: Php <span id="modalProductPrice"></span></p>
-                            <p class="fs-3">Quantity: <span id="modalQuantity"></span></p>
-                            <p class="fs-3">Total Price: Php <span id="modalTotalPrice"></span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>

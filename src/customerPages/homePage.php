@@ -2,7 +2,7 @@
     <h1>WELTZ INDUSTRIAL PHILS INC.</h1>
     <p><strong>ORDER NOW</strong>, PICK UP LATER.</p>
     <p>STOCK UP ON <strong>SAFETY!</strong></p>
-    <a href="?page=productsPage"><button>BROWSE PRODUCTS <i class="fa-solid fa-bag-shopping"></i></button></a>
+    <a href="?page=productsPage"><button>BROWSE PRODUCTS</button></a>
 </div>
 
 <div class="featured container-fluid m-0 p-0">
