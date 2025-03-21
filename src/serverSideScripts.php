@@ -124,6 +124,424 @@ function logoutUser()
   echo json_encode($response);
 }
 
+<<<<<<< Updated upstream
+=======
+// Add to Cart function
+function addToCart()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    // Open db connection
+    $conn = dbConnect();
+
+    // Initialize variables
+    $productID = $_POST['productID'];
+    $quantity = $_POST['quantity'];
+    $totalPrice = $_POST['totalPrice'];
+    $status = 5; // Active
+
+    // Validation
+    if (empty($productID) || !is_numeric($productID)) {
+      echo json_encode(['success' => false, 'message' => 'Invalid product ID.']);
+      exit;
+    }
+
+    if (empty($quantity) || !is_numeric($quantity) || $quantity <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Please enter a valid quantity.']);
+      exit;
+    }
+
+    if (empty($totalPrice) || !is_numeric($totalPrice) || $totalPrice <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Invalid total price.']);
+      exit;
+    }
+
+    // Get the cartID of the currently logged in user
+    $selectCartSQL = "SELECT cartID FROM carts_tbl WHERE userID = '$userID' LIMIT 1";
+    $cartResult = $conn->query($selectCartSQL);
+
+    if ($cartResult->num_rows > 0) {
+      $cartRow = $cartResult->fetch_assoc();
+      $cartID = $cartRow['cartID'];
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Cart not found for the current user.']);
+      exit;
+    }
+
+    // Check if the product already exists in the cart
+    $selectCartItemSQL = "SELECT * FROM cart_items_tbl WHERE cartID = '$cartID' AND productID = '$productID' LIMIT 1";
+    $cartItemResult = $conn->query($selectCartItemSQL);
+
+    if ($cartItemResult->num_rows > 0) {
+      // Update the existing cart item
+      $cartItemRow = $cartItemResult->fetch_assoc();
+      $newQuantity = $cartItemRow['cartItemQuantity'] + $quantity;
+      $newTotalPrice = $cartItemRow['cartItemTotal'] + $totalPrice;
+      $updatedAt = date('Y-m-d H:i:s');
+
+      $updateCartItemSQL = "UPDATE cart_items_tbl SET cartItemQuantity = '$newQuantity', cartItemTotal = '$newTotalPrice', updatedAt = '$updatedAt' WHERE cartID = '$cartID' AND productID = '$productID'";
+
+      if ($conn->query($updateCartItemSQL) === TRUE) {
+        // Create audit log entry for UPDATE
+        $newValues = json_encode(['cartItemQuantity' => $newQuantity, 'cartItemTotal' => $newTotalPrice]);
+        $oldValues = json_encode(['cartItemQuantity' => $cartItemRow['cartItemQuantity'], 'cartItemTotal' => $cartItemRow['cartItemTotal']]);
+        createAuditLog($conn, $userID, 'UPDATE', 'cart_items_tbl', $cartItemRow['cartItemID'], $oldValues, $newValues);
+
+        echo json_encode(['success' => true, 'message' => 'Cart item updated successfully.']);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+      }
+    } else {
+      // Insert a new cart item
+      $insertsql = "INSERT INTO cart_items_tbl (cartID, productID, cartItemQuantity, cartItemTotal, statusID) VALUES ('$cartID', '$productID', '$quantity', '$totalPrice', '$status')";
+
+      if ($conn->query($insertsql) === TRUE) {
+        // Create audit log entry for INSERT
+        $newCartItemID = $conn->insert_id;
+        $newValues = json_encode(['cartID' => $cartID, 'productID' => $productID, 'cartItemQuantity' => $quantity, 'cartItemTotal' => $totalPrice]);
+        createAuditLog($conn, $userID, 'INSERT', 'cart_items_tbl', $newCartItemID, NULL, $newValues);
+
+        echo json_encode(['success' => true, 'message' => 'Item added to cart successfully.']);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+      }
+    }
+
+    $conn->close();
+  }
+}
+
+// Update Cart Item Quantity function
+function updateCartItemQuantity()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    // Open db connection
+    $conn = dbConnect();
+
+    // Initialize variables
+    $cartItemID = $_POST['cartItemID'];
+    $newQuantity = $_POST['newQuantity'];
+    $newTotalPrice = $_POST['newTotalPrice'];
+
+    // Validation
+    if (empty($cartItemID) || !is_numeric($cartItemID)) {
+      echo json_encode(['success' => false, 'message' => 'Invalid cart item ID.']);
+      exit;
+    }
+
+    if (empty($newQuantity) || !is_numeric($newQuantity) || $newQuantity <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Please enter a valid quantity.']);
+      exit;
+    }
+
+    if (empty($newTotalPrice) || !is_numeric($newTotalPrice) || $newTotalPrice <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Invalid total price.']);
+      exit;
+    }
+
+    // Update the cart item quantity and total price
+    $updatedAt = date('Y-m-d H:i:s');
+    $updateCartItemSQL = "UPDATE cart_items_tbl SET cartItemQuantity = '$newQuantity', cartItemTotal = '$newTotalPrice', updatedAt = '$updatedAt' WHERE cartItemID = '$cartItemID'";
+
+    if ($conn->query($updateCartItemSQL) === TRUE) {
+      echo json_encode(['success' => true, 'message' => 'Cart item quantity updated successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $conn->close();
+  }
+}
+
+// Delete cart item function
+function deleteCartItem()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    $conn = dbConnect();
+
+    $cartItemID = $_POST['cartItemID'];
+
+    // Retrieve current cart item data before deletion
+    $currentDataSQL = "SELECT cartItemID, cartID, productID, cartItemQuantity, cartItemTotal FROM cart_items_tbl WHERE cartItemID=?";
+    $stmt = $conn->prepare($currentDataSQL);
+    $stmt->bind_param("i", $cartItemID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $currentData = $result->fetch_assoc();
+    $stmt->close();
+
+    // Convert current data to JSON for logging
+    $oldValues = json_encode($currentData);
+
+    // Delete cart item record
+    $deleteSQL = "DELETE FROM cart_items_tbl WHERE cartItemID=?";
+    $stmt = $conn->prepare($deleteSQL);
+    $stmt->bind_param("i", $cartItemID);
+
+    if ($stmt->execute()) {
+      // Log the deletion
+      createAuditLog($conn, $userUpdaterID, 'DELETE', 'cart_items_tbl', $cartItemID, $oldValues, null);
+
+      echo json_encode(['success' => true, 'message' => 'Cart item deleted successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $stmt->close();
+  }
+}
+
+// Place Order function
+function placeOrder()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    // Open db connection
+    $conn = dbConnect();
+
+    // Initialize variables
+    $cartItems = $_POST['cartItems'];
+    $totalAmount = $_POST['totalAmount'];
+    $mopID = $_POST['mopID'];
+
+    // Validation
+    if (empty($cartItems)) {
+      echo json_encode(['success' => false, 'message' => 'No items in the cart.']);
+      exit;
+    }
+
+    if (empty($totalAmount) || !is_numeric($totalAmount) || $totalAmount <= 0) {
+      echo json_encode(['success' => false, 'message' => 'Invalid total amount.']);
+      exit;
+    }
+
+    if (empty($mopID) || !is_numeric($mopID)) {
+      echo json_encode(['success' => false, 'message' => 'Invalid payment method.']);
+      exit;
+    }
+
+    // Retrieve cartID
+    $selectCartSQL = "SELECT cartID FROM carts_tbl WHERE userID = '$userID' LIMIT 1";
+    $cartResult = $conn->query($selectCartSQL);
+
+    if ($cartResult->num_rows > 0) {
+      $cartRow = $cartResult->fetch_assoc();
+      $cartID = $cartRow['cartID'];
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Cart not found for the current user.']);
+      exit;
+    }
+
+    // Create new order
+    $referenceNum = generateRefNum();
+    $statusID = 1; // New order status
+
+    $insertOrderSQL = "INSERT INTO orders_tbl (referenceNum, userID, totalAmount, mopID, statusID) VALUES ('$referenceNum', '$userID', '$totalAmount', '$mopID', '$statusID')";
+
+    if ($conn->query($insertOrderSQL) === TRUE) {
+      $orderID = $conn->insert_id;
+      createAuditLog($conn, $userID, 'INSERT', 'orders_tbl', $orderID, NULL, json_encode(['referenceNum' => $referenceNum, 'userID' => $userID, 'totalAmount' => $totalAmount, 'mopID' => $mopID, 'statusID' => $statusID]));
+
+      // Insert order items
+      foreach ($cartItems as $item) {
+        $productID = $item['productID'];
+        $quantity = $item['quantity'];
+        $total = floatval($item['total']);
+
+        $insertOrderItemSQL = "INSERT INTO order_items_tbl (orderID, productID, orderItemQuantity, orderItemTotal) VALUES ('$orderID', '$productID', '$quantity', '$total')";
+        $conn->query($insertOrderItemSQL);
+      }
+
+      // Update product stock
+      foreach ($cartItems as $item) {
+        $productID = $item['productID'];
+        $quantity = $item['quantity'];
+        $updateProductStockSQL = "UPDATE products_tbl SET inStock = inStock - '$quantity', prodSold = prodSold + '$quantity' WHERE productID = '$productID'";
+        $conn->query($updateProductStockSQL);
+      }
+
+      // Update cart items status
+      foreach ($cartItems as $item) {
+        $productID = $item['productID'];
+        $updateCartItemsSQL = "UPDATE cart_items_tbl SET statusID = 6 WHERE cartID = '$cartID' AND productID = '$productID'";
+        $conn->query($updateCartItemsSQL);
+      }
+
+      // Clear removed items from cart
+      $deleteCartItemsSQL = "DELETE FROM cart_items_tbl WHERE cartID = '$cartID' AND statusID = 6";
+      $conn->query($deleteCartItemsSQL);
+
+      // Insert notification
+      $notifName = "Order Placed";
+      $notifMessage = "Your order #$referenceNum has been successfully placed.";
+      $statusUnread = 9; // 9 = Unread
+      $insertNotifSQL = "INSERT INTO notifs_tbl (userID, notifName, notifMessage, statusID) VALUES ('$userID', '$notifName', '$notifMessage', '$statusUnread')";
+      $conn->query($insertNotifSQL);
+
+      echo json_encode(['success' => true, 'message' => 'Order placed successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error creating order: ' . $conn->error]);
+    }
+
+    $conn->close();
+  }
+}
+
+
+// Function for registering customer
+function regCustomer()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    include_once 'send_verification.php';
+
+    // Open db connection
+    $conn = dbConnect();
+    if (!$conn) {
+      echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
+      exit;
+    }
+
+    // Initialize variables
+    $firstname = $_POST['uFname'];
+    $lastname = $_POST['uLname'];
+    $address = $_POST['uAdd'];
+    $phone = $_POST['uPhone'];
+    $email = $_POST['uEmail'];
+    $password = $_POST['uPass'];
+    $role = 1; // Role for customer
+    $otp = rand(100000, 999999); // Generate OTP for verification
+    $status = "Unverified"; // Initial status for customer
+
+    // Validation
+    if (empty($firstname) || strlen($firstname) > 50 || !preg_match('/^[a-zA-Z]+$/', $firstname)) {
+      echo json_encode(['success' => false, 'message' => 'First name must be 50 characters or less and must not contain special characters or numbers.']);
+      exit;
+    } else {
+      $firstname = htmlspecialchars($firstname);
+    }
+
+    if (empty($lastname) || strlen($lastname) > 50 || !preg_match('/^[a-zA-Z]+$/', $lastname)) {
+      echo json_encode(['success' => false, 'message' => 'Last name must be 50 characters or less and must not contain special characters or numbers.']);
+      exit;
+    } else {
+      $lastname = htmlspecialchars($lastname);
+    }
+
+    if (empty($address) || strlen($address) > 100) {
+      echo json_encode(['success' => false, 'message' => 'Address must be 100 characters or less.']);
+      exit;
+    } else {
+      $address = htmlspecialchars($address);
+    }
+
+    if (empty($phone) || !preg_match('/^\d{11}$/', $phone)) {
+      echo json_encode(['success' => false, 'message' => 'Phone number must be exactly 11 digits and contain only numbers.']);
+      exit;
+    } else {
+      $phone = htmlspecialchars($phone);
+    }
+
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      echo json_encode(['success' => false, 'message' => 'Email must be a valid email address.']);
+      exit;
+    } else {
+      $email = htmlspecialchars($email);
+    }
+
+    if (empty($password) || strlen($password) < 8 || !preg_match('/\d/', $password) || !preg_match('/[!@#$%^&*]/', $password)) {
+      echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters long and contain at least 1 digit (0-9) and 1 special character (!@#$%^&*).']);
+      exit;
+    } else {
+      $password = htmlspecialchars($password);
+    }
+
+    // Check if email already exists using prepared statement
+    $stmt = $conn->prepare("SELECT * FROM users_tbl WHERE userEmail = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $emailCheckResult = $stmt->get_result();
+
+    if ($emailCheckResult->num_rows > 0) {
+      echo json_encode(['success' => false, 'message' => 'Email already exists. Please use a different email.']);
+      exit;
+    }
+
+    // Hash the password using password_hash
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Get current date and time
+    $currentDateTime = date('Y-m-d H:i:s');
+
+    // Insert query using prepared statement for users_tbl
+    $stmt = $conn->prepare("INSERT INTO users_tbl (userFname, userLname, userAdd, userPhone, userEmail, userPass, roleID, otp, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssissiisss", $firstname, $lastname, $address, $phone, $email, $hashed_password, $role, $otp, $status, $currentDateTime, $currentDateTime);
+
+    if ($stmt->execute()) {
+      // Get the last inserted user ID
+      $userID = $conn->insert_id;
+
+      // Create audit log for the new user
+      $actionType = 'CREATE';
+      $tableName = 'users_tbl';
+      $recordID = $userID;
+      $oldValues = null; // No old values for a new record
+      $newValues = json_encode([
+        'userFname' => $firstname,
+        'userLname' => $lastname,
+        'userAdd' => $address,
+        'userPhone' => $phone,
+        'userEmail' => $email,
+        'roleID' => $role,
+        'otp' => $otp,
+        'status' => $status,
+        'createdAt' => $currentDateTime,
+        'updatedAt' => $currentDateTime
+      ]);
+
+      createAuditLog($conn, $userID, $actionType, $tableName, $recordID, $oldValues, $newValues);
+
+      // Create a cart for the newly registered user
+      $cartStmt = $conn->prepare("INSERT INTO carts_tbl (userID) VALUES (?)");
+      $cartStmt->bind_param("i", $userID);
+
+      if ($cartStmt->execute()) {
+        // Create audit log for the cart creation
+        $actionType = 'CREATE';
+        $tableName = 'carts_tbl';
+        $recordID = $conn->insert_id; // Get the last inserted cart ID
+        $oldValues = null; // No old values for a new record
+        $newValues = json_encode(['cartID' => $recordID, 'userID' => $userID]);
+
+        createAuditLog($conn, $userID, $actionType, $tableName, $recordID, $oldValues, $newValues);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error creating cart: ' . $cartStmt->error]);
+        $cartStmt->close();
+        $stmt->close();
+        $conn->close();
+        exit;
+      }
+      $cartStmt->close();
+
+      // Send verification email
+      send_verification($firstname, $email, $otp);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conn->close();
+  }
+}
+
+>>>>>>> Stashed changes
 // Function for registering a new admin
 function regAdmin()
 {

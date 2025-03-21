@@ -61,10 +61,30 @@
                             </button>
                         </a>
                     </div>
+                    <?php
+                    include 'weltz_dbconnect.php';
+
+                    $userID = $_SESSION['userID'];
+
+                    $unreadSQL = "SELECT COUNT(*) AS unreadCount FROM notifs_tbl WHERE userID = '$userID' AND statusID = 9";
+                    $unreadResult = $conn->query($unreadSQL);
+                    $unreadCount = 0;
+
+                    if ($unreadResult->num_rows > 0) {
+                        $row = $unreadResult->fetch_assoc();
+                        $unreadCount = $row['unreadCount'];
+                    }
+                    ?>
+
                     <div class="icon ml-3">
-                        <a class="svgg2" href="#">
-                            <button class="butt3">
+                        <a class="svgg2" href="?page=notifs">
+                            <button class="butt3 position-relative">
                                 <i class="fa-solid fa-bell"></i>
+                                <?php if ($unreadCount > 0): ?>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        <?php echo $unreadCount; ?>
+                                    </span>
+                                <?php endif; ?>
                             </button>
                         </a>
                     </div>
@@ -106,6 +126,21 @@
             case 'OrderHistory':
                 include 'customerPages/OrderHistory.php';
                 break;
+<<<<<<< Updated upstream
+=======
+            case 'userSettingsPage':
+                include 'customerPages/userSettingsPage.php';
+                break;
+            case 'userSettings':
+                include 'customerPages/userSettings.php';
+                break;
+            case 'userOrders':
+                include 'customerPages/userOrders.php';
+                break;
+            case 'notifs':
+                include 'customerPages/notifsPage.php';
+                break;
+>>>>>>> Stashed changes
             case 'homePage':
             default:
                 include 'customerPages/homePage.php';
