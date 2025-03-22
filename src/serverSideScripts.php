@@ -116,6 +116,7 @@ function loginUser()
       $_SESSION['username'] = $logindata['userFname'] . " " . $logindata['userLname'];
       $_SESSION['userID'] = $logindata['userID'];
       $_SESSION['email'] = $logindata['userEmail'];
+      $_SESSION['role'] = $logindata['roleID'];
       $_SESSION['isLoggedIn'] = true;
 
       $role = $logindata['roleID'];
