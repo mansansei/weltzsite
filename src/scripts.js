@@ -20,10 +20,27 @@ $(document).ready(function () {
             $('#quantityInput').val(quantity - 1);
         }
     });
+
     $('#increaseQuantity').click(function () {
         var quantity = parseInt($('#quantityInput').val());
-        $('#quantityInput').val(quantity + 1);
+        var inStock = parseInt($('p:contains("In Stock:")').text().match(/\d+/)[0]); // Extract stock number
+        if (quantity < inStock) {
+            $('#quantityInput').val(quantity + 1);
+        }
     });
+
+    // Prevent manual input beyond stock limit
+    $('#quantityInput').on('input', function () {
+        var quantity = parseInt($(this).val());
+        var inStock = parseInt($('p:contains("In Stock:")').text().match(/\d+/)[0]);
+
+        if (isNaN(quantity) || quantity < 1) {
+            $(this).val(1);
+        } else if (quantity > inStock) {
+            $(this).val(inStock);
+        }
+    });
+
 
     // add to cart
     $('#addToCartBtn').click(function () {
@@ -201,8 +218,6 @@ $(document).ready(function () {
         // Extract the cartItemID
         var cartItemID = cartItemDiv.data('item-id');
 
-        console.log(cartItemID);
-
         // Send the cartItemID to the PHP function via AJAX
         $.ajax({
             url: 'serverSideScripts.php',
@@ -274,8 +289,6 @@ $(document).ready(function () {
         });
         let paymentMethod = $('input[name="paymentMethod"]:checked').val();
 
-        console.log(cartItems);
-
         if (!paymentMethod) {
             Swal.fire({
                 icon: 'warning',
@@ -340,7 +353,7 @@ $(document).ready(function () {
     // 
     $('.view-notif').on('click', function () {
         let notifID = $(this).data('notif-id');
-    
+
         $.ajax({
             url: 'serverSideScripts.php',
             type: 'POST',
@@ -403,8 +416,6 @@ $(document).ready(function () {
         submitHandler: function (form) {
             // Get form data
             var formData = $(form).serialize();
-
-            console.log(formData);
 
             // Send form data via AJAX
             $.ajax({
@@ -537,8 +548,6 @@ $(document).ready(function () {
         submitHandler: function (form) {
             // Get form data
             var formData = $(form).serialize();
-
-            console.log(formData);
 
             // Send form data via AJAX
             $.ajax({
@@ -913,6 +922,8 @@ $(document).ready(function () {
                 type: 'POST',
                 data: formData,
                 dataType: 'json',
+                processData: false,  // Prevent jQuery from processing data
+                contentType: false,  // Prevent jQuery from setting content type
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({
@@ -972,8 +983,6 @@ $(document).ready(function () {
         var productPrice = row.find('td:eq(6)').text();
         var productStock = row.find('td:eq(7)').text();
 
-        console.log(productIMG);
-
         // Set new data in modal
         $('#editProdID').val(productID);
         $('#editProdName').val(productName);
@@ -1025,7 +1034,7 @@ $(document).ready(function () {
         },
         submitHandler: function (form) {
             // Get form data
-            var formData = $(form).serialize();
+            var formData = new FormData(form);
 
             // Send form data via AJAX
             $.ajax({
@@ -1033,6 +1042,9 @@ $(document).ready(function () {
                 url: 'serverSideScripts.php',
                 data: formData,
                 dataType: 'json',
+                dataType: 'json',
+                processData: false,  // Prevent jQuery from processing data
+                contentType: false,  // Prevent jQuery from setting content type
                 success: function (response) {
                     if (response.success) {
                         Swal.fire({

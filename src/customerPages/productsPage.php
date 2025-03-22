@@ -2,7 +2,7 @@
 require_once 'weltz_dbconnect.php';
 ?>
 
-<div class="container-fluid p-5">
+<div class="container-fluid p-5 min-vh-100">
     <!-- Header with Title and Search Bar -->
     <div class="row mb-4 border-bottom border-danger">
         <div class="col-md-9">

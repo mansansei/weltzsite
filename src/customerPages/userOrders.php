@@ -79,7 +79,7 @@
                 <p class="text-center">You have no orders being processed yet.</p>
             <?php else: ?>
                 <?php foreach ($orders as $orderID => $order): ?>
-                    <div class="order-details bg-light mb-5" id="order-<?= $orderID ?>">
+                    <div class="order-details bg-light mb-5" id="order-<?= htmlspecialchars($order['referenceNum']) ?>">
                         <?php foreach ($order['items'] as $item): ?>
                             <div class="order-item row align-items-center p-3 m-0 border-bottom border-dark">
                                 <div class="col-lg-6 d-flex">

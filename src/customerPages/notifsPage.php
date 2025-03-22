@@ -27,7 +27,7 @@ if (isset($_SESSION['userID'])) {
                     if ($notifsSQLResult->num_rows > 0) {
                         while ($row = $notifsSQLResult->fetch_assoc()) {
                     ?>
-                            <div class="alert alert-info" role="alert">
+                            <div class="alert alert-secondary" role="alert">
                                 <div class="row">
                                     <div class="col">
                                         <div class="row">

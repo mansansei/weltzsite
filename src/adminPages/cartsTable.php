@@ -4,12 +4,12 @@ require_once 'weltz_dbconnect.php';
 $cartsSQL =
     "SELECT
         c.cartID, 
-        CONCAT(u.userFname, ' ', u.userLname) AS userFullName,
+        COALESCE(CONCAT(u.userFname, ' ', u.userLname), 'Deleted User') AS userFullName,
         c.createdAt,
         c.updatedAt 
     FROM 
         carts_tbl c
-    JOIN 
+    LEFT JOIN 
         users_tbl u ON c.userID = u.userID
     ";
 

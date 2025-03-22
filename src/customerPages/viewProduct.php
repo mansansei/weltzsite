@@ -49,8 +49,8 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
                         <p class="fs-5" id="productDesc"><?php echo $product['productDesc'] ?></p>
                     </div>
                     <div class="mb-3">
-                        <p class="fs-3">Stock: 0</p>
-                        <p class="fs-3 fw-bold">Php <span id="productPrice"><?php echo $product['productPrice'] ?></span></p>
+                        <p class="fs-3">In Stock: <?php echo $product['inStock'] ?></p>
+                        <p class="fs-3">Php <span id="productPrice"><?php echo $product['productPrice'] ?></span></p>
                     </div>
                     <div class="quantity-counter mb-5">
                         <p class="fs-3">Quantity</p>

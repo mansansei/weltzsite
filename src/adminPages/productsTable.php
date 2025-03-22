@@ -4,7 +4,7 @@ require_once 'weltz_dbconnect.php';
 $productsSQL =
     "SELECT
         p.productID, 
-        CONCAT(u.userFname, ' ', u.userLname) AS userFullName,
+        COALESCE(CONCAT(u.userFname, ' ', u.userLname), 'Deleted User') AS userFullName,
         p.productIMG,
         p.productName,
         c.categoryName,
@@ -16,11 +16,11 @@ $productsSQL =
         p.updatedAt
     FROM 
         products_tbl p
-    JOIN 
+    LEFT JOIN 
         users_tbl u ON p.userID = u.userID
     JOIN 
-        categories_tbl c ON p.categoryID = c.categoryID
-    ";
+        categories_tbl c ON p.categoryID = c.categoryID";
+
 
 $productsSQLResult = $conn->query($productsSQL);
 

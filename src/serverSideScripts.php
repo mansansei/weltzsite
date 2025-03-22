@@ -965,6 +965,10 @@ function deleteUser()
 // Function to add product
 function addProduct()
 {
+  header('Content-Type: application/json'); // Ensure JSON response
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
@@ -1030,8 +1034,8 @@ function addProduct()
 
     $currentDateTime = date('Y-m-d H:i:s');
 
-    $insertsql = "INSERT INTO products_tbl (userID, productName, productIMG, categoryID, productDesc, productPrice, inStock, createdAt, updatedAt)
-                      VALUES ('$userID', '$productName', '$productIMGPath', '$categoryID', '$productDesc', '$productPrice', '$inStock', '$currentDateTime', '$currentDateTime')";
+    $insertsql = "INSERT INTO products_tbl (userID, productName, productIMG, categoryID, productDesc, productPrice, inStock, prodSold, createdAt, updatedAt)
+                      VALUES ('$userID', '$productName', '$productIMGPath', '$categoryID', '$productDesc', '$productPrice', '$inStock', 0, '$currentDateTime', '$currentDateTime')";
 
     if ($conn->query($insertsql) === TRUE) {
 

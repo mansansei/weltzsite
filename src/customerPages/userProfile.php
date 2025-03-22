@@ -17,7 +17,7 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
 
             <!-- Navigation Buttons -->
             <div class="nav-buttons mt-4">
-                <a href="?page=userProfile&tab=userProfile" class="nav-button fs-5 usersettingsactive" id="profileLink">
+                <a href="?page=userProfile&tab=userProfile" class="nav-button fs-5" id="profileLink">
                     <i class="fa-solid fa-user fa-fw"></i> Profile
                 </a>
                 <a href="?page=userProfile&tab=userSettings" class="nav-button fs-5" id="settingsLink">
