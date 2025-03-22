@@ -378,22 +378,24 @@ $(document).ready(function () {
                 type: 'POST',
                 url: 'serverSideScripts.php',
                 data: formData,
+                dataType: 'json',
                 success: function (response) {
-                    var res = JSON.parse(response);
-                    if (res.success) {
-                        window.location.href = res.redirect;
+                    if (response.success) {
+                        window.location.href = response.redirect;
                         $('#adminSignupForm')[0].reset(); // Reset the form
                     } else {
                         Swal.fire({
                             position: "center",
                             icon: "error",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         });
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -492,7 +494,7 @@ $(document).ready(function () {
                 required: "You must agree to the terms and conditions"
             },
         },
-        errorPlacement: function(error, element) {
+        errorPlacement: function (error, element) {
             if (element.attr("name") === "policy") {
                 // Place the error message below the checkbox wrapper
                 error.insertAfter("#checkboxWrapper");

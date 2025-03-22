@@ -2,6 +2,11 @@
 
 session_start();
 
+if (isset($_SESSION['role']) && $_SESSION['role'] == 2) {
+    header('Location: Login.php');
+    exit();
+}
+
 ?>
 
 <html lang="en">
@@ -97,13 +102,13 @@ session_start();
                     <?php
                     } else {
                     ?>
-                    <div class="icon ml-3">
-                        <a class="svgg2" href="?page=notifs">
-                            <button class="butt3 position-relative">
-                                <i class="fa-solid fa-bell"></i>
-                            </button>
-                        </a>
-                    </div>
+                        <div class="icon ml-3">
+                            <a class="svgg2" href="?page=notifs">
+                                <button class="butt3 position-relative">
+                                    <i class="fa-solid fa-bell"></i>
+                                </button>
+                            </a>
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -112,48 +117,48 @@ session_start();
 
     <div class="container-fluid m-0 p-0">
         <?php
-    // Default page
-    $page = 'homePage';
+        // Default page
+        $page = 'homePage';
 
-    // Check if 'page' parameter is set in the query string
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
+        // Check if 'page' parameter is set in the query string
+        if (isset($_GET['page'])) {
+            $page = $_GET['page'];
+        }
 
-    // Include the corresponding page content
-    switch ($page) {
-        case 'aboutUsPage':
-            include 'customerPages/homePage.php';
-            break;
-        case 'productsPage':
-            include 'customerPages/productsPage.php';
-            break;
-        case 'contactPage':
-            include 'customerPages/contactPage.php';
-            break;
-        case 'blogsPage':
-            include 'customerPages/blogsPage.php';
-            break;
-        case 'cartPage':
-            include 'customerPages/cartPage.php';
-            break;
-        case 'viewProduct':
-            include 'customerPages/viewProduct.php';
-            break;
-        case 'OrderHistory':
-            include 'customerPages/OrderHistory.php';
-            break;
-        case 'userProfile':
-            include 'customerPages/userProfile.php';
-            break;
-        case 'notifs':
-            include 'customerPages/notifsPage.php';
-            break;
-        case 'homePage':
-        default:
-            include 'customerPages/homePage.php';
-            break;
-    }
+        // Include the corresponding page content
+        switch ($page) {
+            case 'aboutUsPage':
+                include 'customerPages/homePage.php';
+                break;
+            case 'productsPage':
+                include 'customerPages/productsPage.php';
+                break;
+            case 'contactPage':
+                include 'customerPages/contactPage.php';
+                break;
+            case 'blogsPage':
+                include 'customerPages/blogsPage.php';
+                break;
+            case 'cartPage':
+                include 'customerPages/cartPage.php';
+                break;
+            case 'viewProduct':
+                include 'customerPages/viewProduct.php';
+                break;
+            case 'OrderHistory':
+                include 'customerPages/OrderHistory.php';
+                break;
+            case 'userProfile':
+                include 'customerPages/userProfile.php';
+                break;
+            case 'notifs':
+                include 'customerPages/notifsPage.php';
+                break;
+            case 'homePage':
+            default:
+                include 'customerPages/homePage.php';
+                break;
+        }
         ?>
     </div>
 

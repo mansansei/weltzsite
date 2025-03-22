@@ -612,6 +612,14 @@ form .row .col input {
     }
 }
 
+/* =====CUSTOMER ORDERS===== */
+
+.order-footer {
+    background-color: #e4e4e4;
+}
+
+
+
 /* =====ADMIN PANEL===== */
 
 .adminPanel {

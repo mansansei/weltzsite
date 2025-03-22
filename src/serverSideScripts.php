@@ -83,6 +83,12 @@ function loginUser()
       $password = htmlspecialchars($password);
     }
 
+    // Check if the user has been locked out globally
+    if (isset($_SESSION['lockout_until']) && $_SESSION['lockout_until'] > time()) {
+      echo json_encode(['success' => false, 'message' => 'Too many failed login attempts. You have been locked out for 5 minutes']);
+      exit;
+    }
+
     $loginsql = "SELECT * FROM users_tbl WHERE userEmail=?";
     $stmt = $conn->prepare($loginsql);
     $stmt->bind_param("s", $email);
@@ -91,55 +97,39 @@ function loginUser()
     $logindata = $loginresult->fetch_assoc();
     $stmt->close();
 
-    // If user exists, check failed attempts
+    // Handle existing users
     if ($logindata) {
       $failedAttempts = $logindata['failedAttempts'];
       $lockedUntil = $logindata['lockedUntil'];
 
-      // Check if account is locked
       if ($lockedUntil && strtotime($lockedUntil) > time()) {
         echo json_encode(['success' => false, 'message' => 'Too many failed login attempts. You have been locked out for 5 minutes']);
         exit;
       }
-    }
 
-    // Check if user exists and verify the password
-    if ($logindata && password_verify($password, $logindata['userPass'])) {
-      // Reset failed attempts on successful login
-      $resetAttemptsSql = "UPDATE users_tbl SET failedAttempts = 0, lockedUntil = NULL WHERE userEmail = ?";
-      $stmt = $conn->prepare($resetAttemptsSql);
-      $stmt->bind_param("s", $email);
-      $stmt->execute();
-      $stmt->close();
+      if (password_verify($password, $logindata['userPass'])) {
+        $resetAttemptsSql = "UPDATE users_tbl SET failedAttempts = 0, lockedUntil = NULL WHERE userEmail = ?";
+        $stmt = $conn->prepare($resetAttemptsSql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->close();
 
-      // Set session variables
-      $_SESSION['username'] = $logindata['userFname'] . " " . $logindata['userLname'];
-      $_SESSION['userID'] = $logindata['userID'];
-      $_SESSION['email'] = $logindata['userEmail'];
-      $_SESSION['role'] = $logindata['roleID'];
-      $_SESSION['isLoggedIn'] = true;
+        $_SESSION['username'] = $logindata['userFname'] . " " . $logindata['userLname'];
+        $_SESSION['userID'] = $logindata['userID'];
+        $_SESSION['email'] = $logindata['userEmail'];
+        $_SESSION['role'] = $logindata['roleID'];
+        $_SESSION['isLoggedIn'] = true;
 
-      $role = $logindata['roleID'];
+        createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], null, json_encode(['status' => 'success']));
 
-      // Log the successful login attempt
-      createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], null, json_encode(['status' => 'success']));
+        $response = ['success' => true, 'message' => 'Login successful'];
+        $response['redirect'] = ($logindata['roleID'] == 1) ? 'Home.php' : 'adminIndex.php';
 
-      $response = ['success' => true, 'message' => 'Login successful'];
-
-      if ($role == 1) {
-        $response['redirect'] = 'Home.php';
-      } else if ($role == 2) {
-        $response['redirect'] = 'adminIndex.php';
-      }
-
-      echo json_encode($response);
-    } else {
-      // Log the failed login attempt
-      if ($logindata) {
-        $userID = $logindata['userID'];
+        echo json_encode($response);
+        exit;
+      } else {
         $failedAttempts++;
 
-        // Lock account if failed attempts reach 3
         if ($failedAttempts >= 3) {
           $lockoutTime = date("Y-m-d H:i:s", strtotime("+5 minutes"));
           $updateFailedSql = "UPDATE users_tbl SET failedAttempts = ?, lockedUntil = ? WHERE userEmail = ?";
@@ -154,17 +144,28 @@ function loginUser()
         $stmt->execute();
         $stmt->close();
 
-        createAuditLog($conn, $userID, 'LOGIN', 'users_tbl', $userID, json_encode(['email' => $email]), json_encode(['status' => 'failed']));
-      } else {
-        // If user does not exist, log the attempt without userID
-        createAuditLog($conn, null, 'LOGIN', 'users_tbl', null, json_encode(['email' => $email]), json_encode(['status' => 'failed']));
+        createAuditLog($conn, $logindata['userID'], 'LOGIN', 'users_tbl', $logindata['userID'], json_encode(['email' => $email]), json_encode(['status' => 'failed']));
+      }
+    } else {
+      // Handle non-existent users
+      if (!isset($_SESSION['failed_attempts'])) {
+        $_SESSION['failed_attempts'] = 0;
       }
 
-      echo json_encode(['success' => false, 'message' => 'Email or Password is wrong']);
+      $_SESSION['failed_attempts']++;
+
+      if ($_SESSION['failed_attempts'] >= 3) {
+        $_SESSION['lockout_until'] = time() + (5 * 60);
+        echo json_encode(['success' => false, 'message' => 'Too many failed login attempts. You have been locked out for 5 minutes']);
+        exit;
+      }
+
+      createAuditLog($conn, null, 'LOGIN', 'users_tbl', null, json_encode(['email' => $email]), json_encode(['status' => 'failed']));
     }
+
+    echo json_encode(['success' => false, 'message' => 'Email or Password is wrong']);
   }
 }
-
 
 // Logout validation function
 function logoutUser()
@@ -267,7 +268,7 @@ function addToCart()
         // Create audit log entry for INSERT
         $newCartItemID = $conn->insert_id;
         $newValues = json_encode(['cartID' => $cartID, 'productID' => $productID, 'cartItemQuantity' => $quantity, 'cartItemTotal' => $totalPrice]);
-        createAuditLog($conn, $userID, 'INSERT', 'cart_items_tbl', $newCartItemID, NULL, $newValues);
+        createAuditLog($conn, $userID, 'CREATE', 'cart_items_tbl', $newCartItemID, NULL, $newValues);
 
         echo json_encode(['success' => true, 'message' => 'Item added to cart successfully.']);
       } else {
@@ -473,8 +474,6 @@ function placeOrder()
     $conn->close();
   }
 }
-
-
 
 // Function for registering customer
 function regCustomer()

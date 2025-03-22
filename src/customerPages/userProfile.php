@@ -42,13 +42,10 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
         </div>
 
         <!-- Content Area -->
-        <div class="ucontent">
+        <div class="ucontent p-5">
             <?php
-            $tab = 'userProfile';
+            $tab = isset($_GET['tab']) ? $_GET['tab'] : 'userProfile';
 
-            if (isset($_GET['tab'])) {
-                $page = $_GET['tab'];
-            }
 
             switch ($tab) {
                 case 'userSettings':
@@ -61,7 +58,7 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
                 default:
                     include 'userProfilePage.php';
                     break;
-            }
+            }            
 
             ?>
         </div>
