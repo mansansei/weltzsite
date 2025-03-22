@@ -65,7 +65,7 @@
                 $cartID = $cartRow['cartID'];
 
                 // Retrieve the cart items
-                $itemsQuery = $conn->prepare("SELECT ci.cartItemID, ci.productID, ci.cartItemQuantity, ci.cartItemTotal, p.productName, c.categoryName 
+                $itemsQuery = $conn->prepare("SELECT ci.cartItemID, ci.productID, ci.cartItemQuantity, ci.cartItemTotal, p.productName, p.productIMG, c.categoryName 
                                       FROM cart_items_tbl ci
                                       JOIN products_tbl p ON ci.productID = p.productID
                                       JOIN categories_tbl c ON p.categoryID = c.categoryID
@@ -84,7 +84,7 @@
                                     <input type="checkbox" class="form-check-input item-check">
                                 </div>
                                 <div class="col-lg-4 d-flex">
-                                    <img src="https://via.placeholder.com/50" alt="Product Image" class="me-2">
+                                    <img src="<?php echo htmlspecialchars($itemRow['productIMG']) ?>" alt="Product Image" class="me-2" style="width: 100px;">
                                     <div class="d-flex flex-column justify-content-center">
                                         <span><?php echo htmlspecialchars($itemRow['productName']) ?></span>
                                         <span class="text-secondary">Category: <?php echo htmlspecialchars($itemRow['categoryName']) ?></span>

@@ -1,5 +1,7 @@
 <?php
 
+require 'weltz_dbconnect.php';
+
 session_start();
 
 if (isset($_SESSION['role']) && $_SESSION['role'] == 2) {
@@ -65,15 +67,29 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 2) {
                             </button>
                         </a>
                     </div>
-                    <div class="icon ml-3">
-                        <a class="svgg2" href="?page=userProfile">
-                            <button class="butt2">
-                                <i class="fa-solid fa-cog"></i>
-                            </button>
-                        </a>
-                    </div>
                     <?php
-                    include 'weltz_dbconnect.php';
+
+                    if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
+                    ?>
+                        <div class="icon ml-3">
+                            <a class="svgg2" href="?page=userProfile">
+                                <button class="butt2">
+                                    <i class="fa-solid fa-circle-user"></i>
+                                </button>
+                            </a>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="icon ml-3">
+                            <a class="svgg2" href="Login.php">
+                                <button class="butt2">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                </button>
+                            </a>
+                        </div>
+                    <?php
+                    }
 
                     if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
                         $userID = $_SESSION['userID'];

@@ -54,6 +54,25 @@ session_start();
     </section>
 
     <?php require_once 'cssLibrariesJS.php' ?>
+    <script>
+        $(document).ready(function() {
+            let otpMessage = sessionStorage.getItem("otp_message");
+
+            if (otpMessage) {
+                let response = JSON.parse(otpMessage);
+
+                Swal.fire({
+                    icon: response.status === "success" ? "success" : "error",
+                    title: response.status === "success" ? "Success" : "Error",
+                    text: response.message,
+                    confirmButtonText: "OK"
+                });
+
+                // Clear session storage after displaying the message
+                sessionStorage.removeItem("otp_message");
+            }
+        });
+    </script>
 </body>
 
 </html>
