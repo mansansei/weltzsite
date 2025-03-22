@@ -61,7 +61,7 @@ $paymentResult = $paymentStmt->get_result();
     <header class="container bg-danger text-white py-2">
         <h5 class="text-center">Weltz Industrial INC. Phils</h5>
     </header>
-    <div class="container mt-5">
+    <div class="container mt-5 vh-100">
         <div class="row border-bottom border-danger mb-4">
             <div class="col-md-9">
                 <h1>Checkout</h1>
@@ -102,9 +102,16 @@ $paymentResult = $paymentStmt->get_result();
         </div>
 
         <div class="confirmCheckout mt-4 text-end mb-4" data-totalamount="<?php echo number_format($totalAmount, 2); ?>">
-            <p>Merchandise Subtotal: PHP <?php echo number_format($totalAmount, 2); ?></p>
-            <h4>Total Amount: PHP <?php echo number_format($totalAmount, 2); ?></h4>
-            <button class="btn btn-danger" id="confirmCheckout">Place Order</button>
+            <div class="row">
+                <div class="col-6 d-flex align-items-center">
+                    <a href="javascript:history.back()" class="btn btn-danger">Go Back to Cart</a>
+                </div>
+                <div class="col-6">
+                    <p>Merchandise Subtotal: PHP <?php echo number_format($totalAmount, 2); ?></p>
+                    <h4>Total Amount: PHP <?php echo number_format($totalAmount, 2); ?></h4>
+                    <button class="btn btn-danger" id="confirmCheckout">Place Order</button>
+                </div>
+            </div>
         </div>
     </div>
     <footer class="container bg-dark text-white text-center py-3">

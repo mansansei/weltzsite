@@ -21,11 +21,11 @@ if (isset($_SESSION['userID'])) {
             ?>
                 <div class="tab-pane fade <?php echo $status == 9 ? ' show active' : '' ?>" id="<?php echo $tab ?>" role="tabpanel">
                     <?php
-                    $selectNotifsSQL = "SELECT notifName, notifMessage, createdAt FROM notifs_tbl WHERE userID = '$userID' AND statusID = '$status' ORDER BY notifID DESC";
-                    $result = $conn->query($selectNotifsSQL);
+                    $selectNotifsSQL = "SELECT notifID, notifName, notifMessage, notifType, createdAt FROM notifs_tbl WHERE userID = '$userID' AND statusID = '$status' ORDER BY notifID DESC";
+                    $notifsSQLResult = $conn->query($selectNotifsSQL);
 
-                    if ($result->num_rows > 0) {
-                        while ($row = $result->fetch_assoc()) {
+                    if ($notifsSQLResult->num_rows > 0) {
+                        while ($row = $notifsSQLResult->fetch_assoc()) {
                     ?>
                             <div class="alert alert-info" role="alert">
                                 <div class="row">
@@ -40,7 +40,7 @@ if (isset($_SESSION['userID'])) {
                                         </div>
                                     </div>
                                     <div class="col text-end">
-                                        <button type="button" class="btn btn-primary">View</button>
+                                        <a href="?page=userProfile&tab=userOrders" class="btn btn-primary view-notif" data-notif-id="<?php echo $row['notifID']; ?>">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +57,7 @@ if (isset($_SESSION['userID'])) {
             }
             ?>
         </div>
-    </div>';
+    </div>
 <?php
     $conn->close();
 }

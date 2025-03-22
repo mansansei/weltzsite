@@ -52,9 +52,9 @@ $(document).ready(function () {
                             quantity: quantity,
                             totalPrice: totalPrice
                         },
+                        dataType: 'json',
                         success: function (response) {
-                            var result = JSON.parse(response);
-                            if (result.success) {
+                            if (response.success) {
                                 Swal.fire({
                                     title: 'Added to Cart',
                                     text: 'The item has been added to your cart.',
@@ -81,7 +81,7 @@ $(document).ready(function () {
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Error',
-                                    text: result.message,
+                                    text: response.message,
                                     showConfirmButton: false,
                                     backdrop: false,
                                     position: 'top',
@@ -157,10 +157,10 @@ $(document).ready(function () {
                 newQuantity: newQuantity,
                 newTotalPrice: newTotalPrice,
             },
+            dataType: 'json',
             success: function (response) {
-                var result = JSON.parse(response);
-                if (!result.success) {
-                    alert(result.message);
+                if (!response.success) {
+                    alert(response.message);
                 }
             }
         });
@@ -211,22 +211,25 @@ $(document).ready(function () {
                 action: 'deleteCartItem',
                 cartItemID: cartItemID
             },
+            dataType: 'json',
             success: function (response) {
-                // Parse the JSON response
-                var res = JSON.parse(response);
-
                 // Handle success response
-                if (res.success) {
+                if (response.success) {
                     // Remove the cart-item div from the DOM
                     location.reload();
                 } else {
                     // Handle failure response
-                    console.log('Failed to remove item from cart: ' + res.message);
+                    console.log('Failed to remove item from cart: ' + response.message);
                 }
             },
-            error: function () {
-                // Handle AJAX error
-                console.log('An error occurred while trying to remove the item from cart.');
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
+                });
             }
         });
     });
@@ -292,14 +295,14 @@ $(document).ready(function () {
                 totalAmount: totalAmountFloat.toFixed(2),
                 mopID: paymentMethod
             },
+            dataType: 'json',
             success: function (response) {
                 try {
-                    var res = JSON.parse(response);
-                    if (res.success) {
+                    if (response.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Order placed!',
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         }).then(() => {
@@ -310,7 +313,7 @@ $(document).ready(function () {
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: res.message
+                            text: response.message
                         });
                     }
                 } catch (e) {
@@ -322,10 +325,40 @@ $(document).ready(function () {
                     console.log('Response:', response);
                 }
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
                 Swal.fire({
                     icon: 'error',
-                    text: 'An error occurred while placing the order. Please try again.'
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
+                });
+            }
+        });
+    });
+
+    // 
+    $('.view-notif').on('click', function () {
+        let notifID = $(this).data('notif-id');
+    
+        $.ajax({
+            url: 'serverSideScripts.php',
+            type: 'POST',
+            data: { action: 'markAsRead', notifID: notifID },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
                 });
             }
         });
@@ -417,10 +450,10 @@ $(document).ready(function () {
             url: 'serverSideScripts.php',
             type: 'POST',
             data: formData,
+            dataType: 'json',
             success: function (response) {
-                var res = JSON.parse(response);
-                if (res.success) {
-                    window.location.href = res.redirect;
+                if (response.success) {
+                    window.location.href = response.redirect;
                 }
             }
         });
@@ -443,7 +476,6 @@ $(document).ready(function () {
             uAdd: {
                 required: true,
                 minlength: 5,
-                noSpecialChars: true
             },
             uPhone: {
                 required: true,
@@ -475,7 +507,6 @@ $(document).ready(function () {
             uAdd: {
                 required: "Please enter your address",
                 minlength: "Must be at least 5 characters",
-                noSpecialChars: "No special characters allowed"
             },
             uPhone: {
                 required: "Please provide a contact number",
@@ -514,13 +545,13 @@ $(document).ready(function () {
                 type: 'POST',
                 url: 'serverSideScripts.php',
                 data: formData,
+                dataType: 'json',
                 success: function (response) {
-                    var res = JSON.parse(response);
-                    if (res.success) {
+                    if (response.success) {
                         Swal.fire({
                             position: "center",
                             icon: "success",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500,
                             willClose: () => {
@@ -532,13 +563,15 @@ $(document).ready(function () {
                         Swal.fire({
                             position: "center",
                             icon: "error",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         });
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -566,7 +599,6 @@ $(document).ready(function () {
             uAdd: {
                 required: true,
                 minlength: 5,
-                noSpecialChars: true
             },
             uPhone: {
                 required: true,
@@ -595,7 +627,6 @@ $(document).ready(function () {
             uAdd: {
                 required: "Please enter your address",
                 minlength: "Must be at least 5 characters",
-                noSpecialChars: "No special characters allowed"
             },
             uPhone: {
                 required: "Please provide a contact number",
@@ -620,13 +651,13 @@ $(document).ready(function () {
                 type: 'POST',
                 url: 'serverSideScripts.php',
                 data: formData,
+                dataType: 'json',
                 success: function (response) {
-                    var res = JSON.parse(response);
-                    if (res.success) {
+                    if (response.success) {
                         Swal.fire({
                             position: "center",
                             icon: "success",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500,
                             willClose: () => {
@@ -638,13 +669,15 @@ $(document).ready(function () {
                         Swal.fire({
                             position: "center",
                             icon: "error",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         });
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -758,7 +791,9 @@ $(document).ready(function () {
                         });
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -787,13 +822,13 @@ $(document).ready(function () {
             url: 'serverSideScripts.php',
             type: 'POST',
             data: formData,
+            dataType: 'json',
             success: function (response) {
-                var res = JSON.parse(response);
-                if (res.success) {
+                if (response.success) {
                     Swal.fire({
                         position: "center",
                         icon: "success",
-                        text: res.message,
+                        text: response.message,
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
@@ -806,13 +841,15 @@ $(document).ready(function () {
                     Swal.fire({
                         position: "center",
                         icon: "error",
-                        text: res.message,
+                        text: response.message,
                         showConfirmButton: false,
                         timer: 1500
                     });
                 }
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -875,15 +912,13 @@ $(document).ready(function () {
                 url: 'serverSideScripts.php',
                 type: 'POST',
                 data: formData,
-                contentType: false,
-                processData: false,
+                dataType: 'json',
                 success: function (response) {
-                    var res = JSON.parse(response);
-                    if (res.success) {
+                    if (response.success) {
                         Swal.fire({
                             position: "center",
                             icon: "success",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500,
                             willClose: () => {
@@ -896,13 +931,15 @@ $(document).ready(function () {
                         Swal.fire({
                             position: "center",
                             icon: "error",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         });
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -995,13 +1032,13 @@ $(document).ready(function () {
                 type: 'POST',
                 url: 'serverSideScripts.php',
                 data: formData,
+                dataType: 'json',
                 success: function (response) {
-                    var res = JSON.parse(response);
-                    if (res.success) {
+                    if (response.success) {
                         Swal.fire({
                             position: "center",
                             icon: "success",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500,
                             willClose: () => {
@@ -1014,13 +1051,15 @@ $(document).ready(function () {
                         Swal.fire({
                             position: "center",
                             icon: "error",
-                            text: res.message,
+                            text: response.message,
                             showConfirmButton: false,
                             timer: 1500
                         });
                     }
                 },
-                error: function () {
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
@@ -1050,13 +1089,13 @@ $(document).ready(function () {
             url: 'serverSideScripts.php',
             type: 'POST',
             data: formData,
+            dataType: 'json',
             success: function (response) {
-                var res = JSON.parse(response);
-                if (res.success) {
+                if (response.success) {
                     Swal.fire({
                         position: "center",
                         icon: "success",
-                        text: res.message,
+                        text: response.message,
                         showConfirmButton: false,
                         timer: 1500,
                         willClose: () => {
@@ -1067,13 +1106,15 @@ $(document).ready(function () {
                     Swal.fire({
                         position: "center",
                         icon: "error",
-                        text: res.message,
+                        text: response.message,
                         showConfirmButton: false,
                         timer: 1500
                     });
                 }
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
