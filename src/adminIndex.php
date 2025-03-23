@@ -63,6 +63,9 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || !isse
           <a class="fs-5" href="?page=carts"><i class="fa-solid fa-cart-shopping"></i> Carts</a>
         </li>
         <li>
+          <a class="fs-5" href="?page=orders"><i class="fa-solid fa-truck"></i> Orders</a>
+        </li>
+        <li>
           <a class="fs-5" href="?page=blogs"><i class="fa-solid fa-pen-to-square"></i> Company Blogs</a>
         </li>
         <li>
@@ -110,6 +113,9 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || !isse
           break;
         case 'blogs':
           include 'adminPages/blogsTable.php';
+          break;
+        case 'orders':
+          include 'adminPages/ordersTable.php';
           break;
         case 'logs':
           include 'adminPages/logsTable.php';
