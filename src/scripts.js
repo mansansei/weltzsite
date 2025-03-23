@@ -41,12 +41,11 @@ $(document).ready(function () {
         }
     });
 
-
     // add to cart
     $('#addToCartBtn').click(function () {
         var productID = $(this).data('product-id');
         var quantity = $('#quantityInput').val();
-        var price = parseFloat($('#productPrice').text());
+        var price = parseFloat($('#productPrice').text().replace(/,/g, ''));
         var totalPrice = quantity * price;
 
         // Check if user is logged in
@@ -78,20 +77,6 @@ $(document).ready(function () {
                                     showConfirmButton: false,
                                     backdrop: false,
                                     position: 'top',
-                                    showClass: {
-                                        popup: `
-                                          animate__animated
-                                          animate__fadeInDown
-                                          animate__faster
-                                        `
-                                    },
-                                    hideClass: {
-                                        popup: `
-                                          animate__animated
-                                          animate__fadeOutUp
-                                          animate__faster
-                                        `
-                                    },
                                     timer: 1500
                                 });
                             } else {
@@ -105,6 +90,15 @@ $(document).ready(function () {
                                     timer: 1500
                                 });
                             }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error("AJAX Error:", textStatus, errorThrown);
+                            console.log("Server response:", jqXHR.responseText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'An error occurred while processing your request.',
+                            });
                         }
                     });
                 } else {
@@ -123,6 +117,7 @@ $(document).ready(function () {
             }
         });
     });
+
 
     // CART==================================================
     // cart check all
@@ -185,29 +180,30 @@ $(document).ready(function () {
 
     // update total of individual cart item
     function updateTotal($cartItem) {
-        var unitPrice = parseFloat($cartItem.data('unit-price'));
         var quantity = parseInt($cartItem.find('.quantityInput').val());
-        var totalPrice = unitPrice * quantity;
-        $cartItem.find('.total-price').text(totalPrice.toFixed(2));
-    };
+        var unitPrice = parseFloat($cartItem.attr('data-unit-price')); // Use `attr` instead of `data`
+        if (isNaN(unitPrice) || isNaN(quantity)) return; // Prevent errors if values are undefined
+
+        var totalPrice = (unitPrice * quantity).toFixed(2);
+        $cartItem.find('.total-price').text(totalPrice);
+    }
 
     // update total in footer
     function updateFooterTotal() {
         var totalItems = 0;
         var totalPrice = 0.0;
-
+    
         $('.item-check:checked').each(function () {
             totalItems++;
             var $cartItem = $(this).closest('.cart-item');
             var itemTotalPrice = parseFloat($cartItem.find('.total-price').text().replace(/,/g, ''));
-
             if (!isNaN(itemTotalPrice)) {
-                totalPrice += itemTotalPrice;
+                totalPrice += itemTotalPrice; // Accumulate the total price
             }
         });
-
+    
         $('#totalText').text('Total (' + totalItems + '): PHP ' + totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-    };
+    }    
 
     // Remove cart item
     // Event listener for the remove button
@@ -1169,7 +1165,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    
+
                     Swal.fire({
                         title: 'Order Cancelled',
                         text: 'The order has been cancelled successfully.',
@@ -1192,7 +1188,7 @@ $(document).ready(function () {
                         },
                         timer: 1500
                     }).then(() => {
-                        
+
                         location.reload();
                     });
                 } else {
@@ -1221,100 +1217,100 @@ $(document).ready(function () {
             }
         });
 
-        
+
         $('#cancelOrderModal').modal('hide');
     });
 
-    
+
     let orderIDToEdit = null;
 
-// When the "Edit Order" button is clicked, store the orderID
-$('.edit-order-btn').click(function () {
-    orderIDToEdit = $(this).data('order-id');
-});
+    // When the "Edit Order" button is clicked, store the orderID
+    $('.edit-order-btn').click(function () {
+        orderIDToEdit = $(this).data('order-id');
+    });
 
-// When the "Save Changes" button is clicked, send the AJAX request
-$('#confirmEditOrder').click(function () {
-    if (!orderIDToEdit) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'No order selected for editing.',
-            showConfirmButton: false,
-            backdrop: false,
-            position: 'top',
-            timer: 1500
-        });
-        return;
-    }
+    // When the "Save Changes" button is clicked, send the AJAX request
+    $('#confirmEditOrder').click(function () {
+        if (!orderIDToEdit) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No order selected for editing.',
+                showConfirmButton: false,
+                backdrop: false,
+                position: 'top',
+                timer: 1500
+            });
+            return;
+        }
 
-    // Get the selected status from the dropdown
-    const newStatus = $('#orderStatus').val();
+        // Get the selected status from the dropdown
+        const newStatus = $('#orderStatus').val();
 
-    // Send the AJAX request to update the order status
-    $.ajax({
-        url: 'serverSideScripts.php',
-        method: 'POST',
-        data: {
-            action: 'updateOrderStatus',
-            orderID: orderIDToEdit,
-            newStatus: newStatus
-        },
-        dataType: 'json',
-        success: function (response) {
-            if (response.success) {
-                Swal.fire({
-                    title: 'Order Updated',
-                    text: 'The order status has been updated successfully.',
-                    showConfirmButton: false,
-                    backdrop: false,
-                    position: 'top',
-                    showClass: {
-                        popup: `
+        // Send the AJAX request to update the order status
+        $.ajax({
+            url: 'serverSideScripts.php',
+            method: 'POST',
+            data: {
+                action: 'updateOrderStatus',
+                orderID: orderIDToEdit,
+                newStatus: newStatus
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Order Updated',
+                        text: 'The order status has been updated successfully.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
                           animate__animated
                           animate__fadeInDown
                           animate__faster
                         `
-                    },
-                    hideClass: {
-                        popup: `
+                        },
+                        hideClass: {
+                            popup: `
                           animate__animated
                           animate__fadeOutUp
                           animate__faster
                         `
-                    },
-                    timer: 1500
-                }).then(() => {
-                    location.reload(); 
-                });
-            } else {
-                
+                        },
+                        timer: 1500
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        timer: 1500
+                    });
+                }
+            },
+            error: function () {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: response.message,
+                    text: 'An error occurred while updating the order status.',
                     showConfirmButton: false,
                     backdrop: false,
                     position: 'top',
                     timer: 1500
                 });
             }
-        },
-        error: function () {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'An error occurred while updating the order status.',
-                showConfirmButton: false,
-                backdrop: false,
-                position: 'top',
-                timer: 1500
-            });
-        }
-    });
+        });
 
-    
-    $('#editOrderModal').modal('hide');
-});
+
+        $('#editOrderModal').modal('hide');
+    });
 
 });

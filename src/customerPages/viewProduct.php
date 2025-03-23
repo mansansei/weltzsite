@@ -18,8 +18,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     JOIN 
         categories_tbl c ON p.categoryID = c.categoryID
     WHERE 
-    productID = ?
-    ";
+        p.productID = ?";
 
     $stmt = $conn->prepare($selectSQL);
     $stmt->bind_param("i", $productID);
@@ -28,43 +27,75 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     $product = $result->fetch_assoc();
 
     if ($product) {
+        $outOfStock = $product['inStock'] == 0; // Check if product is out of stock
 ?>
+        <style>
+            /* Overlay for out-of-stock products */
+            .out-of-stock-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 2rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                pointer-events: auto;
+                border-radius: 10px;
+            }
+
+            /* Disable interactions for out-of-stock products */
+            .out-of-stock {
+                position: relative;
+                pointer-events: none;
+                opacity: 0.7;
+            }
+        </style>
+
         <!-- Product Name -->
         <div class="productBoxTitle container-fluid text-center text-white m-0 p-5">
-            <h1 class="fs-1"><?php echo $product['productName'] ?></h1>
+            <h1 class="fs-1"><?php echo htmlspecialchars($product['productName']); ?></h1>
         </div>
 
         <!-- Product Details Container -->
-        <div class="productBox container border-dark-subtle mt-5 mb-5 border rounded-5 shadow">
+        <div class="productBox container border-dark-subtle mt-5 mb-5 border rounded-5 shadow <?php echo $outOfStock ? 'out-of-stock' : ''; ?>">
             <div class="row d-flex align-items-center flex-column flex-md-row">
-                <div class="col-12 col-md-6 p-5 order-md-1 order-1">
-                    <img src="<?php echo $product['productIMG'] ?>" alt="<?php echo $product['productName'] ?>" id="productIMG" class="img-fluid shadow rounded-5">
+                <div class="col-12 col-md-6 p-5 order-md-1 order-1 position-relative">
+                    <img src="<?php echo htmlspecialchars($product['productIMG']); ?>" alt="<?php echo htmlspecialchars($product['productName']); ?>" id="productIMG" class="img-fluid shadow rounded-5">
+                    <?php if ($outOfStock) { ?>
+                        <div class="out-of-stock-overlay">Out of Stock</div>
+                    <?php } ?>
                 </div>
                 <div class="col-12 col-md-6 p-5 order-md-2 order-2">
                     <div class="mb-3">
-                        <h3 class="fs-2" id="productName"><?php echo $product['productName'] ?></h3>
-                        <p class="fs-3" id="productCategory"><?php echo $product['categoryName'] ?></p>
+                        <h3 class="fs-2" id="productName"><?php echo htmlspecialchars($product['productName']); ?></h3>
+                        <p class="fs-3" id="productCategory"><?php echo htmlspecialchars($product['categoryName']); ?></p>
                     </div>
                     <div class="mb-3">
-                        <p class="fs-5" id="productDesc"><?php echo $product['productDesc'] ?></p>
+                        <p class="fs-5" id="productDesc"><?php echo htmlspecialchars($product['productDesc']); ?></p>
                     </div>
                     <div class="mb-3">
-                        <p class="fs-3">In Stock: <?php echo $product['inStock'] ?></p>
-                        <p class="fs-3">Php <span id="productPrice"><?php echo $product['productPrice'] ?></span></p>
+                        <p class="fs-3">In Stock: <?php echo $product['inStock']; ?></p>
+                        <p class="fs-3">Php <span id="productPrice"><?php echo number_format($product['productPrice'], 2); ?></span></p>
                     </div>
                     <div class="quantity-counter mb-5">
                         <p class="fs-3">Quantity</p>
                         <div class="input-group input-group-lg">
-                            <button type="button" class="btn btn-secondary" id="decreaseQuantity">
+                            <button type="button" class="btn btn-secondary" id="decreaseQuantity" <?php echo $outOfStock ? 'disabled' : ''; ?>>
                                 <i class="fa-solid fa-minus"></i>
                             </button>
-                            <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1">
-                            <button type="button" class="btn btn-secondary" id="increaseQuantity">
+                            <input type="number" id="quantityInput" class="form-control text-center" value="1" min="1" <?php echo $outOfStock ? 'disabled' : ''; ?>>
+                            <button type="button" class="btn btn-secondary" id="increaseQuantity" <?php echo $outOfStock ? 'disabled' : ''; ?>>
                                 <i class="fa-solid fa-plus"></i>
                             </button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-danger fs-2 mt-3" id="addToCartBtn" data-product-id="<?php echo $product['productID'] ?>">
+                    <button type="button" class="btn btn-danger fs-2 mt-3" id="addToCartBtn" data-product-id="<?php echo $product['productID']; ?>" <?php echo $outOfStock ? 'disabled' : ''; ?>>
                         Add to Cart
                     </button>
                 </div>
@@ -72,13 +103,14 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
         </div>
 <?php
     } else {
-        echo "Product not found.";
+        echo "<div class='text-center fs-3 mt-5'>Product not found.</div>";
     }
 } else {
-    echo "Invalid product ID.";
+    echo "<div class='text-center fs-3 mt-5'>Invalid product ID.</div>";
 }
 ?>
 
+<!-- Reviews Section -->
 <section class="reviewsec container py-5">
     <div class="reviewsectitle text-center mb-5">
         <h1>Reviews</h1>

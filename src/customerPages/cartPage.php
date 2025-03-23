@@ -78,7 +78,7 @@
                     while ($itemRow = $itemsResult->fetch_assoc()) {
                         // Display the cart item
         ?>
-                        <div class="cart-item bg-light border-bottom border-gray" data-item-id="<?php echo $itemRow['cartItemID']; ?>" data-unit-price="<?php echo $itemRow['cartItemTotal'] / $itemRow['cartItemQuantity']; ?>">
+                        <div class="cart-item bg-light border-bottom border-gray" data-item-id="<?php echo $itemRow['cartItemID']; ?>" data-unit-price="<?php echo number_format($itemRow['cartItemTotal'] / $itemRow['cartItemQuantity'], 2, '.', ''); ?>">
                             <div class="row align-items-center p-3">
                                 <div class="col-lg-1 d-flex justify-content-center">
                                     <input type="checkbox" class="form-check-input item-check">
