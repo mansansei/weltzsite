@@ -1206,3 +1206,177 @@ function deleteProduct()
     $stmt->close();
   }
 }
+
+// Function to cancel an order
+function cancelOrder()
+{
+    header('Content-Type: application/json'); // Ensure JSON response
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+        exit;
+    }
+
+    
+    if (!isset($_SESSION['userID'])) {
+        echo json_encode(['success' => false, 'message' => 'User not logged in']);
+        exit;
+    }
+
+    $userID = $_SESSION['userID'];
+
+    
+    $conn = dbConnect();
+
+    // Get and sanitize POST data
+    $orderID = isset($_POST['orderID']) ? trim($_POST['orderID']) : null;
+
+    // Input validation
+    if (empty($orderID) || !is_numeric($orderID)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid order ID']);
+        exit;
+    }
+
+    // Check if the order belongs to the logged-in user
+    $stmt = $conn->prepare("SELECT orderID FROM orders_tbl WHERE orderID = ? AND userID = ? LIMIT 1");
+    $stmt->bind_param("ii", $orderID, $userID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        echo json_encode(['success' => false, 'message' => 'Order not found or does not belong to you']);
+        exit;
+    }
+    $stmt->close();
+
+    // Update the order status to "Cancelled" (assuming statusID 4 is for "Cancelled")
+    $statusID = 3; // Status ID for "Cancelled"
+    $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ? WHERE orderID = ?");
+    $stmt->bind_param("ii", $statusID, $orderID);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    if ($success) {
+        // Log the order cancellation
+        createAuditLog($conn, $userID, 'UPDATE', 'orders_tbl', $orderID, json_encode(['statusID' => 'Previous Status']), json_encode(['statusID' => $statusID]));
+
+        echo json_encode(['success' => true, 'message' => 'Order cancelled successfully']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to cancel the order']);
+    }
+
+    $conn->close();
+    exit;
+}
+
+// Function to update an order's status
+function updateOrderStatus()
+{
+    header('Content-Type: application/json'); // Ensure JSON response
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        echo json_encode(['success' => false, 'message' => 'Invalid request method']);
+        exit;
+    }
+
+    // Check if the user is logged in (if needed)
+    if (!isset($_SESSION['userID'])) {
+        echo json_encode(['success' => false, 'message' => 'User not logged in']);
+        exit;
+    }
+
+    // Get and sanitize POST data
+    $orderID = isset($_POST['orderID']) ? trim($_POST['orderID']) : null;
+    $newStatus = isset($_POST['newStatus']) ? trim($_POST['newStatus']) : null;
+
+    // Input validation
+    if (empty($orderID) || !is_numeric($orderID)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid order ID']);
+        exit;
+    }
+    if (empty($newStatus) || !is_numeric($newStatus)) {
+        echo json_encode(['success' => false, 'message' => 'Invalid status']);
+        exit;
+    }
+
+    // Connect to the database
+    $conn = dbConnect();
+
+    // Check if the order exists and get the userID and referenceNum
+    $stmt = $conn->prepare("SELECT userID, referenceNum FROM orders_tbl WHERE orderID = ? LIMIT 1");
+    $stmt->bind_param("i", $orderID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 0) {
+        echo json_encode(['success' => false, 'message' => 'Order not found']);
+        exit;
+    }
+
+    $orderData = $result->fetch_assoc();
+    $userID = $orderData['userID'];
+    $referenceNum = $orderData['referenceNum'];
+    $stmt->close();
+
+    // Update the order status
+    $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ? WHERE orderID = ?");
+    $stmt->bind_param("ii", $newStatus, $orderID);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    if ($success) {
+        // Log the order status update (optional)
+        createAuditLog($conn, $_SESSION['userID'], 'UPDATE', 'orders_tbl', $orderID, json_encode(['statusID' => 'Previous Status']), json_encode(['statusID' => $newStatus]));
+
+        // Send notification to the user based on the new status
+        $notifName = "";
+        $notifMessage = "";
+        $statusUnread = 9; // Assuming 9 is the status ID for unread notifications
+        $orderNotif = "Order";
+
+        switch ($newStatus) {
+            case 2: // To Pick Up
+                $notifName = "Order Ready for Pickup";
+                $notifMessage = "Your order #$referenceNum is now ready for pickup.";
+                break;
+            case 4: // Picked Up
+                $notifName = "Order Picked Up";
+                $notifMessage = "Your order #$referenceNum has been successfully picked up.";
+                break;
+            default:
+                // No notification for other statuses
+                break;
+        }
+
+        if (!empty($notifName)) {
+            // Insert the notification into the database
+            $stmt = $conn->prepare("INSERT INTO notifs_tbl (userID, notifName, notifMessage, statusID, notifType) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("issis", $userID, $notifName, $notifMessage, $statusUnread, $orderNotif);
+            $stmt->execute();
+            $stmt->close();
+
+            // Log the notification creation (optional)
+            createAuditLog($conn, $userID, 'CREATE', 'notifs_tbl', $conn->insert_id, null, json_encode(['notifName' => $notifName, 'notifMessage' => $notifMessage, 'statusID' => $statusUnread]));
+        }
+
+        // Retrieve user email and send invoice (if needed)
+        if ($newStatus == 4) { // Only send an email for "Picked Up" status
+            $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
+            $stmt->bind_param("i", $userID);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $email = $result->fetch_assoc()['userEmail'];
+                send_invoice($email, $referenceNum, $orderID); // Assuming send_invoice() is defined
+            }
+            $stmt->close();
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Order status updated successfully']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to update the order status']);
+    }
+
+    $conn->close();
+    exit;
+}

@@ -1,5 +1,4 @@
 <?php
-
 if (isset($_SESSION['userID'])) {
     $userID = $_SESSION['userID'];
     require_once 'weltz_dbconnect.php';
@@ -20,38 +19,41 @@ if (isset($_SESSION['userID'])) {
             foreach ([9 => 'unread', 8 => 'read'] as $status => $tab) {
             ?>
                 <div class="tab-pane fade <?php echo $status == 9 ? ' show active' : '' ?>" id="<?php echo $tab ?>" role="tabpanel">
-                    <?php
-                    $selectNotifsSQL = "SELECT notifID, notifName, notifMessage, notifType, createdAt FROM notifs_tbl WHERE userID = '$userID' AND statusID = '$status' ORDER BY notifID DESC";
-                    $notifsSQLResult = $conn->query($selectNotifsSQL);
+                    
+                    <div class="notifications-container" style="height: 560px; overflow-y: auto;">
+                        <?php
+                        $selectNotifsSQL = "SELECT notifID, notifName, notifMessage, notifType, createdAt FROM notifs_tbl WHERE userID = '$userID' AND statusID = '$status' ORDER BY notifID DESC";
+                        $notifsSQLResult = $conn->query($selectNotifsSQL);
 
-                    if ($notifsSQLResult->num_rows > 0) {
-                        while ($row = $notifsSQLResult->fetch_assoc()) {
-                    ?>
-                            <div class="alert alert-secondary" role="alert">
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="row">
-                                            <div class="col">
-                                                <strong><?php echo htmlspecialchars($row['notifName']) ?></strong> <?php echo htmlspecialchars($row['notifMessage']) ?>
+                        if ($notifsSQLResult->num_rows > 0) {
+                            while ($row = $notifsSQLResult->fetch_assoc()) {
+                        ?>
+                                <div class="alert alert-secondary" role="alert">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <strong><?php echo htmlspecialchars($row['notifName']) ?></strong> <?php echo htmlspecialchars($row['notifMessage']) ?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <small><?php echo htmlspecialchars(date("F j, Y, g:i A", strtotime($row['createdAt']))) ?></small>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <small><?php echo htmlspecialchars(date("F j, Y, g:i A", strtotime($row['createdAt']))) ?></small>
+                                        <div class="col text-end">
+                                            <a href="?page=userProfile&tab=userOrders" class="btn btn-primary view-notif" data-notif-id="<?php echo $row['notifID']; ?>">View</a>
                                         </div>
                                     </div>
-                                    <div class="col text-end">
-                                        <a href="?page=userProfile&tab=userOrders" class="btn btn-primary view-notif" data-notif-id="<?php echo $row['notifID']; ?>">View</a>
-                                    </div>
                                 </div>
-                            </div>
+                            <?php
+                            }
+                        } else {
+                            ?>
+                            <div class="alert alert-secondary" role="alert">No notifications available.</div>
                         <?php
                         }
-                    } else {
                         ?>
-                        <div class="alert alert-secondary" role="alert">No notifications available.</div>
-                    <?php
-                    }
-                    ?>
+                    </div>
                 </div>
             <?php
             }
@@ -61,3 +63,4 @@ if (isset($_SESSION['userID'])) {
 <?php
     $conn->close();
 }
+?>

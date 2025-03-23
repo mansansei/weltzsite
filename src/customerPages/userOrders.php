@@ -117,7 +117,7 @@
                                     <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                    <a href="cancel_order.php?orderID=<?= $orderID ?>" class="btn btn-danger">Cancel Order</a>
+                                <button class="btn btn-danger cancel-order-btn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal" data-order-id="<?= $orderID ?>">Cancel Order</button>
                                 </div>
                             </div>
                         </div>
@@ -222,7 +222,7 @@
                                     <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                    <a href="cancel_order.php?orderID=<?= $orderID ?>" class="btn btn-danger">Cancel Order</a>
+                                    <button class="btn btn-danger cancel-order-btn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal" data-order-id="<?= $orderID ?>">Cancel Order</button>
                                 </div>
                             </div>
                         </div>
@@ -327,7 +327,7 @@
                                     <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                    <a href="cancel_order.php?orderID=<?= $orderID ?>" class="btn btn-danger">Cancel Order</a>
+                                 <span class="badge bg-success fs-5">Picked Up</span>
                                 </div>
                             </div>
                         </div>
@@ -432,7 +432,7 @@
                                     <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                    <a href="cancel_order.php?orderID=<?= $orderID ?>" class="btn btn-danger">Cancel Order</a>
+                                    <span class="badge bg-danger fs-5">Cancelled</span>
                                 </div>
                             </div>
                         </div>
@@ -440,6 +440,26 @@
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+
+        <!-- CANCEL MODAL -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to cancel this order? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancelOrder">Cancel Order</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
 </div>
 </div>
