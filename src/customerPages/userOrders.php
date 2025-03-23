@@ -221,7 +221,7 @@
                             </div>
                             <div class="row p-1 m-0 d-flex justify-content-end">
                                 <div class="col-lg-6 text-end">
-                                    <button class="btn btn-danger">Upload Order Receipt</button>
+                                <button class="btn btn-danger upload-receipt-btn" data-order-id="<?= $orderID ?>" data-reference-num="<?= htmlspecialchars($order['referenceNum']) ?>" data-bs-toggle="modal" data-bs-target="#uploadReceiptModal">Upload Order Receipt</button>
                                     <button class="btn btn-danger cancel-order-btn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal" data-order-id="<?= $orderID ?>">Cancel Order</button>
                                 </div>
                             </div>
@@ -458,6 +458,35 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-danger" id="confirmCancelOrder">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Receipt Modal -->
+        <div class="modal fade" id="uploadReceiptModal" tabindex="-1" aria-labelledby="uploadReceiptModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadReceiptModalLabel">Upload Order Receipt</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="uploadReceiptForm" method="POST">
+                            <input type="hidden" id="orderID" name="orderID">
+                            <input type="hidden" id="referenceNum" name="referenceNum">
+                            <div class="mb-3">
+                                <label for="receiptImage" class="form-label">Select Receipt Image</label>
+                                <input type="file" class="form-control" id="receiptImage" name="receiptImage" accept="image/*" required>
+                            </div>
+                            <div class="mb-3 text-center">
+                                <img id="receiptPreview" src="#" alt="Receipt Preview" style="max-width: 100%; display: none; border: 1px solid #ccc; padding: 5px;">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="submitReceipt">Upload Receipt</button>
                     </div>
                 </div>
             </div>

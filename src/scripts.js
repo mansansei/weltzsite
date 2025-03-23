@@ -1644,89 +1644,187 @@ $(document).ready(function () {
         $('#editOrderModal').modal('hide');
     });
 
-});
+    // ADMIN SEARCH ORDERS==================================================
+    // Admin search processing orders
+    $("#processingSearchForm").submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
 
-// ADMIN SEARCH ORDERS==================================================
-// Admin search processing orders
-$("#processingSearchForm").submit(function(e) {
-    e.preventDefault(); // Prevent the default form submission
+        var searchQuery = $("input[name='processingSearch']").val();
 
-    var searchQuery = $("input[name='processingSearch']").val();
+        $.ajax({
+            url: "adminPages/fetch_processing.php", // PHP file that processes the search
+            type: "POST",
+            data: { searchSubmit: true, productSearch: searchQuery },
+            dataType: "html",
+            success: function (response) {
+                $("#processing .order-results").html(response); // Update results
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+            }
+        });
+    });
 
-    $.ajax({
-        url: "adminPages/fetch_processing.php", // PHP file that processes the search
-        type: "POST",
-        data: { searchSubmit: true, productSearch: searchQuery },
-        dataType: "html",
-        success: function(response) {
-            $("#processing .order-results").html(response); // Update results
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("AJAX Error:", textStatus, errorThrown);
-            console.log("Server response:", jqXHR.responseText);
+    // Admin search to-pick-up orders
+    $("#toPickUpSearchForm").submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var searchQuery = $("input[name='toPickUpSearch']").val();
+
+        $.ajax({
+            url: "adminPages/fetch_to-pick-up.php", // PHP file that processes the search
+            type: "POST",
+            data: { searchSubmit: true, productSearch: searchQuery },
+            dataType: "html",
+            success: function (response) {
+                $("#to-pick-up .order-results").html(response); // Update results
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+            }
+        });
+    });
+
+    // Admin search received orders
+    $("#receivedSearchForm").submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var searchQuery = $("input[name='receivedSearch']").val();
+
+        $.ajax({
+            url: "adminPages/fetch_received.php", // PHP file that processes the search
+            type: "POST",
+            data: { searchSubmit: true, productSearch: searchQuery },
+            dataType: "html",
+            success: function (response) {
+                $("#picked-up .order-results").html(response); // Update results
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+            }
+        });
+    });
+
+    // Admin search cancelled orders
+    $("#cancelledSearchForm").submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var searchQuery = $("input[name='cancelledSearch']").val();
+
+        $.ajax({
+            url: "adminPages/fetch_cancelled.php", // PHP file that processes the search
+            type: "POST",
+            data: { searchSubmit: true, productSearch: searchQuery },
+            dataType: "html",
+            success: function (response) {
+                $("#cancelled .order-results").html(response); // Update results
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+            }
+        });
+    });
+
+    // CUSTOMER UPLOAD RECEIPT
+    // receipt upload handling
+    let selectedFile;
+
+    // Open Modal and Set Order Details
+    $(".upload-receipt-btn").click(function () {
+        let orderID = $(this).data("order-id");
+        let referenceNum = $(this).data("reference-num");
+
+        $("#orderID").val(orderID);
+        $("#referenceNum").val(referenceNum);
+        $("#receiptImage").val('');
+        $("#receiptPreview").hide();
+    });
+
+    // Preview Uploaded Image
+    $("#receiptImage").change(function (event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $("#receiptPreview").attr("src", e.target.result).show();
+            };
+            reader.readAsDataURL(file);
+            selectedFile = file;
         }
     });
-});
 
-// Admin search to-pick-up orders
-$("#toPickUpSearchForm").submit(function(e) {
-    e.preventDefault(); // Prevent the default form submission
+    // Upload Receipt via AJAX
+    $("#submitReceipt").click(function () {
+        let formData = new FormData();
+        let orderID = $("#orderID").val();
+        let referenceNum = $("#referenceNum").val();
+        let file = $("#receiptImage")[0].files[0];
 
-    var searchQuery = $("input[name='toPickUpSearch']").val();
-
-    $.ajax({
-        url: "adminPages/fetch_to-pick-up.php", // PHP file that processes the search
-        type: "POST",
-        data: { searchSubmit: true, productSearch: searchQuery },
-        dataType: "html",
-        success: function(response) {
-            $("#to-pick-up .order-results").html(response); // Update results
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("AJAX Error:", textStatus, errorThrown);
-            console.log("Server response:", jqXHR.responseText);
+        if (!file) {
+            Swal.fire({
+                icon: 'error',
+                text: 'Please select an image to upload.',
+                showConfirmButton: false,
+                backdrop: false,
+                position: 'top',
+                timer: 2000
+            });
+            return;
         }
+
+        formData.append("action", "uploadReceipt"); // Adding action parameter
+        formData.append("orderID", orderID);
+        formData.append("referenceNum", referenceNum);
+        formData.append("receiptImage", file);
+
+        $.ajax({
+            url: "serverSideScripts.php",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Receipt Uploaded',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        timer: 2000
+                    }).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        timer: 2000
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
+                    showConfirmButton: false,
+                    backdrop: false,
+                    position: 'top',
+                    timer: 2000
+                });
+            }
+        });
     });
-});
 
-// Admin search received orders
-$("#receivedSearchForm").submit(function(e) {
-    e.preventDefault(); // Prevent the default form submission
-
-    var searchQuery = $("input[name='receivedSearch']").val();
-
-    $.ajax({
-        url: "adminPages/fetch_received.php", // PHP file that processes the search
-        type: "POST",
-        data: { searchSubmit: true, productSearch: searchQuery },
-        dataType: "html",
-        success: function(response) {
-            $("#picked-up .order-results").html(response); // Update results
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("AJAX Error:", textStatus, errorThrown);
-            console.log("Server response:", jqXHR.responseText);
-        }
-    });
-});
-
-// Admin search cancelled orders
-$("#cancelledSearchForm").submit(function(e) {
-    e.preventDefault(); // Prevent the default form submission
-
-    var searchQuery = $("input[name='cancelledSearch']").val();
-
-    $.ajax({
-        url: "adminPages/fetch_cancelled.php", // PHP file that processes the search
-        type: "POST",
-        data: { searchSubmit: true, productSearch: searchQuery },
-        dataType: "html",
-        success: function(response) {
-            $("#cancelled .order-results").html(response); // Update results
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            console.error("AJAX Error:", textStatus, errorThrown);
-            console.log("Server response:", jqXHR.responseText);
-        }
-    });
 });

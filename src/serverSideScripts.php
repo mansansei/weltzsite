@@ -409,7 +409,6 @@ function updateCartItemQuantity()
   exit;
 }
 
-
 // Delete cart item function
 function deleteCartItem()
 {
@@ -472,7 +471,6 @@ function deleteCartItem()
   $conn->close();
   exit;
 }
-
 
 // Place Order function
 function placeOrder()
@@ -629,8 +627,6 @@ function markAsRead()
   $conn->close();
   exit; // Ensure script stops execution
 }
-
-
 
 function response($success, $message)
 {
@@ -1302,6 +1298,8 @@ function updateOrderStatus()
 {
   header('Content-Type: application/json'); // Ensure JSON response
 
+  require 'send_orderStatusUpdate.php';
+
   if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
@@ -1388,17 +1386,17 @@ function updateOrderStatus()
     }
 
     // Retrieve user email and send invoice (if needed)
-    // if ($newStatus == 4) { // Only send an email for "Picked Up" status
-    //   $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
-    //   $stmt->bind_param("i", $userID);
-    //   $stmt->execute();
-    //   $result = $stmt->get_result();
-    //   if ($result->num_rows > 0) {
-    //     $email = $result->fetch_assoc()['userEmail'];
-    //     send_invoice($email, $referenceNum, $orderID); // Assuming send_invoice() is defined
-    //   }
-    //   $stmt->close();
-    // }
+    if ($newStatus == 2 || $newStatus == 4) { // Only send an email for "To Pick Up" or "Picked Up" status
+      $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
+      $stmt->bind_param("i", $userID);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      if ($result->num_rows > 0) {
+        $email = $result->fetch_assoc()['userEmail'];
+        send_orderStatusUpdate($email, $referenceNum, $orderID, $newStatus);
+      }
+      $stmt->close();
+    }
 
     echo json_encode(['success' => true, 'message' => 'Order status updated successfully']);
   } else {
@@ -1407,4 +1405,62 @@ function updateOrderStatus()
 
   $conn->close();
   exit;
+}
+
+function uploadReceipt()
+{
+  header('Content-Type: application/json'); // Ensure JSON response
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
+
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $conn = dbConnect(); // Open database connection
+
+    $orderID = $_POST['orderID'] ?? null;
+    $referenceNum = $_POST['referenceNum'] ?? null;
+    $receiptImage = $_FILES['receiptImage'] ?? null;
+
+    // Validation
+    if (empty($orderID) || empty($referenceNum) || !$receiptImage) {
+      echo json_encode(['success' => false, 'message' => 'Missing required data.']);
+      exit;
+    }
+
+    if ($receiptImage['error'] !== UPLOAD_ERR_OK) {
+      echo json_encode(['success' => false, 'message' => 'Error uploading image.']);
+      exit;
+    }
+
+    // Save the image file
+    $targetDir = "images/receipts/";
+    if (!is_dir($targetDir)) {
+      mkdir($targetDir, 0777, true); // Ensure directory exists
+    }
+
+    $imageFileType = strtolower(pathinfo($receiptImage['name'], PATHINFO_EXTENSION));
+    $newFileName = $referenceNum . '_' . uniqid() . '.' . $imageFileType;
+    $targetFile = $targetDir . $newFileName;
+
+    if (!move_uploaded_file($receiptImage['tmp_name'], $targetFile)) {
+      echo json_encode(['success' => false, 'message' => 'Error saving receipt image.']);
+      exit;
+    }
+
+    $receiptPath = htmlspecialchars($targetFile);
+
+    // Update the database
+    $updateSQL = "UPDATE orders_tbl SET orderReceipt = ? WHERE orderID = ?";
+    $stmt = $conn->prepare($updateSQL);
+    $stmt->bind_param("si", $receiptPath, $orderID);
+
+    if ($stmt->execute()) {
+      echo json_encode(['success' => true, 'message' => 'Receipt uploaded successfully.', 'filePath' => $receiptPath]);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Database update failed: ' . $stmt->error]);
+    }
+
+    $stmt->close();
+    $conn->close();
+  }
 }

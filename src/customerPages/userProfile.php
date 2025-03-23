@@ -20,9 +20,6 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
                 <a href="?page=userProfile&tab=userProfile" class="nav-button fs-5" id="profileLink">
                     <i class="fa-solid fa-user fa-fw"></i> Profile
                 </a>
-                <a href="?page=userProfile&tab=userSettings" class="nav-button fs-5" id="settingsLink">
-                    <i class="fa-solid fa-gear fa-fw"></i> Settings
-                </a>
                 <a href="?page=userProfile&tab=userOrders" class="nav-button fs-5" id="ordersLink">
                     <i class="fa-solid fa-receipt fa-fw"></i> Orders
                 </a>
@@ -48,9 +45,6 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
 
 
             switch ($tab) {
-                case 'userSettings':
-                    include 'userSettings.php';
-                    break;
                 case 'userOrders':
                     include 'userOrders.php';
                     break;
