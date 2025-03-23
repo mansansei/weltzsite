@@ -61,7 +61,7 @@ $paymentResult = $paymentStmt->get_result();
     <header class="container bg-danger text-white py-2">
         <h5 class="text-center">Weltz Industrial INC. Phils</h5>
     </header>
-    <div class="container mt-5 vh-100">
+    <div class="container mt-5 min-vh-100">
         <div class="row border-bottom border-danger mb-4">
             <div class="col-md-9">
                 <h1>Checkout</h1>

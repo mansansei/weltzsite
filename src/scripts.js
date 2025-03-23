@@ -77,7 +77,21 @@ $(document).ready(function () {
                                     showConfirmButton: false,
                                     backdrop: false,
                                     position: 'top',
-                                    timer: 1500
+                                    showClass: {
+                                        popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                                    },
+                                    hideClass: {
+                                        popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                                    },
+                                    timer: 2000
                                 });
                             } else {
                                 Swal.fire({
@@ -87,7 +101,21 @@ $(document).ready(function () {
                                     showConfirmButton: false,
                                     backdrop: false,
                                     position: 'top',
-                                    timer: 1500
+                                    showClass: {
+                                        popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                                    },
+                                    hideClass: {
+                                        popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                                    },
+                                    timer: 2000
                                 });
                             }
                         },
@@ -98,6 +126,23 @@ $(document).ready(function () {
                                 icon: 'error',
                                 title: 'Error',
                                 text: 'An error occurred while processing your request.',
+                                backdrop: false,
+                                position: 'top',
+                                showClass: {
+                                    popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                                },
+                                hideClass: {
+                                    popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                                },
+                                timer: 2000
                             });
                         }
                     });
@@ -109,7 +154,21 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
-                        timer: 1500
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     }).then(() => {
                         window.location.href = 'login.php';
                     });
@@ -192,7 +251,7 @@ $(document).ready(function () {
     function updateFooterTotal() {
         var totalItems = 0;
         var totalPrice = 0.0;
-    
+
         $('.item-check:checked').each(function () {
             totalItems++;
             var $cartItem = $(this).closest('.cart-item');
@@ -201,9 +260,9 @@ $(document).ready(function () {
                 totalPrice += itemTotalPrice; // Accumulate the total price
             }
         });
-    
+
         $('#totalText').text('Total (' + totalItems + '): PHP ' + totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-    }    
+    }
 
     // Remove cart item
     // Event listener for the remove button
@@ -261,7 +320,7 @@ $(document).ready(function () {
                 icon: 'warning',
                 text: 'No items selected for checkout',
                 showConfirmButton: false,
-                timer: 1500
+                timer: 2000
             });
         }
     });
@@ -290,7 +349,23 @@ $(document).ready(function () {
                 icon: 'warning',
                 text: 'Please select a payment method to proceed with the checkout.',
                 showConfirmButton: false,
-                timer: 1500
+                backdrop: false,
+                position: 'top',
+                showClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                },
+                hideClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                },
+                timer: 2000
             });
             return;
         }
@@ -313,7 +388,23 @@ $(document).ready(function () {
                             title: 'Order placed!',
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            backdrop: false,
+                            position: 'top',
+                            showClass: {
+                                popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                            },
+                            hideClass: {
+                                popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                            },
+                            timer: 2000
                         }).then(() => {
                             // Redirect after the SweetAlert is closed
                             window.location.href = 'Home.php?page=cartPage';
@@ -341,6 +432,24 @@ $(document).ready(function () {
                     icon: 'error',
                     title: 'Error',
                     text: 'An error occurred while processing your request.',
+                    showConfirmButton: false,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                    },
+                    hideClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                    },
+                    timer: 2000
                 });
             }
         });
@@ -368,6 +477,24 @@ $(document).ready(function () {
                     icon: 'error',
                     title: 'Error',
                     text: 'An error occurred while processing your request.',
+                    showConfirmButton: false,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                    },
+                    hideClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                    },
+                    timer: 2000
                 });
             }
         });
@@ -429,7 +556,7 @@ $(document).ready(function () {
                             icon: "error",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                     }
                 },
@@ -440,6 +567,24 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while processing your request.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             });
@@ -558,7 +703,7 @@ $(document).ready(function () {
                             icon: "success",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500,
+                            timer: 2000,
                             willClose: () => {
                                 location.reload();
                             }
@@ -570,7 +715,7 @@ $(document).ready(function () {
                             icon: "error",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                     }
                 },
@@ -581,6 +726,24 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while processing your request.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             });
@@ -664,7 +827,7 @@ $(document).ready(function () {
                             icon: "success",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500,
+                            timer: 2000,
                             willClose: () => {
                                 location.reload();
                             }
@@ -676,7 +839,7 @@ $(document).ready(function () {
                             icon: "error",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                     }
                 },
@@ -687,6 +850,24 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while processing your request.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             });
@@ -779,7 +960,7 @@ $(document).ready(function () {
                             icon: "success",
                             text: res.message,
                             showConfirmButton: false,
-                            timer: 1500,
+                            timer: 2000,
                             willClose: () => {
                                 location.reload();
                             }
@@ -792,7 +973,7 @@ $(document).ready(function () {
                             icon: "error",
                             text: res.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                     }
                 },
@@ -803,6 +984,24 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while processing your request.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             });
@@ -835,7 +1034,7 @@ $(document).ready(function () {
                         icon: "success",
                         text: response.message,
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 2000,
                         willClose: () => {
                             location.reload();
                         }
@@ -848,7 +1047,7 @@ $(document).ready(function () {
                         icon: "error",
                         text: response.message,
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2000
                     });
                 }
             },
@@ -859,6 +1058,24 @@ $(document).ready(function () {
                     icon: 'error',
                     title: 'Error',
                     text: 'An error occurred while processing your request.',
+                    showConfirmButton: false,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                    },
+                    hideClass: {
+                        popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                    },
+                    timer: 2000
                 });
             }
         });
@@ -927,7 +1144,7 @@ $(document).ready(function () {
                             icon: "success",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500,
+                            timer: 2000,
                             willClose: () => {
                                 location.reload();
                             }
@@ -940,7 +1157,7 @@ $(document).ready(function () {
                             icon: "error",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                     }
                 },
@@ -951,6 +1168,24 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while processing your request.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             });
@@ -1048,7 +1283,7 @@ $(document).ready(function () {
                             icon: "success",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500,
+                            timer: 2000,
                             willClose: () => {
                                 location.reload();
                             }
@@ -1061,7 +1296,7 @@ $(document).ready(function () {
                             icon: "error",
                             text: response.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: 2000
                         });
                     }
                 },
@@ -1072,6 +1307,24 @@ $(document).ready(function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'An error occurred while processing your request.',
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeInDown
+                        animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                        animate__animated
+                        animate__fadeOutUp
+                        animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             });
@@ -1105,7 +1358,7 @@ $(document).ready(function () {
                         icon: "success",
                         text: response.message,
                         showConfirmButton: false,
-                        timer: 1500,
+                        timer: 2000,
                         willClose: () => {
                             location.reload();
                         }
@@ -1116,7 +1369,7 @@ $(document).ready(function () {
                         icon: "error",
                         text: response.message,
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 2000
                     });
                 }
             },
@@ -1127,6 +1380,24 @@ $(document).ready(function () {
                     icon: 'error',
                     title: 'Error',
                     text: 'An error occurred while processing your request.',
+                    showConfirmButton: false,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `
+                    animate__animated
+                    animate__fadeInDown
+                    animate__faster
+                    `
+                    },
+                    hideClass: {
+                        popup: `
+                    animate__animated
+                    animate__fadeOutUp
+                    animate__faster
+                    `
+                    },
+                    timer: 2000
                 });
             }
         });
@@ -1149,7 +1420,21 @@ $(document).ready(function () {
                 showConfirmButton: false,
                 backdrop: false,
                 position: 'top',
-                timer: 1500
+                showClass: {
+                    popup: `
+                  animate__animated
+                  animate__fadeInDown
+                  animate__faster
+                `
+                },
+                hideClass: {
+                    popup: `
+                  animate__animated
+                  animate__fadeOutUp
+                  animate__faster
+                `
+                },
+                timer: 2000
             });
             return;
         }
@@ -1186,7 +1471,7 @@ $(document).ready(function () {
                               animate__faster
                             `
                         },
-                        timer: 1500
+                        timer: 2000
                     }).then(() => {
 
                         location.reload();
@@ -1200,11 +1485,27 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
-                        timer: 1500
+                        showClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeInDown
+                          animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeOutUp
+                          animate__faster
+                        `
+                        },
+                        timer: 2000
                     });
                 }
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -1212,7 +1513,21 @@ $(document).ready(function () {
                     showConfirmButton: false,
                     backdrop: false,
                     position: 'top',
-                    timer: 1500
+                    showClass: {
+                        popup: `
+                      animate__animated
+                      animate__fadeInDown
+                      animate__faster
+                    `
+                    },
+                    hideClass: {
+                        popup: `
+                      animate__animated
+                      animate__fadeOutUp
+                      animate__faster
+                    `
+                    },
+                    timer: 2000
                 });
             }
         });
@@ -1239,7 +1554,21 @@ $(document).ready(function () {
                 showConfirmButton: false,
                 backdrop: false,
                 position: 'top',
-                timer: 1500
+                showClass: {
+                    popup: `
+                  animate__animated
+                  animate__fadeInDown
+                  animate__faster
+                `
+                },
+                hideClass: {
+                    popup: `
+                  animate__animated
+                  animate__fadeOutUp
+                  animate__faster
+                `
+                },
+                timer: 2000
             });
             return;
         }
@@ -1279,7 +1608,7 @@ $(document).ready(function () {
                           animate__faster
                         `
                         },
-                        timer: 1500
+                        timer: 2000
                     }).then(() => {
                         location.reload();
                     });
@@ -1292,11 +1621,13 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
-                        timer: 1500
+                        timer: 2000
                     });
                 }
             },
-            error: function () {
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
@@ -1304,7 +1635,7 @@ $(document).ready(function () {
                     showConfirmButton: false,
                     backdrop: false,
                     position: 'top',
-                    timer: 1500
+                    timer: 2000
                 });
             }
         });
@@ -1313,4 +1644,89 @@ $(document).ready(function () {
         $('#editOrderModal').modal('hide');
     });
 
+});
+
+// ADMIN SEARCH ORDERS==================================================
+// Admin search processing orders
+$("#processingSearchForm").submit(function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    var searchQuery = $("input[name='processingSearch']").val();
+
+    $.ajax({
+        url: "adminPages/fetch_processing.php", // PHP file that processes the search
+        type: "POST",
+        data: { searchSubmit: true, productSearch: searchQuery },
+        dataType: "html",
+        success: function(response) {
+            $("#processing .order-results").html(response); // Update results
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.log("Server response:", jqXHR.responseText);
+        }
+    });
+});
+
+// Admin search to-pick-up orders
+$("#toPickUpSearchForm").submit(function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    var searchQuery = $("input[name='toPickUpSearch']").val();
+
+    $.ajax({
+        url: "adminPages/fetch_to-pick-up.php", // PHP file that processes the search
+        type: "POST",
+        data: { searchSubmit: true, productSearch: searchQuery },
+        dataType: "html",
+        success: function(response) {
+            $("#to-pick-up .order-results").html(response); // Update results
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.log("Server response:", jqXHR.responseText);
+        }
+    });
+});
+
+// Admin search received orders
+$("#receivedSearchForm").submit(function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    var searchQuery = $("input[name='receivedSearch']").val();
+
+    $.ajax({
+        url: "adminPages/fetch_received.php", // PHP file that processes the search
+        type: "POST",
+        data: { searchSubmit: true, productSearch: searchQuery },
+        dataType: "html",
+        success: function(response) {
+            $("#picked-up .order-results").html(response); // Update results
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.log("Server response:", jqXHR.responseText);
+        }
+    });
+});
+
+// Admin search cancelled orders
+$("#cancelledSearchForm").submit(function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    var searchQuery = $("input[name='cancelledSearch']").val();
+
+    $.ajax({
+        url: "adminPages/fetch_cancelled.php", // PHP file that processes the search
+        type: "POST",
+        data: { searchSubmit: true, productSearch: searchQuery },
+        dataType: "html",
+        success: function(response) {
+            $("#cancelled .order-results").html(response); // Update results
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX Error:", textStatus, errorThrown);
+            console.log("Server response:", jqXHR.responseText);
+        }
+    });
 });

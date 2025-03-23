@@ -292,7 +292,7 @@ function addToCart()
     $newQuantity = $cartItem['cartItemQuantity'] + $quantity;
     $newTotalPrice = $cartItem['cartItemTotal'] + $totalPrice;
 
-    // ✅ Ensure new quantity does not exceed available stock
+    // Ensure new quantity does not exceed available stock
     if ($newQuantity > $product['inStock']) {
       echo json_encode(['success' => false, 'message' => 'Not enough stock available']);
       exit;
@@ -1277,9 +1277,9 @@ function cancelOrder()
   }
   $stmt->close();
 
-  // Update the order status to "Cancelled" (assuming statusID 4 is for "Cancelled")
+  // Update the order status to "Cancelled"
   $statusID = 3; // Status ID for "Cancelled"
-  $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ? WHERE orderID = ?");
+  $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, updatedAt = NOW(), cancelledAt = NOW() WHERE orderID = ?");
   $stmt->bind_param("ii", $statusID, $orderID);
   $success = $stmt->execute();
   $stmt->close();
@@ -1388,17 +1388,17 @@ function updateOrderStatus()
     }
 
     // Retrieve user email and send invoice (if needed)
-    if ($newStatus == 4) { // Only send an email for "Picked Up" status
-      $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
-      $stmt->bind_param("i", $userID);
-      $stmt->execute();
-      $result = $stmt->get_result();
-      if ($result->num_rows > 0) {
-        $email = $result->fetch_assoc()['userEmail'];
-        send_invoice($email, $referenceNum, $orderID); // Assuming send_invoice() is defined
-      }
-      $stmt->close();
-    }
+    // if ($newStatus == 4) { // Only send an email for "Picked Up" status
+    //   $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
+    //   $stmt->bind_param("i", $userID);
+    //   $stmt->execute();
+    //   $result = $stmt->get_result();
+    //   if ($result->num_rows > 0) {
+    //     $email = $result->fetch_assoc()['userEmail'];
+    //     send_invoice($email, $referenceNum, $orderID); // Assuming send_invoice() is defined
+    //   }
+    //   $stmt->close();
+    // }
 
     echo json_encode(['success' => true, 'message' => 'Order status updated successfully']);
   } else {

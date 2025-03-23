@@ -3,7 +3,6 @@ require_once 'weltz_dbconnect.php';
 ?>
 
 <style>
-    /* Overlay for out-of-stock products */
     .out-of-stock-overlay {
         position: absolute;
         top: 0;
@@ -21,7 +20,6 @@ require_once 'weltz_dbconnect.php';
         pointer-events: auto;
     }
 
-    /* Prevent interactions on out-of-stock products */
     .out-of-stock {
         position: relative;
         pointer-events: none;
@@ -54,18 +52,15 @@ require_once 'weltz_dbconnect.php';
                 </div>
                 <div class="list-group">
                     <?php
-                    $selectSQL = "SELECT * FROM categories_tbl";
-                    $result = $conn->query($selectSQL);
-
-                    foreach ($result as $key) {
+                    $categorySQL = "SELECT * FROM categories_tbl";
+                    $categoryResult = $conn->query($categorySQL);
+                    foreach ($categoryResult as $category) {
                     ?>
                         <div class="list-group-item">
-                            <input type="checkbox" id="<?php echo $key['categoryID'] ?>" name="categoryCheck[]" value="<?php echo $key['categoryID'] ?>">
-                            <label for="<?php echo $key['categoryID'] ?>"><?php echo htmlspecialchars($key['categoryName']) ?></label>
+                            <input type="checkbox" id="<?php echo $category['categoryID'] ?>" name="categoryCheck[]" value="<?php echo $category['categoryID'] ?>">
+                            <label for="<?php echo $category['categoryID'] ?>"><?php echo htmlspecialchars($category['categoryName']) ?></label>
                         </div>
-                    <?php
-                    }
-                    ?>
+                    <?php } ?>
                 </div>
             </form>
         </div>
@@ -73,29 +68,45 @@ require_once 'weltz_dbconnect.php';
         <div class="col-md-9">
             <div class="row">
                 <?php
-                // Fetch products including those with 0 stock
-                $selectSQL = "
-                    SELECT 
-                        p.productID, 
-                        p.productIMG, 
-                        p.productName, 
-                        c.categoryName, 
-                        p.productDesc, 
-                        p.productPrice, 
-                        p.inStock 
-                    FROM 
-                        products_tbl p
-                    JOIN 
-                        categories_tbl c ON p.categoryID = c.categoryID
-                    ORDER BY p.productID ASC";
+                $selectSQL = "SELECT p.productID, p.productIMG, p.productName, c.categoryName, p.productDesc, p.productPrice, p.inStock FROM products_tbl p JOIN categories_tbl c ON p.categoryID = c.categoryID";
+                $conditions = [];
+                $params = [];
+                $types = "";
 
-                $result = $conn->query($selectSQL);
+                if (isset($_POST['searchSubmit']) && !empty($_POST['productSearch'])) {
+                    $searchinput = '%' . $_POST['productSearch'] . '%';
+                    $conditions[] = "(p.productName LIKE ? OR c.categoryName LIKE ?)";
+                    $params[] = $searchinput;
+                    $params[] = $searchinput;
+                    $types .= "ss";
+                }
+
+                if (isset($_POST['filterSubmit']) && !empty($_POST['categoryCheck'])) {
+                    $placeholders = implode(",", array_fill(0, count($_POST['categoryCheck']), "?"));
+                    $conditions[] = "p.categoryID IN ($placeholders)";
+                    $params = array_merge($params, $_POST['categoryCheck']);
+                    $types .= str_repeat("i", count($_POST['categoryCheck']));
+                }
+
+                if (!empty($conditions)) {
+                    $selectSQL .= " WHERE " . implode(" AND ", $conditions);
+                }
+
+                $selectSQL .= " ORDER BY p.productID DESC";
+                $stmt = $conn->prepare($selectSQL);
+
+                if (!empty($params)) {
+                    $stmt->bind_param($types, ...$params);
+                }
+
+                $stmt->execute();
+                $result = $stmt->get_result();
 
                 if ($result->num_rows === 0) {
                     echo '<div class="col-12 text-center fs-1"><p>No products found.</p></div>';
                 } else {
                     foreach ($result as $key) {
-                        $outOfStock = $key['inStock'] == 0; // Check if product is out of stock
+                        $outOfStock = $key['inStock'] == 0;
                 ?>
                         <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                             <div class="card h-100 shadow-sm <?php echo $outOfStock ? 'out-of-stock' : ''; ?>">

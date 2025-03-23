@@ -10,7 +10,7 @@ if (isset($_SESSION['userID'])) {
                 <h1 class="fs-1">Notifications</h1>
             </div>
         </div>
-        <ul class="nav nav-tabs mb-3" id="notifTabs" role="tablist">
+        <ul class="nav nav-underline nav-justified mb-3" id="notifTabs" role="tablist">
             <li class="nav-item"><a class="nav-link active" id="unread-tab" data-bs-toggle="tab" href="#unread" role="tab">Unread</a></li>
             <li class="nav-item"><a class="nav-link" id="read-tab" data-bs-toggle="tab" href="#read" role="tab">Read</a></li>
         </ul>
@@ -22,7 +22,10 @@ if (isset($_SESSION['userID'])) {
                     
                     <div class="notifications-container" style="height: 560px; overflow-y: auto;">
                         <?php
-                        $selectNotifsSQL = "SELECT notifID, notifName, notifMessage, notifType, createdAt FROM notifs_tbl WHERE userID = '$userID' AND statusID = '$status' ORDER BY notifID DESC";
+                        $selectNotifsSQL = "SELECT notifID, notifName, notifMessage, notifType, createdAt 
+                        FROM notifs_tbl 
+                        WHERE userID = '$userID' AND statusID = '$status' 
+                        ORDER BY createdAt DESC";    
                         $notifsSQLResult = $conn->query($selectNotifsSQL);
 
                         if ($notifsSQLResult->num_rows > 0) {

@@ -5,32 +5,42 @@ use PHPMailer\PHPMailer\Exception;
 
 require '../vendor/autoload.php';
 
-
-function send_verification($firstname,$email,$otp) {
-
-    $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
-    try {
-        $mail->isSMTP();                                      // Set mailer to use SMTP
-        $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
-        $mail->SMTPAuth = true;                               // Enable SMTP authentication
-        $mail->Username = 'weltzphils@gmail.com';                 // SMTP username
-        $mail->Password = 'kkizzhibilqjhuyg';                           // SMTP password
-        $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-        $mail->Port = 587;                                    // TCP port to connect to
+function send_verification($firstname, $email, $otp) {
+    $mail = new PHPMailer(true);
     
-        //Recipients
-        $mail->setFrom( 'weltzphils@gmail.com', 'Weltz Industrial Phils INC.');
-        $mail->addAddress($email);     // Add a recipient
-        //Content
-        $mail->isHTML(true);  // Set email format to HTML
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'weltzphils@gmail.com';
+        $mail->Password = 'kkizzhibilqjhuyg';
+        $mail->SMTPSecure = 'tls';
+        $mail->Port = 587;
+    
+        // Recipients
+        $mail->setFrom('weltzphils@gmail.com', 'Weltz Industrial Phils INC.');
+        $mail->addAddress($email);
+    
+        // Email Content
+        $mail->isHTML(true);
         $mail->Subject = "Weltz Industrial OTP Verification Code";
-        $mail->Body    = "<h1>Hello ".$firstname."</h1>
-        <br><p>You have registered an account on our website!
-        <br>Please click the link below to complete your verification:</p>
-        <br><br><h3><strong><i><a href='http://localhost/weltzsite/src/otpverify.php?otp=$otp'>Verify Your Account!</a></i></strong></h3>";
-
+    
+        // Styled HTML Body
+        $mail->Body = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #f9f9f9;'>
+            <h2 style='color: #333; text-align: center;'>Welcome to Weltz Industrial</h2>
+            <p style='color: #555; font-size: 16px;'>Hello <strong>" . htmlspecialchars($firstname) . "</strong>,</p>
+            <p style='color: #555; font-size: 16px;'>Thank you for registering on our platform. To complete your verification, please click the button below:</p>
+            <div style='text-align: center; margin: 20px;'>
+                <a href='http://localhost/weltzsite/src/otpverify.php?otp=$otp' style='background-color: #fc0001; color: white; text-decoration: none; padding: 12px 20px; border-radius: 5px; font-size: 18px; display: inline-block;'>Verify Your Account</a>
+            </div>
+            <p style='color: #555; font-size: 14px; text-align: center;'>If you did not request this, please ignore this email.</p>
+            <hr style='border: 0; height: 1px; background: #ddd; margin: 20px 0;'>
+            <p style='color: #777; font-size: 12px; text-align: center;'>© " . date('Y') . " Weltz Industrial Phils INC. All rights reserved.</p>
+        </div>";
+    
+        // Send Email
         $mail->send();
-
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'Error: ' . $mail->ErrorInfo]);
     }

@@ -5,7 +5,7 @@
 </div>
 
 <div class="container mt-4">
-    <ul class="nav nav-tabs" id="myTabs" role="tablist">
+    <ul class="nav nav-underline nav-justified" id="myTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="processing-tab" data-bs-toggle="tab" data-bs-target="#processing" type="button" role="tab">Processing</button>
         </li>
@@ -52,7 +52,7 @@
             JOIN modes_of_payment_tbl m ON o.mopID = m.mopID
             JOIN categories_tbl cat ON p.categoryID = cat.categoryID 
             WHERE o.userID = ? AND o.statusID = ?
-            ";
+            ORDER BY o.createdAt DESC";
 
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ii", $userID, $statusID);
@@ -81,43 +81,43 @@
                 <?php foreach ($orders as $orderID => $order): ?>
                     <div class="order-details bg-light mb-5" id="order-<?= htmlspecialchars($order['referenceNum']) ?>">
                         <?php foreach ($order['items'] as $item): ?>
-                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-dark">
+                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-gray">
                                 <div class="col-lg-6 d-flex">
                                     <img src="<?= htmlspecialchars($item['imageURL']) ?>" alt="Product Image" class="me-3" style="width: 100px;">
                                     <div class="d-flex flex-column justify-content-center">
-                                        <span><?= htmlspecialchars($item['productName']) ?></span>
-                                        <span class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></span>
+                                        <p><?= htmlspecialchars($item['productName']) ?></p>
+                                        <p class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></p>
                                     </div>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="unit-price">PHP <?= $item['unitPrice'] ?></span>
+                                    <p class="unit-price">PHP <?= $item['unitPrice'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="quantity"><?= $item['quantity'] ?></span>
+                                    <p class="quantity"><?= $item['quantity'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="total-price">PHP <?= $item['totalPrice'] ?></span>
+                                    <p class="total-price">PHP <?= $item['totalPrice'] ?></p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <div class="order-footer row align-items-center p-3 m-0">
+                        <div class="order-footer row align-items-center p-3 m-0 border-top border-dark">
                             <div class="row align-items-center mb-3">
                                 <div class="col-lg-4">
                                     <h5 class="refNum">Reference No. #<?= htmlspecialchars($order['referenceNum']) ?></h5>
+                                    <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></p>
                                 </div>
-                                <div class="col-lg-4">
-                                    <span class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></span>
+                                <div class="col-lg-4 text-center">
+                                    <p class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></p>
                                 </div>
                                 <div class="col-lg-4 text-end">
-                                    <span class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></span>
+                                    <p class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></p>
                                 </div>
                             </div>
                             <div class="row p-1 m-0 d-flex justify-content-end">
                                 <div class="col-lg-6">
-                                    <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                <button class="btn btn-danger cancel-order-btn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal" data-order-id="<?= $orderID ?>">Cancel Order</button>
+                                    <button class="btn btn-danger cancel-order-btn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal" data-order-id="<?= $orderID ?>">Cancel Order</button>
                                 </div>
                             </div>
                         </div>
@@ -150,14 +150,14 @@
 
             $query = "
             SELECT o.orderID, o.referenceNum, o.totalAmount, m.mopName, oi.productID, 
-                oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, o.createdAt
+                oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, o.createdAt, o.toReceive
             FROM orders_tbl o
             JOIN order_items_tbl oi ON o.orderID = oi.orderID
             JOIN products_tbl p ON oi.productID = p.productID
             JOIN modes_of_payment_tbl m ON o.mopID = m.mopID
             JOIN categories_tbl cat ON p.categoryID = cat.categoryID 
             WHERE o.userID = ? AND o.statusID = ?
-            ";
+            ORDER BY o.toReceive DESC";
 
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ii", $userID, $statusID);
@@ -170,6 +170,7 @@
                 $orders[$row['orderID']]['totalAmount'] = $row['totalAmount'];
                 $orders[$row['orderID']]['mopName'] = $row['mopName'];
                 $orders[$row['orderID']]['createdAt'] = date("F j, Y, g:i a", strtotime($row['createdAt']));
+                $orders[$row['orderID']]['toReceive'] = date("F j, Y, g:i a", strtotime($row['toReceive']));
                 $orders[$row['orderID']]['items'][] = [
                     'productName' => $row['productName'],
                     'category' => $row['categoryName'],
@@ -186,42 +187,41 @@
                 <?php foreach ($orders as $orderID => $order): ?>
                     <div class="order-details bg-light mb-5" id="order-<?= $orderID ?>">
                         <?php foreach ($order['items'] as $item): ?>
-                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-dark">
+                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-gray">
                                 <div class="col-lg-6 d-flex">
                                     <img src="<?= htmlspecialchars($item['imageURL']) ?>" alt="Product Image" class="me-3" style="width: 100px;">
                                     <div class="d-flex flex-column justify-content-center">
-                                        <span><?= htmlspecialchars($item['productName']) ?></span>
-                                        <span class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></span>
+                                        <p><?= htmlspecialchars($item['productName']) ?></p>
+                                        <p class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></p>
                                     </div>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="unit-price">PHP <?= $item['unitPrice'] ?></span>
+                                    <p class="unit-price">PHP <?= $item['unitPrice'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="quantity"><?= $item['quantity'] ?></span>
+                                    <p class="quantity"><?= $item['quantity'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="total-price">PHP <?= $item['totalPrice'] ?></span>
+                                    <p class="total-price">PHP <?= $item['totalPrice'] ?></p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <div class="order-footer row align-items-center p-3 m-0">
+                        <div class="order-footer row align-items-center p-3 m-0 border-top border-dark">
                             <div class="row align-items-center mb-3">
                                 <div class="col-lg-4">
                                     <h5 class="refNum">Reference No. #<?= htmlspecialchars($order['referenceNum']) ?></h5>
+                                    <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></p>
                                 </div>
-                                <div class="col-lg-4">
-                                    <span class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></span>
+                                <div class="col-lg-4 text-center">
+                                    <p class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></p>
                                 </div>
                                 <div class="col-lg-4 text-end">
-                                    <span class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></span>
+                                    <p class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></p>
                                 </div>
                             </div>
                             <div class="row p-1 m-0 d-flex justify-content-end">
-                                <div class="col-lg-6">
-                                    <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
-                                </div>
                                 <div class="col-lg-6 text-end">
+                                    <button class="btn btn-danger">Upload Order Receipt</button>
                                     <button class="btn btn-danger cancel-order-btn" data-bs-toggle="modal" data-bs-target="#cancelOrderModal" data-order-id="<?= $orderID ?>">Cancel Order</button>
                                 </div>
                             </div>
@@ -255,14 +255,14 @@
 
             $query = "
             SELECT o.orderID, o.referenceNum, o.totalAmount, m.mopName, oi.productID, 
-                oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, o.createdAt
+                oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, o.createdAt, o.receivedAt
             FROM orders_tbl o
             JOIN order_items_tbl oi ON o.orderID = oi.orderID
             JOIN products_tbl p ON oi.productID = p.productID
             JOIN modes_of_payment_tbl m ON o.mopID = m.mopID
             JOIN categories_tbl cat ON p.categoryID = cat.categoryID 
             WHERE o.userID = ? AND o.statusID = ?
-            ";
+            ORDER BY o.receivedAt DESC";
 
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ii", $userID, $statusID);
@@ -275,6 +275,7 @@
                 $orders[$row['orderID']]['totalAmount'] = $row['totalAmount'];
                 $orders[$row['orderID']]['mopName'] = $row['mopName'];
                 $orders[$row['orderID']]['createdAt'] = date("F j, Y, g:i a", strtotime($row['createdAt']));
+                $orders[$row['orderID']]['receivedAt'] = date("F j, Y, g:i a", strtotime($row['receivedAt']));
                 $orders[$row['orderID']]['items'][] = [
                     'productName' => $row['productName'],
                     'category' => $row['categoryName'],
@@ -291,43 +292,44 @@
                 <?php foreach ($orders as $orderID => $order): ?>
                     <div class="order-details bg-light mb-5" id="order-<?= $orderID ?>">
                         <?php foreach ($order['items'] as $item): ?>
-                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-dark">
+                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-gray">
                                 <div class="col-lg-6 d-flex">
                                     <img src="<?= htmlspecialchars($item['imageURL']) ?>" alt="Product Image" class="me-3" style="width: 100px;">
                                     <div class="d-flex flex-column justify-content-center">
-                                        <span><?= htmlspecialchars($item['productName']) ?></span>
-                                        <span class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></span>
+                                        <p><?= htmlspecialchars($item['productName']) ?></p>
+                                        <p class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></p>
                                     </div>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="unit-price">PHP <?= $item['unitPrice'] ?></span>
+                                    <p class="unit-price">PHP <?= $item['unitPrice'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="quantity"><?= $item['quantity'] ?></span>
+                                    <p class="quantity"><?= $item['quantity'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="total-price">PHP <?= $item['totalPrice'] ?></span>
+                                    <p class="total-price">PHP <?= $item['totalPrice'] ?></p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <div class="order-footer row align-items-center p-3 m-0">
+                        <div class="order-footer row align-items-center p-3 m-0 border-top border-dark">
                             <div class="row align-items-center mb-3">
                                 <div class="col-lg-4">
                                     <h5 class="refNum">Reference No. #<?= htmlspecialchars($order['referenceNum']) ?></h5>
+                                    <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></p>
+                                    <p class="ordered-at">Received at: <?= htmlspecialchars($order['receivedAt']) ?></p>
                                 </div>
-                                <div class="col-lg-4">
-                                    <span class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></span>
+                                <div class="col-lg-4 text-center">
+                                    <p class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></p>
                                 </div>
                                 <div class="col-lg-4 text-end">
-                                    <span class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></span>
+                                    <p class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></p>
                                 </div>
                             </div>
                             <div class="row p-1 m-0 d-flex justify-content-end">
                                 <div class="col-lg-6">
-                                    <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                 <span class="badge bg-success fs-5">Picked Up</span>
+                                    <p class="badge bg-success fs-5">Picked Up</p>
                                 </div>
                             </div>
                         </div>
@@ -360,14 +362,14 @@
 
             $query = "
             SELECT o.orderID, o.referenceNum, o.totalAmount, m.mopName, oi.productID, 
-                oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, o.createdAt
+                oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, o.createdAt, o.cancelledAt 
             FROM orders_tbl o
             JOIN order_items_tbl oi ON o.orderID = oi.orderID
             JOIN products_tbl p ON oi.productID = p.productID
             JOIN modes_of_payment_tbl m ON o.mopID = m.mopID
             JOIN categories_tbl cat ON p.categoryID = cat.categoryID 
             WHERE o.userID = ? AND o.statusID = ?
-            ";
+            ORDER BY o.cancelledAt DESC";
 
             $stmt = $conn->prepare($query);
             $stmt->bind_param("ii", $userID, $statusID);
@@ -380,6 +382,7 @@
                 $orders[$row['orderID']]['totalAmount'] = $row['totalAmount'];
                 $orders[$row['orderID']]['mopName'] = $row['mopName'];
                 $orders[$row['orderID']]['createdAt'] = date("F j, Y, g:i a", strtotime($row['createdAt']));
+                $orders[$row['orderID']]['cancelledAt'] = date("F j, Y, g:i a", strtotime($row['cancelledAt']));
                 $orders[$row['orderID']]['items'][] = [
                     'productName' => $row['productName'],
                     'category' => $row['categoryName'],
@@ -396,43 +399,43 @@
                 <?php foreach ($orders as $orderID => $order): ?>
                     <div class="order-details bg-light mb-5" id="order-<?= $orderID ?>">
                         <?php foreach ($order['items'] as $item): ?>
-                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-dark">
+                            <div class="order-item row align-items-center p-3 m-0 border-bottom border-gray">
                                 <div class="col-lg-6 d-flex">
                                     <img src="<?= htmlspecialchars($item['imageURL']) ?>" alt="Product Image" class="me-3" style="width: 100px;">
                                     <div class="d-flex flex-column justify-content-center">
-                                        <span><?= htmlspecialchars($item['productName']) ?></span>
-                                        <span class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></span>
+                                        <p><?= htmlspecialchars($item['productName']) ?></p>
+                                        <p class="text-secondary">Category: <?= htmlspecialchars($item['category']) ?></p>
                                     </div>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="unit-price">PHP <?= $item['unitPrice'] ?></span>
+                                    <p class="unit-price">PHP <?= $item['unitPrice'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="quantity"><?= $item['quantity'] ?></span>
+                                    <p class="quantity"><?= $item['quantity'] ?></p>
                                 </div>
                                 <div class="col-lg-2 text-center">
-                                    <span class="total-price">PHP <?= $item['totalPrice'] ?></span>
+                                    <p class="total-price">PHP <?= $item['totalPrice'] ?></p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                        <div class="order-footer row align-items-center p-3 m-0">
+                        <div class="order-footer row align-items-center p-3 m-0 border-top border-dark">
                             <div class="row align-items-center mb-3">
                                 <div class="col-lg-4">
                                     <h5 class="refNum">Reference No. #<?= htmlspecialchars($order['referenceNum']) ?></h5>
+                                    <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['cancelledAt']) ?></p>
                                 </div>
-                                <div class="col-lg-4">
-                                    <span class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></span>
+                                <div class="col-lg-4 text-center">
+                                    <p class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></p>
                                 </div>
                                 <div class="col-lg-4 text-end">
-                                    <span class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></span>
+                                    <p class="order-total"><strong>Order Total: PHP <?= number_format($order['totalAmount'], 2) ?></strong></p>
                                 </div>
                             </div>
                             <div class="row p-1 m-0 d-flex justify-content-end">
                                 <div class="col-lg-6">
-                                    <span class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></span>
                                 </div>
                                 <div class="col-lg-6 text-end">
-                                    <span class="badge bg-danger fs-5">Cancelled</span>
+                                    <p class="badge bg-danger fs-5">Cancelled</p>
                                 </div>
                             </div>
                         </div>
@@ -442,23 +445,23 @@
         </div>
 
         <!-- CANCEL MODAL -->
-    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to cancel this order? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger" id="confirmCancelOrder">Cancel Order</button>
+        <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to cancel this order? <span class="text-danger">This action cannot be undone.</span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" id="confirmCancelOrder">Confirm</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     </div>
 </div>

@@ -7,7 +7,6 @@ require '../vendor/autoload.php';
 
 function send_invoice($toEmail, $referenceNum, $orderID)
 {
-
     require 'weltz_dbconnect.php';
 
     $mail = new PHPMailer(true);
@@ -36,11 +35,13 @@ function send_invoice($toEmail, $referenceNum, $orderID)
             <html>
             <head>
                 <style>
-                    .email-container { font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; }
-                    .header { background-color: #fc0001; color: white; padding: 15px; text-align: center; font-size: 20px; }
-                    .order-details { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                    .order-details th { background-color: #fc0001; color: white; padding: 10px; text-align: left; }
-                    .order-summary { font-size: 18px; font-weight: bold; text-align: right; padding: 10px; margin-top: 10px; }
+                    .email-container { font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; background: #f9f9f9; border-radius: 10px; }
+                    .header { background-color: #fc0001; color: white; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; border-radius: 10px 10px 0 0; }
+                    .order-details { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
+                    .order-details th, .order-details td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
+                    .order-details th { background-color: #fc0001; color: white; text-align: center; }
+                    .order-summary { font-size: 18px; font-weight: bold; text-align: right; padding: 15px; background: #eee; border-radius: 0 0 10px 10px; }
+                    .cta-button { display: block; text-align: center; background: #fc0001; color: white; padding: 12px; text-decoration: none; border-radius: 5px; font-size: 18px; margin: 20px auto; width: 200px; }
                 </style>
             </head>
             <body>
@@ -60,9 +61,10 @@ function send_invoice($toEmail, $referenceNum, $orderID)
                     
                     <p class='order-summary'>Total Order Amount: $" . number_format($totalOrderAmount, 2) . "</p>
                     
-                    <p>Please have the payment ready and present the order reference number or this invoice upon pickup</p>
+                    <p>Please have the payment ready and present the order reference number or this invoice upon pickup.</p>
+                    <a href='http://localhost/weltzsite/src/invoice.php?referenceNum=$referenceNum' class='cta-button'>View Invoice</a>
                     <p>If you have any questions, feel free to contact us.</p>
-                    <p>Best regards,<br>Weltz Group</p>
+                    <p>Best regards,<br><strong>Weltz Group</strong></p>
                 </div>
             </body>
             </html>
@@ -89,6 +91,5 @@ function send_invoice($toEmail, $referenceNum, $orderID)
         error_log("Invoice Email could not be sent. Mailer Error: {$mail->ErrorInfo}");
     }
 }
-
 
 ?>

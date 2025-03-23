@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="container mt-5 h-75">
+    <div class="container mt-5 min-vh-100">
         <div class="cart-header bg-danger text-white mb-3">
             <div class="row align-items-center p-3">
                 <div class="col-lg-1 text-center">
@@ -126,7 +126,7 @@
         }
         ?>
     </div>
-    <div class="cartCheckout container bg-light text-end my-0 py-4">
+    <div class="cartCheckout container bg-dark text-end text-light my-0 py-4">
         <div class="container">
             <strong><span id="totalText">Total (0): PHP 0.00</span></strong>
             <button class="btn btn-danger" id="checkoutButton">Checkout</button>
