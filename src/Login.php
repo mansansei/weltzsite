@@ -46,7 +46,7 @@ session_start();
                     <button type="submit" class="btn btn-danger w-100 rounded-5">Login</button>
                 </div>
                 <div class="signuphere">
-                    <a href="#">Forgot Password</a>
+                    <a href="forgotPassword.php">Forgot Password</a>
                     <p>Haven't registered? <a href="Signup.php">Sign up here</a></p>
                 </div>
             </form>

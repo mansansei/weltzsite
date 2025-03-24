@@ -17,9 +17,6 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
 
             <!-- Navigation Buttons -->
             <div class="nav-buttons mt-4">
-                <a href="?page=userProfile&tab=userProfile" class="nav-button fs-5" id="profileLink">
-                    <i class="fa-solid fa-user fa-fw"></i> Profile
-                </a>
                 <a href="?page=userProfile&tab=userOrders" class="nav-button fs-5" id="ordersLink">
                     <i class="fa-solid fa-receipt fa-fw"></i> Orders
                 </a>
@@ -41,16 +38,13 @@ if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
         <!-- Content Area -->
         <div class="ucontent p-5">
             <?php
-            $tab = isset($_GET['tab']) ? $_GET['tab'] : 'userProfile';
+            $tab = isset($_GET['tab']) ? $_GET['tab'] : 'userOrders';
 
 
             switch ($tab) {
+                default:
                 case 'userOrders':
                     include 'userOrders.php';
-                    break;
-                case 'userProfile':
-                default:
-                    include 'userProfilePage.php';
                     break;
             }            
 

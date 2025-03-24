@@ -17,7 +17,6 @@ $allowedPages = [
     'aboutUsPage' => 'customerPages/aboutUsPage.php',
     'productsPage' => 'customerPages/productsPage.php',
     'contactPage' => 'customerPages/contactPage.php',
-    'blogsPage' => 'customerPages/blogsPage.php',
     'cartPage' => 'customerPages/cartPage.php',
     'viewProduct' => 'customerPages/viewProduct.php',
     'OrderHistory' => 'customerPages/OrderHistory.php',
@@ -80,7 +79,6 @@ if (!array_key_exists($page, $allowedPages) || !file_exists($allowedPages[$page]
                     <a class="active2" href="?page=homePage#Aboutus"><button>ABOUT US</button></a>
                     <a class="active3" href="?page=productsPage"><button>PRODUCTS</button></a>
                     <a class="active4" href="?page=contactPage"><button>CONTACT</button></a>
-                    <a class="active5" href="?page=blogsPage"><button>BLOGS</button></a>
                 </div>
             </div>
             <div class="col-12 col-md-4 text-right">
