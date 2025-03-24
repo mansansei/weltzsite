@@ -669,7 +669,7 @@ form .row .col input {
 #adminHeader {
     top: 0;
     position: sticky;
-    z-index: 2;
+    z-index: 1000;
 }
 
 .table-container {
