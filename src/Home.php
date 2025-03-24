@@ -9,6 +9,31 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 2) {
     exit();
 }
 
+// Default page
+$page = $_GET['page'] ?? 'homePage';
+
+// Define allowed pages
+$allowedPages = [
+    'aboutUsPage' => 'customerPages/aboutUsPage.php',
+    'productsPage' => 'customerPages/productsPage.php',
+    'contactPage' => 'customerPages/contactPage.php',
+    'blogsPage' => 'customerPages/blogsPage.php',
+    'cartPage' => 'customerPages/cartPage.php',
+    'viewProduct' => 'customerPages/viewProduct.php',
+    'OrderHistory' => 'customerPages/OrderHistory.php',
+    'userProfile' => 'customerPages/userProfile.php',
+    'notifs' => 'customerPages/notifsPage.php',
+    'homePage' => 'customerPages/homePage.php'
+];
+
+// If page is invalid, show 404 page directly
+if (!array_key_exists($page, $allowedPages) || !file_exists($allowedPages[$page])) {
+    http_response_code(404);
+    include '404.php';
+    exit();
+}
+
+// Otherwise, include the normal layout
 ?>
 
 <html lang="en">
@@ -132,50 +157,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 2) {
     </header>
 
     <div class="container-fluid m-0 p-0">
-        <?php
-        // Default page
-        $page = 'homePage';
-
-        // Check if 'page' parameter is set in the query string
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-
-        // Include the corresponding page content
-        switch ($page) {
-            case 'aboutUsPage':
-                include 'customerPages/homePage.php';
-                break;
-            case 'productsPage':
-                include 'customerPages/productsPage.php';
-                break;
-            case 'contactPage':
-                include 'customerPages/contactPage.php';
-                break;
-            case 'blogsPage':
-                include 'customerPages/blogsPage.php';
-                break;
-            case 'cartPage':
-                include 'customerPages/cartPage.php';
-                break;
-            case 'viewProduct':
-                include 'customerPages/viewProduct.php';
-                break;
-            case 'OrderHistory':
-                include 'customerPages/OrderHistory.php';
-                break;
-            case 'userProfile':
-                include 'customerPages/userProfile.php';
-                break;
-            case 'notifs':
-                include 'customerPages/notifsPage.php';
-                break;
-            case 'homePage':
-            default:
-                include 'customerPages/homePage.php';
-                break;
-        }
-        ?>
+        <?php include $allowedPages[$page]; ?>
     </div>
 
     <footer class="bg-dark text-white text-center py-3">
@@ -188,6 +170,10 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 2) {
             </p>
         </div>
     </footer>
+
+    <a href="https://m.me/WeltzIndustrialPhilippines" target="_blank" class="floating-button">
+        <i class="fa-brands fa-facebook-messenger"></i>
+    </a>
 
     <?php require_once 'cssLibrariesJS.php' ?>
 </body>

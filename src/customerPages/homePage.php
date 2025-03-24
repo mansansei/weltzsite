@@ -13,129 +13,51 @@
         <p>TO KEEP YOUR HOME AND WORKPLACE PROTECTED.</p>
     </div>
 
+    <?php
+    require 'weltz_dbconnect.php'; // Include your database connection
+
+    $selectSQL = "SELECT p.productID, p.productIMG, p.productName, c.categoryName, p.productDesc, p.productPrice, p.inStock, p.prodSold 
+              FROM products_tbl p 
+              JOIN categories_tbl c ON p.categoryID = c.categoryID 
+              ORDER BY p.prodSold DESC LIMIT 6";
+
+    $result = $conn->query($selectSQL);
+    ?>
+
     <div class="featureditemswrapper">
         <div class="scroll-container">
             <div class="row flex-nowrap">
-                <!-- <button class="scroll-left">←</button> -->
-                <div class="featuredItem p-4 shadow-sm col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="row">
-                        <div class="featureditempic col-12">
-                            <img src="../../images/logo.png" alt="Item Pic">
+                <?php if ($result->num_rows > 0): ?>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <div class="featuredItem p-4 shadow-sm col-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="row">
+                                <div class="featureditempic col-12 mb-3">
+                                    <img src="<?= htmlspecialchars($row['productIMG']) ?>" alt="<?= htmlspecialchars($row['productName']) ?>" class="rounded">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="featuredItemName col-6">
+                                    <p><?= htmlspecialchars($row['productName']) ?></p>
+                                </div>
+                                <div class="featuredItemPrice col-6">
+                                    <p>PHP <?= number_format($row['productPrice'], 2) ?></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="featuredViewProduct col-12">
+                                    <p><a href="?page=viewProduct&productID=<?= $row['productID'] ?>">View Product <i class="fa-solid fa-arrow-right"></i></a></p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredItemName col-6">
-                            <p>PRODUCT NAME</p>
-                        </div>
-                        <div class="featuredItemPrice col-6">
-                            <p>Php00.00</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredViewProduct col-12">
-                            <p><a href="#">View Product <i class="fa-solid fa-arrow-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="featuredItem p-4 shadow-sm col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="row">
-                        <div class="featureditempic col-12">
-                            <img src="../images/logo.png" alt="Item Pic">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredItemName col-6">
-                            <p>PRODUCT NAME</p>
-                        </div>
-                        <div class="featuredItemPrice col-6">
-                            <p>Php00.00</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredViewProduct col-12">
-                            <p><a href="#">View Product <i class="fa-solid fa-arrow-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="featuredItem p-4 shadow-sm col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="row">
-                        <div class="featureditempic col-12">
-                            <img src="../images/logo.png" alt="Item Pic">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredItemName col-6">
-                            <p>PRODUCT NAME</p>
-                        </div>
-                        <div class="featuredItemPrice col-6">
-                            <p>Php00.00</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredViewProduct col-12">
-                            <p><a href="#">View Product <i class="fa-solid fa-arrow-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="featuredItem p-4 shadow-sm col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="row">
-                        <div class="featureditempic col-12">
-                            <img src="../images/logo.png" alt="Item Pic">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredItemName col-6">
-                            <p>PRODUCT NAME</p>
-                        </div>
-                        <div class="featuredItemPrice col-6">
-                            <p>Php00.00</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredViewProduct col-12">
-                            <p><a href="#">View Product <i class="fa-solid fa-arrow-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="featuredItem p-4 shadow-sm col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="row">
-                        <div class="featureditempic col-12">
-                            <img src="../images/logo.png" alt="Item Pic">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredItemName col-6">
-                            <p>PRODUCT NAME</p>
-                        </div>
-                        <div class="featuredItemPrice col-6">
-                            <p>Php00.00</p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="featuredViewProduct col-12">
-                            <p><a href="#">View Product <i class="fa-solid fa-arrow-right"></i></a></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- <button class="scroll-right">→</button> -->
+                    <?php endwhile; ?>
+                <?php else: ?>
+                    <p>No featured products available.</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <?php $conn->close(); ?>
 
 </div>
 
@@ -166,7 +88,7 @@
             <!-- About Us Image -->
             <div class="col-md-6 d-flex justify-content-center align-items-center p-4">
                 <div class="aboutusimg">
-                    <img src="../images/satoru.jpg" alt="Image" class="img-fluid">
+                    <img src="../images/aboutUsIMG.jpg" alt="Image" class="img-fluid">
                 </div>
             </div>
         </div>
@@ -184,10 +106,8 @@
 
         <!-- Trusted Partners Wrapper -->
         <div class="tpwrapper d-flex justify-content-around overflow-auto p-4 gap-4">
-            <img src="../images/satoru.jpg" alt="partner" class="img-fluid rounded-circle" style="height: 250px; width: 250px; object-fit: cover;">
-            <img src="../images/satoru.jpg" alt="partner" class="img-fluid rounded-circle" style="height: 250px; width: 250px; object-fit: cover;">
-            <img src="../images/satoru.jpg" alt="partner" class="img-fluid rounded-circle" style="height: 250px; width: 250px; object-fit: cover;">
-            <img src="../images/satoru.jpg" alt="partner" class="img-fluid rounded-circle" style="height: 250px; width: 250px; object-fit: cover;">
+            <img src="../images/aleumLogo.jpg" alt="partner" class="img-fluid rounded-circle shadow" style="height: 250px; width: 250px; object-fit: cover;">
+            <img src="../images/horingLihLogo.png" alt="partner" class="img-fluid rounded-circle shadow" style="height: 250px; width: 250px; object-fit: cover;">
         </div>
     </div>
 </section>

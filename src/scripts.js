@@ -522,8 +522,6 @@ $(document).ready(function () {
             },
             uPass: {
                 required: true,
-                minlength: 8,
-                validPassword: true
             }
         },
         messages: {
@@ -533,7 +531,6 @@ $(document).ready(function () {
             },
             uPass: {
                 required: "Please provide a password",
-                minlength: "Must be at least 8 characters"
             }
         },
         submitHandler: function (form) {

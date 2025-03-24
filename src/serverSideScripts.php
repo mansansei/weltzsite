@@ -1328,8 +1328,8 @@ function updateOrderStatus()
   // Connect to the database
   $conn = dbConnect();
 
-  // Check if the order exists and get the userID and referenceNum
-  $stmt = $conn->prepare("SELECT userID, referenceNum FROM orders_tbl WHERE orderID = ? LIMIT 1");
+  // Check if the order exists and get the userID, referenceNum, and orderReceipt
+  $stmt = $conn->prepare("SELECT userID, referenceNum, orderReceipt FROM orders_tbl WHERE orderID = ? LIMIT 1");
   $stmt->bind_param("i", $orderID);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -1342,7 +1342,15 @@ function updateOrderStatus()
   $orderData = $result->fetch_assoc();
   $userID = $orderData['userID'];
   $referenceNum = $orderData['referenceNum'];
+  $orderReceipt = $orderData['orderReceipt'];
   $stmt->close();
+
+  // Prevent status update to "Picked Up" if no receipt exists
+  if ($newStatus == 4 && empty($orderReceipt)) {
+    echo json_encode(['success' => false, 'message' => 'Cannot update status to Picked Up. Receipt is required.']);
+    $conn->close();
+    exit;
+  }
 
   // Update the order status
   $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ? WHERE orderID = ?");
@@ -1413,54 +1421,72 @@ function uploadReceipt()
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
 
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
-    $conn = dbConnect(); // Open database connection
-
-    $orderID = $_POST['orderID'] ?? null;
-    $referenceNum = $_POST['referenceNum'] ?? null;
-    $receiptImage = $_FILES['receiptImage'] ?? null;
-
-    // Validation
-    if (empty($orderID) || empty($referenceNum) || !$receiptImage) {
-      echo json_encode(['success' => false, 'message' => 'Missing required data.']);
-      exit;
-    }
-
-    if ($receiptImage['error'] !== UPLOAD_ERR_OK) {
-      echo json_encode(['success' => false, 'message' => 'Error uploading image.']);
-      exit;
-    }
-
-    // Save the image file
-    $targetDir = "images/receipts/";
-    if (!is_dir($targetDir)) {
-      mkdir($targetDir, 0777, true); // Ensure directory exists
-    }
-
-    $imageFileType = strtolower(pathinfo($receiptImage['name'], PATHINFO_EXTENSION));
-    $newFileName = $referenceNum . '_' . uniqid() . '.' . $imageFileType;
-    $targetFile = $targetDir . $newFileName;
-
-    if (!move_uploaded_file($receiptImage['tmp_name'], $targetFile)) {
-      echo json_encode(['success' => false, 'message' => 'Error saving receipt image.']);
-      exit;
-    }
-
-    $receiptPath = htmlspecialchars($targetFile);
-
-    // Update the database
-    $updateSQL = "UPDATE orders_tbl SET orderReceipt = ? WHERE orderID = ?";
-    $stmt = $conn->prepare($updateSQL);
-    $stmt->bind_param("si", $receiptPath, $orderID);
-
-    if ($stmt->execute()) {
-      echo json_encode(['success' => true, 'message' => 'Receipt uploaded successfully.', 'filePath' => $receiptPath]);
-    } else {
-      echo json_encode(['success' => false, 'message' => 'Database update failed: ' . $stmt->error]);
-    }
-
-    $stmt->close();
-    $conn->close();
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    exit;
   }
+
+  $conn = dbConnect(); // Open database connection
+
+  $orderID = $_POST['orderID'] ?? null;
+  $referenceNum = $_POST['referenceNum'] ?? null;
+  $receiptImage = $_FILES['receiptImage'] ?? null;
+
+  // Validation
+  if (empty($orderID) || empty($referenceNum) || !$receiptImage) {
+    echo json_encode(['success' => false, 'message' => 'Missing required data.']);
+    exit;
+  }
+
+  if ($receiptImage['error'] !== UPLOAD_ERR_OK) {
+    echo json_encode(['success' => false, 'message' => 'Error uploading image.']);
+    exit;
+  }
+
+  // Check if a receipt already exists
+  $checkSQL = "SELECT orderReceipt FROM orders_tbl WHERE orderID = ?";
+  $stmt = $conn->prepare($checkSQL);
+  $stmt->bind_param("i", $orderID);
+  $stmt->execute();
+  $stmt->bind_result($existingReceipt);
+  $stmt->fetch();
+  $stmt->close();
+
+  if (!empty($existingReceipt)) {
+    echo json_encode(['success' => false, 'message' => 'A receipt has already been uploaded for this order.']);
+    $conn->close();
+    exit;
+  }
+
+  // Save the image file
+  $targetDir = "images/receipts/";
+  if (!is_dir($targetDir)) {
+    mkdir($targetDir, 0777, true); // Ensure directory exists
+  }
+
+  $imageFileType = strtolower(pathinfo($receiptImage['name'], PATHINFO_EXTENSION));
+  $newFileName = $referenceNum . '_' . uniqid() . '.' . $imageFileType;
+  $targetFile = $targetDir . $newFileName;
+
+  if (!move_uploaded_file($receiptImage['tmp_name'], $targetFile)) {
+    echo json_encode(['success' => false, 'message' => 'Error saving receipt image.']);
+    $conn->close();
+    exit;
+  }
+
+  $receiptPath = htmlspecialchars($targetFile);
+
+  // Update the database
+  $updateSQL = "UPDATE orders_tbl SET orderReceipt = ? WHERE orderID = ?";
+  $stmt = $conn->prepare($updateSQL);
+  $stmt->bind_param("si", $receiptPath, $orderID);
+
+  if ($stmt->execute()) {
+    echo json_encode(['success' => true, 'message' => 'Receipt uploaded successfully.', 'filePath' => $receiptPath]);
+  } else {
+    echo json_encode(['success' => false, 'message' => 'Database update failed: ' . $stmt->error]);
+  }
+
+  $stmt->close();
+  $conn->close();
 }
