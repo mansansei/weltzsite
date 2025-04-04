@@ -911,7 +911,6 @@ $(document).ready(function () {
             },
             uAdd: {
                 minlength: 5,
-                noSpecialChars: true
             },
             uPhone: {
                 digits: true,
@@ -930,7 +929,6 @@ $(document).ready(function () {
             },
             uAdd: {
                 minlength: "Must be at least 5 characters",
-                noSpecialChars: "No special characters allowed"
             },
             uPhone: {
                 digits: "Please enter only digits",

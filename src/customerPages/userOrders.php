@@ -422,7 +422,8 @@
                             <div class="row align-items-center mb-3">
                                 <div class="col-lg-4">
                                     <h5 class="refNum">Reference No. #<?= htmlspecialchars($order['referenceNum']) ?></h5>
-                                    <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['cancelledAt']) ?></p>
+                                    <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></p>
+                                    <p class="ordered-at">Canceled at: <?= htmlspecialchars($order['cancelledAt']) ?></p>
                                 </div>
                                 <div class="col-lg-4 text-center">
                                     <p class="mop">Mode of Payment: <?= htmlspecialchars($order['mopName']) ?></p>

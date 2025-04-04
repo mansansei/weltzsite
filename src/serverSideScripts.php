@@ -306,7 +306,7 @@ function addToCart()
 
     if ($success) {
       // Log the update
-      createAuditLog($conn, $userID, 'UPDATE', 'cart_items_tbl', $cartItem['cartItemID'], json_encode(['cartItemQuantity' => $cartItem['cartItemQuantity'], 'cartItemTotal' => $cartItem['cartItemTotal']]), json_encode(['cartItemQuantity' => $newQuantity, 'cartItemTotal' => $newTotalPrice]));
+      createAuditLog($conn, $userID, 'UPDATE CART ITEM', 'cart_items_tbl', $cartItem['cartItemID'], json_encode(['cartItemQuantity' => $cartItem['cartItemQuantity'], 'cartItemTotal' => $cartItem['cartItemTotal']]), json_encode(['cartItemQuantity' => $newQuantity, 'cartItemTotal' => $newTotalPrice]));
 
       echo json_encode(['success' => true, 'message' => 'Cart item updated successfully']);
     } else {
@@ -322,7 +322,7 @@ function addToCart()
 
     if ($success) {
       // Log the new cart item
-      createAuditLog($conn, $userID, 'CREATE', 'cart_items_tbl', $newCartItemID, null, json_encode(['cartID' => $cartID, 'productID' => $productID, 'cartItemQuantity' => $quantity, 'cartItemTotal' => $totalPrice]));
+      createAuditLog($conn, $userID, 'ADD TO CART', 'cart_items_tbl', $newCartItemID, null, json_encode(['cartID' => $cartID, 'productID' => $productID, 'cartItemQuantity' => $quantity, 'cartItemTotal' => $totalPrice]));
 
       echo json_encode(['success' => true, 'message' => 'Item added to cart successfully']);
     } else {
@@ -398,7 +398,7 @@ function updateCartItemQuantity()
 
   if ($success) {
     // Log the update
-    createAuditLog($conn, $userID, 'UPDATE', 'cart_items_tbl', $cartItemID, json_encode(['cartItemQuantity' => $cartItem['cartItemQuantity'], 'cartItemTotal' => $cartItem['cartItemTotal']]), json_encode(['cartItemQuantity' => $newQuantity, 'cartItemTotal' => $newTotalPrice]));
+    createAuditLog($conn, $userID, 'UPDATE CART ITEM', 'cart_items_tbl', $cartItemID, json_encode(['cartItemQuantity' => $cartItem['cartItemQuantity'], 'cartItemTotal' => $cartItem['cartItemTotal']]), json_encode(['cartItemQuantity' => $newQuantity, 'cartItemTotal' => $newTotalPrice]));
 
     echo json_encode(['success' => true, 'message' => 'Cart item quantity updated successfully']);
   } else {
@@ -462,7 +462,7 @@ function deleteCartItem()
 
   if ($success) {
     // Log the deletion
-    createAuditLog($conn, $userUpdaterID, 'DELETE', 'cart_items_tbl', $cartItemID, $oldValues, null);
+    createAuditLog($conn, $userUpdaterID, 'DELETE CART ITEM', 'cart_items_tbl', $cartItemID, $oldValues, null);
     echo json_encode(['success' => true, 'message' => 'Cart item deleted successfully']);
   } else {
     echo json_encode(['success' => false, 'message' => 'Error deleting cart item']);
@@ -522,7 +522,7 @@ function placeOrder()
     response(false, 'Error creating order: ' . $conn->error);
   }
   $orderID = $stmt->insert_id;
-  createAuditLog($conn, $userID, 'CREATE', 'orders_tbl', $orderID, null, json_encode(['referenceNum' => $referenceNum, 'totalAmount' => $totalAmount, 'mopID' => $mopID]));
+  createAuditLog($conn, $userID, 'PLACE ORDER', 'orders_tbl', $orderID, null, json_encode(['referenceNum' => $referenceNum, 'totalAmount' => $totalAmount, 'mopID' => $mopID]));
   $stmt->close();
 
   // Insert order items and update stock
@@ -536,13 +536,34 @@ function placeOrder()
     $stmt->execute();
     $stmt->close();
 
-    createAuditLog($conn, $userID, 'CREATE', 'order_items_tbl', $orderID, null, json_encode(['productID' => $productID, 'quantity' => $quantity, 'total' => $total]));
+    createAuditLog($conn, $userID, 'PLACE ORDER ITEMS', 'order_items_tbl', $orderID, null, json_encode(['productID' => $productID, 'quantity' => $quantity, 'total' => $total]));
+
+    // Retrieve the old stock before updating
+    $stmt = $conn->prepare("SELECT inStock FROM products_tbl WHERE productID = ?");
+    $stmt->bind_param("i", $productID);
+    $stmt->execute();
+    $stmt->bind_result($oldStock);
+    $stmt->fetch();
+    $stmt->close();
+
+    $newStock = $oldStock - $quantity; // Calculate new stock after update
 
     // Update product stock
-    $stmt = $conn->prepare("UPDATE products_tbl SET inStock = inStock - ?, prodSold = prodSold + ? WHERE productID = ?");
-    $stmt->bind_param("iii", $quantity, $quantity, $productID);
+    $stmt = $conn->prepare("UPDATE products_tbl SET inStock = ?, prodSold = prodSold + ? WHERE productID = ?");
+    $stmt->bind_param("iii", $newStock, $quantity, $productID);
     $stmt->execute();
     $stmt->close();
+
+    // Log the stock update in the audit log
+    createAuditLog(
+      $conn,
+      $userID,
+      'UPDATE PRODUCT STOCK',
+      'products_tbl',
+      $productID,
+      json_encode(['productID' => $productID, 'old stock' => $oldStock]),
+      json_encode(['productID' => $productID, 'new stock' => $newStock])
+    );
 
     // Mark ordered items in the cart
     $stmt = $conn->prepare("UPDATE cart_items_tbl SET statusID = 6 WHERE cartID = ? AND productID = ?");
@@ -556,7 +577,7 @@ function placeOrder()
   $stmt->bind_param("i", $cartID);
   $stmt->execute();
   $stmt->close();
-  createAuditLog($conn, $userID, 'DELETE', 'cart_items_tbl', $cartID, null, 'Removed items that were ordered');
+  createAuditLog($conn, $userID, 'DELETE CART ITEM', 'cart_items_tbl', $cartID, null, 'Removed items that were ordered');
 
   // Send notification
   $notifName = "Order Placed";
@@ -567,7 +588,7 @@ function placeOrder()
   $stmt->bind_param("issis", $userID, $notifName, $notifMessage, $statusUnread, $orderNotif);
   $stmt->execute();
   $stmt->close();
-  createAuditLog($conn, $userID, 'CREATE', 'notifs_tbl', $conn->insert_id, null, json_encode(['notifName' => $notifName, 'notifMessage' => $notifMessage, 'statusID' => $statusUnread]));
+  createAuditLog($conn, $userID, 'CREATE NOTIFICATION', 'notifs_tbl', $conn->insert_id, null, json_encode(['notifName' => $notifName, 'notifMessage' => $notifMessage, 'statusID' => $statusUnread]));
 
   // Retrieve user email and send invoice
   $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
@@ -719,7 +740,7 @@ function regCustomer()
   $stmt->close();
 
   // Create audit log
-  createAuditLog($conn, $userID, 'CREATE', 'users_tbl', $userID, null, json_encode(compact('firstname', 'lastname', 'address', 'phone', 'email', 'role', 'otp', 'status', 'currentDateTime')));
+  createAuditLog($conn, $userID, 'CREATE CUSTOMER', 'users_tbl', $userID, null, json_encode(compact('firstname', 'lastname', 'address', 'phone', 'email', 'role', 'otp', 'status', 'currentDateTime')));
 
   // Create user cart
   $stmt = $conn->prepare("INSERT INTO carts_tbl (userID) VALUES (?)");
@@ -730,7 +751,7 @@ function regCustomer()
   }
 
   $cartID = $stmt->insert_id;
-  createAuditLog($conn, $userID, 'CREATE', 'carts_tbl', $cartID, null, json_encode(['cartID' => $cartID, 'userID' => $userID]));
+  createAuditLog($conn, $userID, 'CREATE CART', 'carts_tbl', $cartID, null, json_encode(['cartID' => $cartID, 'userID' => $userID]));
   $stmt->close();
 
   // Send verification email
@@ -821,7 +842,7 @@ function regAdmin()
 
     // Create audit log
     $newValues = json_encode(['userFname' => $firstname, 'userLname' => $lastname, 'userAdd' => $address, 'userPhone' => $phone, 'userEmail' => $email, 'roleID' => $role, 'otp' => $otp, 'status' => $status]);
-    createAuditLog($conn, $userUpdaterID, 'CREATE', 'users_tbl', $newUserID, NULL, $newValues);
+    createAuditLog($conn, $userUpdaterID, 'CREATE ADMIN', 'users_tbl', $newUserID, NULL, $newValues);
 
     echo json_encode(['success' => true, 'message' => 'Admin registered successfully.']);
   } else {
@@ -910,7 +931,7 @@ function updateUser()
 
       if ($stmt->execute()) {
         // Log the changes
-        createAuditLog($conn, $userUpdaterID, 'UPDATE', 'users_tbl', $userID, json_encode($oldValues), json_encode($newValues));
+        createAuditLog($conn, $userUpdaterID, 'UPDATE USER INFO', 'users_tbl', $userID, json_encode($oldValues), json_encode($newValues));
 
         echo json_encode(['success' => true, 'message' => 'User details updated successfully.']);
       } else {
@@ -971,7 +992,7 @@ function deleteUser()
 
     if ($stmt->execute()) {
       // Log the deletion
-      createAuditLog($conn, $userUpdaterID, 'DELETE', 'users_tbl', $userID, $oldValues, null);
+      createAuditLog($conn, $userUpdaterID, 'DELETE USER', 'users_tbl', $userID, $oldValues, null);
 
       echo json_encode(['success' => true, 'message' => 'User deleted successfully.']);
     } else {
@@ -1068,7 +1089,7 @@ function addProduct()
 
       // Create audit log entry
       $newValues = json_encode(['userID' => $userID, 'productName' => $productName, 'productIMG' => $productIMGPath, 'categoryID' => $categoryID, 'productDesc' => $productDesc, 'productPrice' => $productPrice, 'inStock' => $inStock]);
-      createAuditLog($conn, $userID, 'CREATE', 'products_tbl', $newProductID, NULL, $newValues);
+      createAuditLog($conn, $userID, 'CREATE PRODUCT', 'products_tbl', $newProductID, NULL, $newValues);
 
       echo json_encode(['success' => true, 'message' => 'Product added successfully.']);
     } else {
@@ -1177,7 +1198,7 @@ function updateProduct()
 
       if ($stmt->execute()) {
         // Log the changes
-        createAuditLog($conn, $userID, 'UPDATE', 'products_tbl', $productID, json_encode($oldValues), json_encode($newValues));
+        createAuditLog($conn, $userID, 'UPDATE PRODUCT INFO', 'products_tbl', $productID, json_encode($oldValues), json_encode($newValues));
 
         echo json_encode(['success' => true, 'message' => 'Product details updated successfully.']);
       } else {
@@ -1220,7 +1241,7 @@ function deleteProduct()
 
     if ($stmt->execute()) {
       // Log the deletion
-      createAuditLog($conn, $userUpdaterID, 'DELETE', 'products_tbl', $productID, $oldValues, null);
+      createAuditLog($conn, $userUpdaterID, 'DELETE PRODUCT', 'products_tbl', $productID, $oldValues, null);
 
       echo json_encode(['success' => true, 'message' => 'Product deleted successfully.']);
     } else {
@@ -1241,21 +1262,18 @@ function cancelOrder()
     exit;
   }
 
-
   if (!isset($_SESSION['userID'])) {
     echo json_encode(['success' => false, 'message' => 'User not logged in']);
     exit;
   }
 
   $userID = $_SESSION['userID'];
-
-
   $conn = dbConnect();
 
   // Get and sanitize POST data
   $orderID = isset($_POST['orderID']) ? trim($_POST['orderID']) : null;
 
-  // Input validation
+  // Validate orderID
   if (empty($orderID) || !is_numeric($orderID)) {
     echo json_encode(['success' => false, 'message' => 'Invalid order ID']);
     exit;
@@ -1273,25 +1291,85 @@ function cancelOrder()
   }
   $stmt->close();
 
-  // Update the order status to "Cancelled"
-  $statusID = 3; // Status ID for "Cancelled"
-  $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, updatedAt = NOW(), cancelledAt = NOW() WHERE orderID = ?");
-  $stmt->bind_param("ii", $statusID, $orderID);
-  $success = $stmt->execute();
-  $stmt->close();
+  // Start transaction to ensure data integrity
+  $conn->begin_transaction();
 
-  if ($success) {
+  try {
+    // Retrieve order items and their quantities
+    $stmt = $conn->prepare("SELECT productID, orderItemQuantity FROM order_items_tbl WHERE orderID = ?");
+    $stmt->bind_param("i", $orderID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Prepare stock update query
+    $updateStockStmt = $conn->prepare("UPDATE products_tbl SET inStock = inStock + ? WHERE productID = ?");
+    $getStockStmt = $conn->prepare("SELECT inStock FROM products_tbl WHERE productID = ?");
+
+    while ($row = $result->fetch_assoc()) {
+      $productID = $row['productID'];
+      $orderItemQuantity = $row['orderItemQuantity'];
+
+      // Get previous stock before updating
+      $getStockStmt->bind_param("i", $productID);
+      $getStockStmt->execute();
+      $stockResult = $getStockStmt->get_result();
+      $previousStock = $stockResult->fetch_assoc()['inStock'];
+
+      // Restore stock
+      $updateStockStmt->bind_param("ii", $orderItemQuantity, $productID);
+      $updateStockStmt->execute();
+
+      // Get new stock after update
+      $newStock = $previousStock + $orderItemQuantity;
+
+      // Log stock restoration
+      createAuditLog(
+        $conn,
+        $userID,
+        'RESTORE STOCK',
+        'products_tbl',
+        $productID,
+        json_encode(['inStock' => $previousStock]),
+        json_encode(['inStock' => $newStock])
+      );
+    }
+
+    $stmt->close();
+    $updateStockStmt->close();
+    $getStockStmt->close();
+
+    // Update the order status to "Cancelled"
+    $statusID = 3; // Status ID for "Cancelled"
+    $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, updatedAt = NOW(), cancelledAt = NOW() WHERE orderID = ?");
+    $stmt->bind_param("ii", $statusID, $orderID);
+    $stmt->execute();
+    $stmt->close();
+
     // Log the order cancellation
-    createAuditLog($conn, $userID, 'UPDATE', 'orders_tbl', $orderID, json_encode(['statusID' => 'Previous Status']), json_encode(['statusID' => $statusID]));
+    createAuditLog(
+      $conn,
+      $userID,
+      'UPDATE ORDER STATUS',
+      'orders_tbl',
+      $orderID,
+      json_encode(['statusID' => 'Previous Status']),
+      json_encode(['statusID' => $statusID])
+    );
+
+    // Commit the transaction
+    $conn->commit();
 
     echo json_encode(['success' => true, 'message' => 'Order cancelled successfully']);
-  } else {
+  } catch (Exception $e) {
+    $conn->rollback(); // Rollback in case of failure
     echo json_encode(['success' => false, 'message' => 'Failed to cancel the order']);
   }
 
   $conn->close();
   exit;
 }
+
+
 
 // Function to update an order's status
 function updateOrderStatus()
@@ -1352,15 +1430,25 @@ function updateOrderStatus()
     exit;
   }
 
-  // Update the order status
-  $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ? WHERE orderID = ?");
+  // Prepare the SQL query with conditional logic
+  if ($newStatus == 4) {
+    $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, receivedAt = NOW() WHERE orderID = ?");
+  } else if ($newStatus == 2) {
+    $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, toReceive = NOW() WHERE orderID = ?");
+  } else if ($newStatus == 3) {
+    $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, cancelledAt = NOW() WHERE orderID = ?");
+  }
+
+  // Bind parameters
   $stmt->bind_param("ii", $newStatus, $orderID);
+
+  // Execute the query
   $success = $stmt->execute();
   $stmt->close();
 
   if ($success) {
     // Log the order status update (optional)
-    createAuditLog($conn, $_SESSION['userID'], 'UPDATE', 'orders_tbl', $orderID, json_encode(['statusID' => 'Previous Status']), json_encode(['statusID' => $newStatus]));
+    createAuditLog($conn, $_SESSION['userID'], 'UPDATE ORDER STATUS', 'orders_tbl', $orderID, json_encode(['statusID' => 'Previous Status']), json_encode(['statusID' => $newStatus]));
 
     // Send notification to the user based on the new status
     $notifName = "";
@@ -1390,7 +1478,7 @@ function updateOrderStatus()
       $stmt->close();
 
       // Log the notification creation (optional)
-      createAuditLog($conn, $userID, 'CREATE', 'notifs_tbl', $conn->insert_id, null, json_encode(['notifName' => $notifName, 'notifMessage' => $notifMessage, 'statusID' => $statusUnread]));
+      createAuditLog($conn, $userID, 'CREATE NOTIFICATION', 'notifs_tbl', $conn->insert_id, null, json_encode(['notifName' => $notifName, 'notifMessage' => $notifMessage, 'statusID' => $statusUnread]));
     }
 
     // Retrieve user email and send invoice (if needed)
