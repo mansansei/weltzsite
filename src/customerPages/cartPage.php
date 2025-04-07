@@ -126,7 +126,7 @@
         }
         ?>
     </div>
-    <div class="cartCheckout container bg-dark text-end text-light my-0 py-4">
+    <div class="cartCheckout container text-end text-light my-0 py-4" style="background-color: #231f20;">
         <div class="container">
             <strong><span id="totalText">Total (0): PHP 0.00</span></strong>
             <button class="btn btn-danger" id="checkoutButton">Checkout</button>

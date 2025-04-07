@@ -240,12 +240,14 @@ form .row .col input {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: #231f20;
+    background: linear-gradient(to right, #231f20, #3a3435c0);
+    border-bottom: 3px solid #fc0001;
+    backdrop-filter: blur(4px); /* Optional if using semi-transparent bg */
 }
 
 .headerwrapper2 .links a button {
     border: none;
-    background: none;
+    background: transparent;
     color: #ffffff;
     padding: 10px 20px;
     font-size: 1.5rem;
@@ -265,6 +267,12 @@ form .row .col input {
     padding: 10px 20px;
     color: #ffffff;
 }
+
+.headerwrapper2 .links a.nav-active > button {
+    background-color: #fc0001;
+    color: white;
+}
+
 
 @media (max-width: 575.98px) {
     .headerwrapper .header-title {
@@ -785,10 +793,6 @@ form .row .col input {
     background-color: #ffffff;
     /* Optional: Add background color */
     padding: 20px;
-    /* Optional: Add padding */
-    border-radius: 8px;
-    /* Optional: Add rounded corners */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     /* Optional: Add shadow */
     height: 100%;
     /* Full height of the parent */

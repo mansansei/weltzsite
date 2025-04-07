@@ -75,10 +75,18 @@ if (!array_key_exists($page, $allowedPages) || !file_exists($allowedPages[$page]
         <div class="row justify-content-center">
             <div class="col-12 col-md-8">
                 <div class="links d-flex flex-wrap">
-                    <a class="active" href="?page=homePage"><button>HOME</button></a>
-                    <a class="active2" href="?page=homePage#Aboutus"><button>ABOUT US</button></a>
-                    <a class="active3" href="?page=productsPage"><button>PRODUCTS</button></a>
-                    <a class="active4" href="?page=contactPage"><button>CONTACT</button></a>
+                    <a href="?page=homePage" class="<?= $page === 'homePage' ? 'nav-active' : '' ?>">
+                        <button><i class="fa-solid fa-house"></i> HOME</button>
+                    </a>
+                    <a href="?page=homePage#Aboutus" class="<?= $page === 'homePage#Aboutus' ? 'nav-active' : '' ?>">
+                        <button><i class="fa-solid fa-circle-info"></i> ABOUT US</button>
+                    </a>
+                    <a href="?page=productsPage" class="<?= $page === 'productsPage' ? 'nav-active' : '' ?>">
+                        <button><i class="fa-solid fa-box-open"></i> PRODUCTS</button>
+                    </a>
+                    <a href="?page=contactPage" class="<?= $page === 'contactPage' ? 'nav-active' : '' ?>">
+                        <button><i class="fa-solid fa-envelope"></i> CONTACT</button>
+                    </a>
                 </div>
             </div>
             <div class="col-12 col-md-4 text-right">
@@ -158,7 +166,7 @@ if (!array_key_exists($page, $allowedPages) || !file_exists($allowedPages[$page]
         <?php include $allowedPages[$page]; ?>
     </div>
 
-    <footer class="bg-dark text-white text-center py-3">
+    <footer class="text-white text-center py-3" style="background-color: #231f20;">
         <div class="container">
             <p class="mb-1">&copy; 2025 WELTZ INDUSTRIAL PHILS INC. All Rights Reserved.</p>
             <p>

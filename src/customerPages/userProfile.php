@@ -3,7 +3,7 @@
 if (isset($_SESSION['isLoggedIn']) && $_SESSION['isLoggedIn']) {
 ?>
     <section class="usettings">
-        <div class="usidebarwrapper">
+        <div class="usidebarwrapper shadow">
             <!-- User Info Box -->
             <div class="uboxwrapper">
                 <div class="ubox1">

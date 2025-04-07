@@ -116,14 +116,65 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
         <h1>Reviews</h1>
     </div>
 
-    <div class="reviewswrapper bg-light p-4 rounded shadow-sm mb-5 text-center">
-        <p>No reviews yet...</p>
+    <?php
+    // Fetch all reviews for the current product
+    $reviewStmt = $conn->prepare("
+        SELECT r.reviewDesc, r.reviewRating, r.createdAt, u.userFname, u.userLname
+        FROM reviews_tbl r
+        JOIN users_tbl u ON r.userID = u.userID
+        WHERE r.productID = ?
+        ORDER BY r.createdAt DESC
+    ");
+    $reviewStmt->bind_param("i", $productID);
+    $reviewStmt->execute();
+    $reviewsResult = $reviewStmt->get_result();
+    $hasReviews = $reviewsResult->num_rows > 0;
+    ?>
+
+
+    <div class="reviewswrapper bg-light p-4 rounded shadow-sm mb-5">
+        <?php if ($hasReviews): ?>
+            <?php while ($review = $reviewsResult->fetch_assoc()): ?>
+                <div class="single-review text-start border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <?php
+                        function maskName($name)
+                        {
+                            return strtoupper(substr($name, 0, 1)) . str_repeat('*', max(0, strlen($name) - 1));
+                        }
+                        $maskedFname = maskName($review['userFname']);
+                        $maskedLname = maskName($review['userLname']);
+                        ?>
+                        <strong class="fs-3"><?php echo $maskedFname . ' ' . $maskedLname; ?></strong>
+
+                        <p class="text-muted fs-5"><?php echo date('F j, Y', strtotime($review['createdAt'])); ?></p>
+                    </div>
+                    <div class="mb-2">
+                        <p class="fs-4">
+                            <?php
+                            $rating = (int) $review['reviewRating'];
+                            for ($i = 1; $i <= 5; $i++) {
+                                echo $i <= $rating ? '&#9733;' : '&#9734;';
+                            }
+                            ?>
+                        </p>
+                    </div>
+                    <p class="fs-3"><?php echo nl2br(htmlspecialchars($review['reviewDesc'])); ?></p>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <div class="text-center">
+                <p>No reviews yet...</p>
+            </div>
+        <?php endif; ?>
     </div>
+
 
     <div class="addreview p-4 rounded shadow-sm">
         <h2 class="font-weight-bold mb-3">Add a review</h2>
         <p class="note mb-3">(your email address will not be published)</p>
-        <form>
+        <form id="reviewForm">
+            <input type="hidden" name="productID" value="<?php echo htmlspecialchars($product['productID']); ?>">
             <div class="rating-wrapper mb-3">
                 <label class="d-block mb-2">Your rating</label>
                 <div class="star-rating">
@@ -146,7 +197,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
 
             <div class="reviewdesc">
                 <label for="review" class="review-label d-block mb-2">Review</label>
-                <textarea id="review" class="review-textarea form-control mb-3" rows="4"></textarea>
+                <textarea id="review" name="reviewText" class="review-textarea form-control mb-3" rows="4"></textarea>
 
                 <button type="submit" class="submit-btn btn btn-danger">Submit</button>
             </div>

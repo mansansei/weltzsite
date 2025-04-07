@@ -1994,4 +1994,63 @@ $(document).ready(function () {
         }
     });
 
+    // PRODUCT REVIEWS
+    // review form handling
+    $('#reviewForm').on('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
+
+        const formData = {
+            action: 'uploadProductReview',
+            productID: $('input[name="productID"]').val(),
+            rating: $('input[name="rating"]:checked').val(),
+            reviewText: $('#review').val()
+        };
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `animate__animated animate__fadeInDown animate__faster`
+                        },
+                        hideClass: {
+                            popup: `animate__animated animate__fadeOutUp animate__faster`
+                        },
+                        timer: 2000
+                    }).then(function () {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `animate__animated animate__fadeInDown animate__faster`
+                        },
+                        hideClass: {
+                            popup: `animate__animated animate__fadeOutUp animate__faster`
+                        },
+                        timer: 2000
+                    })
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+            }
+        });
+    });
+
 });

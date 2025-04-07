@@ -774,7 +774,6 @@ function regAdmin()
     exit;
   }
 
-  session_start();
   $userUpdaterID = $_SESSION['userID'] ?? null;
 
   // Open database connection
@@ -1709,4 +1708,75 @@ function resetPassword()
   $conn->close();
 
   echo json_encode(['success' => true, 'message' => 'Password has been successfully reset.']);
+}
+
+// Function for uploading a product review
+function uploadProductReview()
+{
+  header('Content-Type: application/json'); // Ensure JSON response
+  error_reporting(0);
+  ini_set('display_errors', 0);
+
+  // Validate request method
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    exit;
+  }
+
+  $userID = $_SESSION['userID'] ?? null;
+
+  // Check if user is logged in
+  if (!$userID) {
+    echo json_encode(['success' => false, 'message' => 'User not authenticated.']);
+    exit;
+  }
+
+  // Connect to database
+  $conn = dbConnect();
+
+  // Retrieve and sanitize input
+  $productID = intval($_POST['productID'] ?? 0);
+  $rating = intval($_POST['rating'] ?? 0);
+  $reviewText = htmlspecialchars(trim($_POST['reviewText'] ?? ''));
+
+  // Validate inputs
+  if ($productID <= 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid product ID.']);
+    exit;
+  }
+
+  if ($rating < 1 || $rating > 5) {
+    echo json_encode(['success' => false, 'message' => 'Invalid rating value.']);
+    exit;
+  }
+
+  if (empty($reviewText) || strlen($reviewText) > 1000) {
+    echo json_encode(['success' => false, 'message' => 'Review text must be between 1 and 1000 characters.']);
+    exit;
+  }
+
+  // Insert the review into the database
+  $stmt = $conn->prepare("INSERT INTO reviews_tbl (productID, userID, reviewDesc, reviewRating) VALUES (?, ?, ?, ?)");
+  $stmt->bind_param("iisi", $productID, $userID, $reviewText, $rating);
+
+  if ($stmt->execute()) {
+    $newReviewID = $stmt->insert_id;
+
+    // Prepare audit log details
+    $newValues = json_encode([
+      'productID' => $productID,
+      'userID' => $userID,
+      'reviewDesc' => $reviewText,
+      'reviewRating' => $rating
+    ]);
+
+    createAuditLog($conn, $userID, 'CREATE REVIEW', 'reviews_tbl', $newReviewID, NULL, $newValues);
+
+    echo json_encode(['success' => true, 'message' => 'Review submitted successfully. We thank you for your feedback!']);
+  } else {
+    echo json_encode(['success' => false, 'message' => 'Database error: ' . $stmt->error]);
+  }
+
+  $stmt->close();
+  $conn->close();
 }
