@@ -1369,8 +1369,6 @@ function cancelOrder()
   exit;
 }
 
-
-
 // Function to update an order's status
 function updateOrderStatus()
 {
@@ -1577,4 +1575,138 @@ function uploadReceipt()
 
   $stmt->close();
   $conn->close();
+}
+
+// Function for sending OTP for password reset
+function sendOtp()
+{
+  header('Content-Type: application/json'); // Ensure JSON response
+  error_reporting(0);
+  ini_set('display_errors', 0);
+
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
+    exit;
+  }
+
+  // Open database connection
+  $conn = dbConnect();
+  if (!$conn) {
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
+    exit;
+  }
+
+  // Get email from POST request
+  $email = htmlspecialchars(trim($_POST['email'] ?? ''));
+
+  // Validation for email format
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid email address.']);
+    exit;
+  }
+
+  // Check if email exists in the database
+  $stmt = $conn->prepare("SELECT userID, userEmail FROM users_tbl WHERE userEmail = ?");
+  $stmt->bind_param("s", $email);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result->num_rows === 0) {
+    echo json_encode(['status' => 'error', 'message' => 'Email not found.']);
+    exit;
+  }
+
+  // Generate OTP
+  $otp = rand(100000, 999999);
+
+  // Update OTP in the database
+  $stmt = $conn->prepare("UPDATE users_tbl SET otp = ? WHERE userEmail = ?");
+  $stmt->bind_param("is", $otp, $email);
+  if (!$stmt->execute()) {
+    echo json_encode(['status' => 'error', 'message' => 'Failed to update OTP.']);
+    exit;
+  }
+
+  // Send OTP email using PHPMailer
+  include_once 'forgotPasswordOTP.php';
+  $user = $result->fetch_assoc();
+  $userEmail = $user['userEmail'];
+
+  forgotPasswordOTP($userEmail, $otp);
+
+  // Close connection and return success response
+  $stmt->close();
+  $conn->close();
+  echo json_encode(['status' => 'success', 'message' => 'Success! Please check your email for the OTP']);
+}
+
+// Function for resetting password
+function resetPassword()
+{
+  header('Content-Type: application/json'); // Ensure JSON response
+  error_reporting(0);
+  ini_set('display_errors', 0);
+
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    exit;
+  }
+
+  // Open database connection
+  $conn = dbConnect();
+  if (!$conn) {
+    echo json_encode(['success' => false, 'message' => 'Database connection failed.']);
+    exit;
+  }
+
+  // Initialize variables
+  $email = htmlspecialchars(trim($_POST['email'] ?? ''));
+  $otp = htmlspecialchars(trim($_POST['otp'] ?? ''));
+  $newPassword = trim($_POST['newPassword'] ?? '');
+
+  // Validation
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => 'Invalid email address.']);
+    exit;
+  }
+
+  if (strlen($newPassword) < 6) {
+    echo json_encode(['success' => false, 'message' => 'Password should be at least 6 characters.']);
+    exit;
+  }
+
+  // Check if OTP exists and matches the one in the database
+  $stmt = $conn->prepare("SELECT userPass FROM users_tbl WHERE userEmail = ? AND otp = ?");
+  $stmt->bind_param("ss", $email, $otp);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($result->num_rows === 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid OTP or email address.']);
+    exit;
+  }
+
+  // Get the old password for comparison
+  $row = $result->fetch_assoc();
+  $oldPassword = $row['userPass'];
+
+  // Prevent password reset if the new password is the same as the old password
+  if (password_verify($newPassword, $oldPassword)) {
+    echo json_encode(['success' => false, 'message' => 'New password cannot be the same as the old password.']);
+    exit;
+  }
+
+  // Hash the new password
+  $hashedNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+  // Update the password in the database
+  $stmt = $conn->prepare("UPDATE users_tbl SET userPass = ?, otp = 0 WHERE userEmail = ?");
+  $stmt->bind_param("ss", $hashedNewPassword, $email);
+  $stmt->execute();
+
+  // Close connection and return success response
+  $stmt->close();
+  $conn->close();
+
+  echo json_encode(['success' => true, 'message' => 'Password has been successfully reset.']);
 }

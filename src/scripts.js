@@ -1616,6 +1616,20 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
+                        showClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeInDown
+                          animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeOutUp
+                          animate__faster
+                        `
+                        },
                         timer: 2000
                     });
                 }
@@ -1791,6 +1805,20 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
+                        showClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeInDown
+                          animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeOutUp
+                          animate__faster
+                        `
+                        },
                         timer: 2000
                     }).then(() => {
                         location.reload();
@@ -1802,6 +1830,20 @@ $(document).ready(function () {
                         showConfirmButton: false,
                         backdrop: false,
                         position: 'top',
+                        showClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeInDown
+                          animate__faster
+                        `
+                        },
+                        hideClass: {
+                            popup: `
+                          animate__animated
+                          animate__fadeOutUp
+                          animate__faster
+                        `
+                        },
                         timer: 2000
                     });
                 }
@@ -1820,6 +1862,136 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    // RESET PASSWORD
+    // send otp to user
+    $('#sendOtpBtn').on('click', function () {
+        const email = $('#email').val().trim();
+
+        if (email === '') {
+            alert("Please enter your email first.");
+            return;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: 'serverSideScripts.php',
+            data: {
+                action: 'sendOtp',
+                email: email
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `animate__animated animate__fadeInDown animate__faster`
+                        },
+                        hideClass: {
+                            popup: `animate__animated animate__fadeOutUp animate__faster`
+                        },
+                        timer: 2000
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.message,
+                        showConfirmButton: false,
+                        backdrop: false,
+                        position: 'top',
+                        showClass: {
+                            popup: `animate__animated animate__fadeInDown animate__faster`
+                        },
+                        hideClass: {
+                            popup: `animate__animated animate__fadeOutUp animate__faster`
+                        },
+                        timer: 2000
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+            }
+        });
+    });
+    // reset password for user
+    $('#resetForm').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            otp: {
+                required: true,
+                number: true,
+                minlength: 4,
+                maxlength: 6
+            },
+            newPassword: {
+                required: true,
+                minlength: 6
+            }
+        },
+        messages: {
+            email: "Enter a valid email address",
+            otp: "Enter the OTP sent to your email",
+            newPassword: "Enter a new password (min. 6 characters)"
+        },
+        submitHandler: function (form) {
+            // AJAX request to reset password
+            $.ajax({
+                type: 'POST',
+                url: 'serverSideScripts.php',
+                data: $(form).serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            text: response.message,
+                            showConfirmButton: false,
+                            backdrop: false,
+                            position: 'top',
+                            showClass: {
+                                popup: `animate__animated animate__fadeInDown animate__faster`
+                            },
+                            hideClass: {
+                                popup: `animate__animated animate__fadeOutUp animate__faster`
+                            },
+                            timer: 2000
+                        }).then(function () {
+                            window.location.href = "Login.php";
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            text: response.message,
+                            showConfirmButton: false,
+                            backdrop: false,
+                            position: 'top',
+                            showClass: {
+                                popup: `animate__animated animate__fadeInDown animate__faster`
+                            },
+                            hideClass: {
+                                popup: `animate__animated animate__fadeOutUp animate__faster`
+                            },
+                            timer: 2000
+                        });
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
+                }
+            });
+        }
     });
 
 });
