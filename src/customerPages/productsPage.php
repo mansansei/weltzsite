@@ -68,7 +68,7 @@ require_once 'weltz_dbconnect.php';
         <div class="col-md-9">
             <div class="row">
                 <?php
-                $selectSQL = "SELECT p.productID, p.productIMG, p.productName, c.categoryName, p.productDesc, p.productPrice, p.inStock FROM products_tbl p JOIN categories_tbl c ON p.categoryID = c.categoryID";
+                $selectSQL = "SELECT p.productID, p.productIMG, p.productName, c.categoryName, p.productDesc, p.productPrice, p.inStock FROM products_tbl p JOIN categories_tbl c ON p.categoryID = c.categoryID WHERE p.statusID = 5";
                 $conditions = [];
                 $params = [];
                 $types = "";

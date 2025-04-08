@@ -1,7 +1,7 @@
 <?php
 require_once 'weltz_dbconnect.php';
 
-$productsSQL =
+$productsSQL = 
     "SELECT
         p.productID, 
         COALESCE(CONCAT(u.userFname, ' ', u.userLname), 'Deleted User') AS userFullName,
@@ -12,6 +12,8 @@ $productsSQL =
         p.productPrice,
         p.inStock,
         p.prodSold, 
+        s.statusID, 
+        s.statusName, 
         p.createdAt,
         p.updatedAt
     FROM 
@@ -19,7 +21,11 @@ $productsSQL =
     LEFT JOIN 
         users_tbl u ON p.userID = u.userID
     JOIN 
-        categories_tbl c ON p.categoryID = c.categoryID";
+        categories_tbl c ON p.categoryID = c.categoryID
+    JOIN
+        statuses_tbl s ON p.statusID = s.statusID";
+
+
 
 
 $productsSQLResult = $conn->query($productsSQL);
@@ -49,6 +55,7 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                 <th>Unit Price</th>
                 <th>Units in Stock</th>
                 <th>Products Sold</th>
+                <th>Status</th>
                 <th>Created At</th>
                 <th>Updated At</th>
                 <th>Action</th>
@@ -69,12 +76,20 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                         <td><?php echo $row['productPrice'] ?></td>
                         <td><?php echo $row['inStock'] ?></td>
                         <td><?php echo $row['prodSold'] ?></td>
+                        <td><?php echo $row['statusName'] ?></td>
                         <td><?php echo  $row['createdAt'] ?></td>
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
-                                <button class='delProdBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteProdModal">Delete</button>
+                                <?php if ($row['statusID'] == 5): ?>
+                                    <!-- Display Delete button for active products -->
+                                    <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
+                                    <button class='delProdBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteProdModal">Delete</button>
+                                <?php elseif ($row['statusID'] == 6): ?>
+                                    <!-- Display Restore button for removed products -->
+                                    <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
+                                    <button class='restoreProdBtn btn btn-success' data-bs-toggle="modal" data-bs-target="#restoreProdModal">Restore</button>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
@@ -122,13 +137,13 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                                         while ($row = $categoriesSQLResult->fetch_assoc()) {
 
                                     ?><option value="<?php echo $row['categoryID'] ?>"><?php echo $row['categoryName'] ?></option><?php
-                                        }
-                                    } else {
-                                        ?><option disabled>No categories available.</option><?php
-                                    }
-                                    ?>
-                            </select>
-                            <label class="error-message" for="prodCategory"></label>
+                                                                                                                                }
+                                                                                                                            } else {
+                                                                                                                                    ?><option disabled>No categories available.</option><?php
+                                                                                                                            }
+                                                                                            ?>
+                                </select>
+                                <label class="error-message" for="prodCategory"></label>
                             </div>
                             <div class="mb-2">
                                 <label for="prodDesc" class="form-label">Description</label>
@@ -186,19 +201,19 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                                 <select class="form-select" id="editProdCategory" name="editProdCategory">
                                     <option value="" selected>Choose the Category</option>
                                     <?php
-                                            // Reset the result pointer to ensure the categories are fetched correctly
-                                            $categoriesSQLResult->data_seek(0);
-                                            
-                                            if ($categoriesSQLResult->num_rows > 0) {
-                                                while ($catRow = $categoriesSQLResult->fetch_assoc()) {
-                                                    ?><option value="<?php echo $catRow['categoryID'] ?>"><?php echo $catRow['categoryName'] ?></option><?php
-                                                }
-                                            } else {
-                                                ?><option disabled>No categories available.</option><?php
-                                            }
-                                        ?>
-                            </select>
-                            <label class="error-message" for="editProdCategory"></label>
+                                    // Reset the result pointer to ensure the categories are fetched correctly
+                                    $categoriesSQLResult->data_seek(0);
+
+                                    if ($categoriesSQLResult->num_rows > 0) {
+                                        while ($catRow = $categoriesSQLResult->fetch_assoc()) {
+                                    ?><option value="<?php echo $catRow['categoryID'] ?>"><?php echo $catRow['categoryName'] ?></option><?php
+                                                                                                                                                    }
+                                                                                                                                                } else {
+                                                                                                                                                        ?><option disabled>No categories available.</option><?php
+                                                                                                                                                }
+                                                                                                    ?>
+                                </select>
+                                <label class="error-message" for="editProdCategory"></label>
                             </div>
                             <div class="mb-2">
                                 <label for="editProdDesc" class="form-label">Description</label>
@@ -240,13 +255,37 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                 </div>
                 <div class="modal-body text-center">
                     <p class="fs-3">Are you sure you want to delete this product?</p>
-                    <p class="fs-5 text-danger m-0">This action is irreversable</p>
+                    <p class="fs-5 text-danger m-0">This action is will archive the product. You may retrieve it later.</p>
                     <input type="hidden" id="deleteProdID" name="productID">
                     <input type="hidden" id="action" name="action" value="deleteProduct">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-danger">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Restore Products Modal -->
+<div class="modal fade" id="restoreProdModal" tabindex="-1" aria-labelledby="restoreProdModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="restoreProdForm" method="POST">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="restoreProdModalLabel">Delete Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="fs-3">Would you like to restore this product?</p>
+                    <p class="fs-5 text-success m-0">This action will make it visible again to your customers.</p>
+                    <input type="hidden" id="restoreProdID" name="productID">
+                    <input type="hidden" id="action" name="action" value="restoreProduct">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Confirm</button>
                 </div>
             </form>
         </div>

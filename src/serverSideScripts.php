@@ -1210,7 +1210,7 @@ function updateProduct()
   }
 }
 
-// Function to delete a product
+// Function to delete (archive) a product
 function deleteProduct()
 {
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -1221,8 +1221,8 @@ function deleteProduct()
 
     $productID = $_POST['productID'];
 
-    // Retrieve current product data before deletion
-    $currentDataSQL = "SELECT productID, productName, productIMG, categoryID, productDesc, productPrice, inStock FROM products_tbl WHERE productID=?";
+    // Retrieve current product status before archiving (only statusID)
+    $currentDataSQL = "SELECT statusID FROM products_tbl WHERE productID=?";
     $stmt = $conn->prepare($currentDataSQL);
     $stmt->bind_param("i", $productID);
     $stmt->execute();
@@ -1230,19 +1230,60 @@ function deleteProduct()
     $currentData = $result->fetch_assoc();
     $stmt->close();
 
-    // Convert current data to JSON for logging
-    $oldValues = json_encode($currentData);
+    // Convert current statusID to JSON for logging
+    $oldValues = json_encode(['statusID' => $currentData['statusID']]);
 
-    // Delete product record
-    $deleteSQL = "DELETE FROM products_tbl WHERE productID=?";
-    $stmt = $conn->prepare($deleteSQL);
+    // Update product status to 'removed' (statusID = 6) and set updatedAt to current datetime
+    $updateSQL = "UPDATE products_tbl SET statusID = 6, updatedAt = NOW() WHERE productID=?";
+    $stmt = $conn->prepare($updateSQL);
     $stmt->bind_param("i", $productID);
 
     if ($stmt->execute()) {
-      // Log the deletion
-      createAuditLog($conn, $userUpdaterID, 'DELETE PRODUCT', 'products_tbl', $productID, $oldValues, null);
+      // Log the archival action (Update instead of delete)
+      createAuditLog($conn, $userUpdaterID, 'ARCHIVE PRODUCT', 'products_tbl', $productID, $oldValues, json_encode(['statusID' => 6, 'updatedAt' => date('Y-m-d H:i:s')]));
 
-      echo json_encode(['success' => true, 'message' => 'Product deleted successfully.']);
+      echo json_encode(['success' => true, 'message' => 'Product archived successfully.']);
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+    }
+
+    $stmt->close();
+  }
+}
+
+// Function to restore a product
+function restoreProduct()
+{
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $userUpdaterID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+
+    $conn = dbConnect();
+
+    $productID = $_POST['productID'];
+
+    // Retrieve current product status before restoration (only statusID)
+    $currentDataSQL = "SELECT statusID FROM products_tbl WHERE productID=?";
+    $stmt = $conn->prepare($currentDataSQL);
+    $stmt->bind_param("i", $productID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $currentData = $result->fetch_assoc();
+    $stmt->close();
+
+    // Convert current statusID to JSON for logging
+    $oldValues = json_encode(['statusID' => $currentData['statusID']]);
+
+    // Update product status to 'active' (statusID = 5) and set updatedAt to current datetime
+    $updateSQL = "UPDATE products_tbl SET statusID = 5, updatedAt = NOW() WHERE productID=?";
+    $stmt = $conn->prepare($updateSQL);
+    $stmt->bind_param("i", $productID);
+
+    if ($stmt->execute()) {
+      // Log the restoration action (Update instead of delete)
+      createAuditLog($conn, $userUpdaterID, 'RESTORE PRODUCT', 'products_tbl', $productID, $oldValues, json_encode(['statusID' => 5, 'updatedAt' => date('Y-m-d H:i:s')]));
+
+      echo json_encode(['success' => true, 'message' => 'Product restored successfully.']);
     } else {
       echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
     }

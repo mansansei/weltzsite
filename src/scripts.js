@@ -1398,6 +1398,74 @@ $(document).ready(function () {
         });
     });
 
+
+    // RESTORE PRODUCT==================================================
+    // Handle Restore button click
+    $(document).on('click', '.restoreProdBtn', function () {
+        var row = $(this).closest('tr');
+        var productID = row.find('td:eq(0)').text(); // Assuming product ID is in the first column
+
+        $('#restoreProdID').val(productID);
+        $('#restoreProdModal').modal('show');
+    });
+    // Handle restore confirmation
+    $('#restoreProdForm').submit(function (e) {
+        e.preventDefault();
+
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: 'serverSideScripts.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 2000,
+                        willClose: () => {
+                            location.reload(); // Reload the page to reflect the changes
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        text: response.message,
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error("AJAX Error:", textStatus, errorThrown);
+                console.log("Server response:", jqXHR.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request.',
+                    showConfirmButton: false,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `animate__animated animate__fadeInDown animate__faster`
+                    },
+                    hideClass: {
+                        popup: `animate__animated animate__fadeOutUp animate__faster`
+                    },
+                    timer: 2000
+                });
+            }
+        });
+    });
+
+
+
+    // ADMIN ORDER HANDLING==================================================
     let orderIDToCancel = null;
 
     // When the "Cancel Order" button is clicked, store the orderID
