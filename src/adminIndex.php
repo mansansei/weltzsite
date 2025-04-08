@@ -16,6 +16,7 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || !isse
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel - Weltz INC</title>
+  <link rel="shortcut icon" href="../images/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="styles.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">

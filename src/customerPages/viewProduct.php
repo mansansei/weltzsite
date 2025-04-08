@@ -4,21 +4,21 @@ require_once 'weltz_dbconnect.php';
 
 if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     $productID = $_GET['productID'];
-    $selectSQL =
-        "SELECT
-        p.productID, 
-        p.productIMG, 
-        p.productName, 
-        c.categoryName, 
-        p.productDesc, 
-        p.productPrice, 
-        p.inStock 
-    FROM 
-        products_tbl p
-    JOIN 
-        categories_tbl c ON p.categoryID = c.categoryID
-    WHERE 
-        p.productID = ?";
+    $selectSQL = "SELECT
+                    p.productID, 
+                    p.productIMG, 
+                    p.productName, 
+                    c.categoryName, 
+                    p.productDesc, 
+                    p.productPrice, 
+                    p.inStock,
+                    p.productSpecs
+                  FROM 
+                    products_tbl p
+                  JOIN 
+                    categories_tbl c ON p.categoryID = c.categoryID
+                  WHERE 
+                    p.productID = ?";
 
     $stmt = $conn->prepare($selectSQL);
     $stmt->bind_param("i", $productID);
@@ -110,6 +110,35 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
 }
 ?>
 
+<!-- Product Specifications Section -->
+<section class="productSpecs container py-5">
+    <div class="specsTitle text-center mb-5">
+        <h1 class="display-5 fw-bold">Product Specifications</h1>
+        <p class="text-muted fs-3">Detailed technical features of the <?php echo htmlspecialchars($product['productName']); ?></p>
+    </div>
+    <div class="specsWrapper d-flex justify-content-center bg-white p-4">
+        <div class="row">
+            <div class="col">
+                <ul class="list-group list-group-flush">
+                    <?php
+                    // Split the productSpecs string into an array
+                    $productSpecs = explode("\n", $product['productSpecs']);
+
+                    // Display the specifications in a single column
+                    foreach ($productSpecs as $spec) {
+                        $specParts = explode(":", $spec, 2);
+                        if (count($specParts) == 2) {
+                            echo '<li class="list-group-item fs-5"><strong>' . htmlspecialchars(trim($specParts[0])) . ':</strong> ' . htmlspecialchars(trim($specParts[1])) . '</li>';
+                        }
+                    }
+                    ?>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+
 <!-- Reviews Section -->
 <section class="reviewsec container py-5">
     <div class="reviewsectitle text-center mb-5">
@@ -169,8 +198,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
         <?php endif; ?>
     </div>
 
-
-    <div class="addreview p-4 rounded shadow-sm">
+    <div class="addreview border p-4 rounded shadow-sm">
         <h2 class="font-weight-bold mb-3">Add a review</h2>
         <p class="note mb-3">(your email address will not be published)</p>
         <form id="reviewForm">

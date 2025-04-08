@@ -34,14 +34,14 @@ function forgotPasswordOTP($email, $otp)
                 <img src='https://i.imgur.com/htCZgAe.png' alt='Weltz Industrial Logo' style='max-width: 120px; margin-bottom: 20px;'>
                 <h1 style='color: #fc0001; margin: 0; font-size: 24px;'>Password Reset Request</h1>
             </div>
-            <p style='color: #333; font-size: 16px; line-height: 1.5;'>Hello, dear customer</p>
+            <p style='color: #333; font-size: 16px; line-height: 1.5;'>Hello, dear customer,</p>
             <p style='color: #333; font-size: 16px; line-height: 1.5;'>You requested to reset your password for your account with <strong>Weltz Industrial Phils INC.</strong> Please use the following OTP to proceed:</p>
             <div style='text-align: center; margin: 30px 0;'>
                 <h2 style='color: #fc0001;'>OTP: <strong>" . $otp . "</strong></h2>
             </div>
-            <p style='color: #666; font-size: 14px; line-height: 1.5; text-align: center;'>If you did not request this, please ignore this email.</p>
+            <p style='color: #333; font-size: 16px; line-height: 1.5; text-align: center;'>If you did not request this, please ignore this email.</p>
             <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
-            <p style='color: #aaa; font-size: 12px; text-align: center;'>&copy; " . date('Y') . " Weltz Industrial Phils INC. All rights reserved.<br>This is an automated message, please do not reply.</p>
+            <p style='color: #aaa; font-size: 12px; text-align: center;'>© " . date('Y') . " Weltz Industrial Phils INC. All rights reserved.<br>This is an automated message, please do not reply.</p>
         </div>";
 
         // Send Email

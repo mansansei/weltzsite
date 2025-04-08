@@ -8,7 +8,8 @@ $productsSQL =
         p.productIMG,
         p.productName,
         c.categoryName,
-        p.productDesc,
+        p.productDesc, 
+        p.productSpecs, 
         p.productPrice,
         p.inStock,
         p.prodSold, 
@@ -52,6 +53,7 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                 <th>Product Name</th>
                 <th>Category</th>
                 <th>Description</th>
+                <th>Specifications</th>
                 <th>Unit Price</th>
                 <th>Units in Stock</th>
                 <th>Products Sold</th>
@@ -72,7 +74,8 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                         <td><img src="<?php echo $row['productIMG'] ?>" alt="<?php echo $row['productName'] ?>" style="width:100px"></td>
                         <td><?php echo $row['productName'] ?></td>
                         <td><?php echo $row['categoryName'] ?></td>
-                        <td style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $row['productDesc'] ?></td>
+                        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $row['productDesc'] ?></td>
+                        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $row['productSpecs'] ?></td>
                         <td><?php echo $row['productPrice'] ?></td>
                         <td><?php echo $row['inStock'] ?></td>
                         <td><?php echo $row['prodSold'] ?></td>
@@ -151,6 +154,11 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                                 <label class="error-message" for="prodDesc"></label>
                             </div>
                             <div class="mb-2">
+                                <label for="prodSpecs" class="form-label">Specification (separate by line)</label>
+                                <textarea class="form-control" name="prodSpecs"></textarea>
+                                <label class="error-message" for="prodSpecs"></label>
+                            </div>
+                            <div class="mb-2">
                                 <label for="prodPrice" class="form-label">Unit Price</label>
                                 <input class="form-control" type="number" name="prodPrice">
                                 <label class="error-message" for="prodPrice"></label>
@@ -219,6 +227,11 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                                 <label for="editProdDesc" class="form-label">Description</label>
                                 <textarea class="form-control" id="editProdDesc" name="editProdDesc"></textarea>
                                 <label class="error-message" for="editProdDesc"></label>
+                            </div>
+                            <div class="mb-2">
+                                <label for="editprodSpecs" class="form-label">Specification (separate by line)</label>
+                                <textarea class="form-control" id="editprodSpecs" name="editprodSpecs"></textarea>
+                                <label class="error-message" for="editprodSpecs"></label>
                             </div>
                             <div class="mb-2">
                                 <label for="editProdPrice" class="form-label">Unit Price</label>

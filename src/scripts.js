@@ -1087,6 +1087,7 @@ $(document).ready(function () {
         }
         reader.readAsDataURL(event.target.files[0]);
     });
+
     // Add product form handling
     $('#addProductForm').validate({
         rules: {
@@ -1101,6 +1102,10 @@ $(document).ready(function () {
                 required: true
             },
             prodDesc: {
+                required: true,
+                minlength: 10
+            },
+            prodSpecs: {
                 required: true,
                 minlength: 10
             },
@@ -1120,11 +1125,29 @@ $(document).ready(function () {
             prodName: "Please enter a valid product name",
             prodCategory: "Please select a category",
             prodDesc: "Please enter a description (at least 10 characters)",
+            prodSpecs: "Please enter the specifications",
             prodPrice: "Please enter a valid price",
             prodStock: "Please enter a valid stock quantity"
         },
         submitHandler: function (form) {
+            // Get the prodSpecs data
+            var prodSpecs = $('textarea[name="prodSpecs"]').val().trim();
+
+            // If prodSpecs is not empty, format it as a line-separated list of specification: description
+            if (prodSpecs) {
+                prodSpecs = prodSpecs.split("\n").map(function (line) {
+                    var parts = line.split(":");
+                    if (parts.length === 2) {
+                        return parts[0].trim() + ": " + parts[1].trim();
+                    }
+                    return null;  // skip if the format is incorrect
+                }).filter(Boolean).join("\n");
+            }
+
+            // Append the formatted prodSpecs to the form data
             var formData = new FormData(form);
+            formData.append('prodSpecs', prodSpecs);  // Add prodSpecs to the form data
+
             $.ajax({
                 url: 'serverSideScripts.php',
                 type: 'POST',
@@ -1167,18 +1190,10 @@ $(document).ready(function () {
                         backdrop: false,
                         position: 'top',
                         showClass: {
-                            popup: `
-                        animate__animated
-                        animate__fadeInDown
-                        animate__faster
-                        `
+                            popup: `animate__animated animate__fadeInDown animate__faster`
                         },
                         hideClass: {
-                            popup: `
-                        animate__animated
-                        animate__fadeOutUp
-                        animate__faster
-                        `
+                            popup: `animate__animated animate__fadeOutUp animate__faster`
                         },
                         timer: 2000
                     });
@@ -1186,6 +1201,7 @@ $(document).ready(function () {
             });
         }
     });
+
 
     // EDIT PRODUCT==================================================
     // Edit product image preview
@@ -1206,13 +1222,15 @@ $(document).ready(function () {
         var productName = row.find('td:eq(3)').text();
         var categoryName = row.find('td:eq(4)').text();
         var productDesc = row.find('td:eq(5)').text();
-        var productPrice = row.find('td:eq(6)').text();
-        var productStock = row.find('td:eq(7)').text();
+        var productSpecs = row.find('td:eq(6)').text();
+        var productPrice = row.find('td:eq(7)').text();
+        var productStock = row.find('td:eq(8)').text();
 
         // Set new data in modal
         $('#editProdID').val(productID);
         $('#editProdName').val(productName);
         $('#editProdDesc').val(productDesc);
+        $('#editprodSpecs').val(productSpecs);
         $('#editProdPrice').val(productPrice);
         $('#editProdStock').val(productStock);
         $('#editProdIMGPreview').attr('src', productIMG).show();
@@ -1241,6 +1259,9 @@ $(document).ready(function () {
             editProdDesc: {
                 minlength: 10
             },
+            editProdSpecs: {
+                minlength: 10
+            },
             editProdPrice: {
                 number: true,
                 min: 0.01
@@ -1255,6 +1276,7 @@ $(document).ready(function () {
             editProdName: "Please enter a valid product name",
             editProdCategory: "Please select a category",
             editProdDesc: "Please enter a description (at least 10 characters)",
+            editProdSpecs: "Please enter the specifications",
             editProdPrice: "Please enter a valid price",
             editProdStock: "Please enter a valid stock quantity"
         },

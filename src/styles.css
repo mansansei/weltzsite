@@ -463,6 +463,10 @@ form .row .col input {
     /* Adjust the width as needed */
 }
 
+.productSpecs .specsWrapper {
+    min-width: 200px;
+}
+
 
 
 /* =====CART & ORDER HISTORY===== */
