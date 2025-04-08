@@ -77,7 +77,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
                         <p class="fs-3" id="productCategory"><?php echo htmlspecialchars($product['categoryName']); ?></p>
                     </div>
                     <div class="mb-3">
-                        <p class="fs-5" id="productDesc"><?php echo htmlspecialchars($product['productDesc']); ?></p>
+                        <p class="justify-text fs-5" id="productDesc"><?php echo htmlspecialchars($product['productDesc']); ?></p>
                     </div>
                     <div class="mb-3">
                         <p class="fs-3">In Stock: <?php echo $product['inStock']; ?></p>
@@ -159,7 +159,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
                             ?>
                         </p>
                     </div>
-                    <p class="fs-3"><?php echo nl2br(htmlspecialchars($review['reviewDesc'])); ?></p>
+                    <p class="justify-text fs-3"><?php echo nl2br(htmlspecialchars($review['reviewDesc'])); ?></p>
                 </div>
             <?php endwhile; ?>
         <?php else: ?>

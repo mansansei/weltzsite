@@ -28,16 +28,20 @@ function forgotPasswordOTP($email, $otp)
         $mail->Subject = "Weltz Industrial Password Reset OTP";
 
         // Styled HTML Body
-        $mail->Body = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background: #f9f9f9;'>
-            <h2 style='color: #333; text-align: center;'>Weltz Industrial Password Reset</h2>
-            <p style='color: #555; font-size: 16px;'>Hello,</p>
-            <p style='color: #555; font-size: 16px;'>You requested to reset your password. Please use the following OTP to proceed with resetting your password:</p>
-            <div style='text-align: center; margin: 20px;'>
-                <h3 style='color: #fc0001;'>OTP: <strong>" . $otp . "</strong></h3>
+        $mail->Body = "
+        <div style='font-family: \"Segoe UI\", Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e0e0e0; border-radius: 12px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+            <div style='text-align: center;'>
+                <img src='https://i.imgur.com/htCZgAe.png' alt='Weltz Industrial Logo' style='max-width: 120px; margin-bottom: 20px;'>
+                <h1 style='color: #fc0001; margin: 0; font-size: 24px;'>Password Reset Request</h1>
             </div>
-            <p style='color: #555; font-size: 14px; text-align: center;'>If you did not request this, please ignore this email.</p>
-            <hr style='border: 0; height: 1px; background: #ddd; margin: 20px 0;'>
-            <p style='color: #777; font-size: 12px; text-align: center;'>© " . date('Y') . " Weltz Industrial Phils INC. All rights reserved.</p>
+            <p style='color: #333; font-size: 16px; line-height: 1.5;'>Hello, dear customer</p>
+            <p style='color: #333; font-size: 16px; line-height: 1.5;'>You requested to reset your password for your account with <strong>Weltz Industrial Phils INC.</strong> Please use the following OTP to proceed:</p>
+            <div style='text-align: center; margin: 30px 0;'>
+                <h2 style='color: #fc0001;'>OTP: <strong>" . $otp . "</strong></h2>
+            </div>
+            <p style='color: #666; font-size: 14px; line-height: 1.5; text-align: center;'>If you did not request this, please ignore this email.</p>
+            <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
+            <p style='color: #aaa; font-size: 12px; text-align: center;'>&copy; " . date('Y') . " Weltz Industrial Phils INC. All rights reserved.<br>This is an automated message, please do not reply.</p>
         </div>";
 
         // Send Email

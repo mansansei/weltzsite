@@ -39,7 +39,7 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || !isse
         <h3><i class="fa-solid fa-house"></i> Home</h3>
       </div>
       <ul class="list-unstyled components">
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=dashboard"><i class="fa-solid fa-border-all"></i> Dashboard</a>
         </li>
       </ul>
@@ -50,22 +50,22 @@ if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || !isse
         <h3><i class="fa-solid fa-database"></i> Database</h3>
       </div>
       <ul class="list-unstyled components">
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=users"><i class="fa-solid fa-users"></i> Users</a>
         </li>
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=products"><i class="fa-solid fa-box-open"></i> Products</a>
         </li>
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=cartItems"><i class="fa-solid fa-receipt"></i> Cart Items</a>
         </li>
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=carts"><i class="fa-solid fa-cart-shopping"></i> Carts</a>
         </li>
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=orders"><i class="fa-solid fa-truck"></i> Orders</a>
         </li>
-        <li>
+        <li class="rounded">
           <a class="fs-5" href="?page=logs"><i class="fa-solid fa-arrows-rotate"></i> Update Logs</a>
         </li>
       </ul>

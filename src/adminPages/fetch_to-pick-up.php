@@ -17,7 +17,7 @@ if (isset($_POST['searchSubmit']) && !empty($_POST['productSearch'])) {
 $query = 
             "SELECT o.orderID, o.referenceNum, o.totalAmount, m.mopName, oi.productID, 
                 oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, 
-                o.createdAt, u.userFname, u.userLname
+                o.createdAt, u.userFname, u.userLname, u.userEmail 
             FROM orders_tbl o
             JOIN order_items_tbl oi ON o.orderID = oi.orderID
             JOIN products_tbl p ON oi.productID = p.productID
@@ -40,6 +40,7 @@ while ($row = $result->fetch_assoc()) {
     $orders[$row['orderID']]['createdAt'] = date("F j, Y, g:i a", strtotime($row['createdAt']));
     $orders[$row['orderID']]['userFname'] = $row['userFname'];
     $orders[$row['orderID']]['userLname'] = $row['userLname'];
+    $orders[$row['orderID']]['userEmail'] = $row['userEmail'];
     $orders[$row['orderID']]['items'][] = [
         'productName' => $row['productName'],
         'category' => $row['categoryName'],
@@ -91,7 +92,7 @@ if (empty($orders)) {
                 <div class="row p-1 m-0 d-flex justify-content-end">
                     <div class="col-lg-6">
                         <p class="ordered-at">Ordered at: <?= htmlspecialchars($order['createdAt']) ?></p>
-                        <p class="user-name">By: <?= htmlspecialchars($order['userFname'] . ' ' . $order['userLname']) ?></p>
+                        <p class="user-name">By: <?= htmlspecialchars($order['userFname'] . ' ' . $order['userLname']) ?> (<?= htmlspecialchars($order['userEmail']) ?>)</p>
                     </div>
                     <div class="col-lg-6 text-end">
                         <button class="btn btn-warning edit-order-btn" data-bs-toggle="modal" data-bs-target="#editOrderModal" data-order-id="<?= $orderID ?>">Edit Order</button>

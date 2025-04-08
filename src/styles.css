@@ -73,7 +73,7 @@ input[type=number] {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007bff;
+    background-color: #fc0001;
     color: white;
     width: 60px;
     height: 60px;
@@ -88,7 +88,15 @@ input[type=number] {
 }
 
 .floating-button:hover {
-    background-color: #0056b3;
+    background-color: #b10000;
+}
+
+.justify-text {
+    text-align: justify;
+}
+
+.justify-text-end {
+    text-align-last: right;
 }
 
 
@@ -273,49 +281,13 @@ form .row .col input {
     color: white;
 }
 
-
-@media (max-width: 575.98px) {
-    .headerwrapper .header-title {
-        font-size: 1.5rem;
-        text-align: right;
-    }
-
-    .headerwrapper .contact-info {
-        justify-content: flex-end;
-    }
-
-    .headerwrapper2 .links a button {
-        justify-content: center;
-        font-size: 1rem;
-    }
-
-    .headerwrapper2 .icons .icon a button {
-        justify-content: center;
-        font-size: 1rem;
-    }
+.navbar-toggler {
+    transition: background-color 0.3s ease-in-out;
 }
 
-@media (max-width: 961px) {
-    .headerwrapper .header-title {
-        font-size: 1.5rem;
-    }
-
-    .headerwrapper .contact-info p {
-        justify-content: flex-end;
-        font-size: 0.75rem;
-    }
-
-    .headerwrapper2 .links a button {
-        justify-content: center;
-        font-size: 1rem;
-    }
-
-    .headerwrapper2 .icons .icon a button {
-        justify-content: center;
-        font-size: 1rem;
-    }
+.navbar-toggler:hover {
+    background-color: #fc0001;
 }
-
 
 
 /* =====HOMEPAGE===== */
@@ -695,6 +667,14 @@ form .row .col input {
     transform: translateX(10px);
 }
 
+.components li {
+    transition: background-color 0.3s ease-in-out;
+}
+
+.components li:hover {
+    background-color: #e7e7e7;
+}
+
 #adminHeader {
     top: 0;
     position: sticky;
@@ -729,23 +709,6 @@ form .row .col input {
 .star-rating label:hover~label,
 .star-rating input:checked~label {
     color: #f5c518;
-}
-
-.aboutus {
-    border-bottom: 4px solid #fc0001;
-}
-
-.aboutusdesc {
-    text-align: justify;
-    letter-spacing: 1px;
-    font-size: 20px;
-}
-
-.aboutusdesc3 p {
-    font-size: 23px;
-    font-family: 'Anton', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1;
 }
 
 .aboutusimg {

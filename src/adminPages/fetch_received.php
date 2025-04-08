@@ -20,7 +20,7 @@ $whereClause = implode(" AND ", $conditions);
 $query = 
     "SELECT o.orderID, o.referenceNum, o.totalAmount, m.mopName, oi.productID, 
         oi.orderItemQuantity, oi.orderItemTotal, p.productName, cat.categoryName, p.productIMG, 
-        o.createdAt, o.receivedAt, u.userFname, u.userLname
+        o.createdAt, o.receivedAt, u.userFname, u.userLname, u.userEmail 
     FROM orders_tbl o
     JOIN order_items_tbl oi ON o.orderID = oi.orderID
     JOIN products_tbl p ON oi.productID = p.productID
@@ -44,6 +44,7 @@ while ($row = $result->fetch_assoc()) {
     $orders[$row['orderID']]['receivedAt'] = date("F j, Y, g:i a", strtotime($row['receivedAt']));
     $orders[$row['orderID']]['userFname'] = $row['userFname'];
     $orders[$row['orderID']]['userLname'] = $row['userLname'];
+    $orders[$row['orderID']]['userEmail'] = $row['userEmail'];
     $orders[$row['orderID']]['items'][] = [
         'productName' => $row['productName'],
         'category' => $row['categoryName'],
@@ -95,7 +96,7 @@ if (empty($orders)): ?>
                 </div>
                 <div class="row p-1 m-0 d-flex justify-content-end">
                     <div class="col-lg-6">
-                        <p class="user-name">By: <?= htmlspecialchars($order['userFname'] . ' ' . $order['userLname']) ?></p>
+                        <p class="user-name">By: <?= htmlspecialchars($order['userFname'] . ' ' . $order['userLname']) ?> (<?= htmlspecialchars($order['userEmail']) ?>)</p>
                     </div>
                     <div class="col-lg-6 text-end">
                         <p class="badge bg-success fs-5">Picked Up</p>

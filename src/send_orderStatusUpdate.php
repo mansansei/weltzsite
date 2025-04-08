@@ -8,11 +8,10 @@ require '../vendor/autoload.php'; // Ensure you have PHPMailer installed via Com
 function send_orderStatusUpdate($toEmail, $referenceNum, $orderID, $newStatus)
 {
     require 'weltz_dbconnect.php';
-
     $mail = new PHPMailer(true);
 
     try {
-        // Retrieve order details
+        // Fetch order items
         $orderItemsSQL = "SELECT p.productName, oi.orderItemQuantity, oi.orderItemTotal 
                           FROM order_items_tbl oi
                           JOIN products_tbl p ON oi.productID = p.productID
@@ -22,70 +21,70 @@ function send_orderStatusUpdate($toEmail, $referenceNum, $orderID, $newStatus)
         $itemsHTML = '';
         $totalOrderAmount = 0;
         while ($row = $result->fetch_assoc()) {
-            $itemsHTML .= "<tr>
-                                <td style='padding:10px; border-bottom:1px solid #ddd;'>{$row['productName']}</td>
-                                <td style='padding:10px; border-bottom:1px solid #ddd; text-align:center;'>{$row['orderItemQuantity']}</td>
-                                <td style='padding:10px; border-bottom:1px solid #ddd; text-align:right;'>$" . number_format($row['orderItemTotal'], 2) . "</td>
-                           </tr>";
+            $itemsHTML .= "
+                <tr>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee;'>{$row['productName']}</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: center;'>{$row['orderItemQuantity']}</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right;'>$" . number_format($row['orderItemTotal'], 2) . "</td>
+                </tr>";
             $totalOrderAmount += $row['orderItemTotal'];
         }
 
-        // Determine email subject and message
+        // Status message
         $subject = '';
         $statusMessage = '';
-
         switch ($newStatus) {
             case 2:
                 $subject = 'Your Order is Ready for Pickup!';
-                $statusMessage = "This is to inform you that your order is now ready for pickup. Please visit our store with the invoice for the order.";
+                $statusMessage = "Your order is now ready for pickup. Please visit our store and present your invoice.";
                 break;
             case 4:
                 $subject = 'Your Order Has Been Picked Up';
-                $statusMessage = "This is for confirmation that your order has been successfully picked up. Thank you for shopping with us!";
+                $statusMessage = "Your order has been successfully picked up. Thank you for choosing Weltz Industrial!";
                 break;
             default:
-                return; // Exit if the status is not relevant
+                return;
         }
 
-        // Email content
+        // Email body
         $emailBody = "
-            <html>
-            <head>
-                <style>
-                    .email-container { font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; background: #f9f9f9; border-radius: 10px; }
-                    .header { background-color: #fc0001; color: white; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; border-radius: 10px 10px 0 0; }
-                    .order-details { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; }
-                    .order-details th, .order-details td { padding: 12px; border-bottom: 1px solid #ddd; text-align: left; }
-                    .order-details th { background-color: #fc0001; color: white; text-align: center; }
-                    .order-summary { font-size: 18px; font-weight: bold; text-align: right; padding: 15px; background: #eee; border-radius: 0 0 10px 10px; }
-                    .cta-button { display: block; text-align: center; background: #fc0001; color: white; padding: 12px; text-decoration: none; border-radius: 5px; font-size: 18px; margin: 20px auto; width: 200px; }
-                </style>
-            </head>
-            <body>
-                <div class='email-container'>
-                    <div class='header'>Order Status Update for Order #$referenceNum</div>
-                    <p>Dear Customer,</p>
-                    <p>$statusMessage</p>
-                    
-                    <table class='order-details'>
-                        <tr>
-                            <th>Product Name</th>
-                            <th>Quantity</th>
-                            <th>Total Price</th>
-                        </tr>
-                        $itemsHTML
-                    </table>
-                    
-                    <p class='order-summary'>Total Order Amount: $" . number_format($totalOrderAmount, 2) . "</p>
-                    
-                    <p>If you have any questions, feel free to contact us.</p>
-                    <p>Best regards,<br><strong>Weltz Group</strong></p>
-                </div>
-            </body>
-            </html>
-        ";
+        <div style='font-family: \"Segoe UI\", Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: auto; padding: 30px; border: 1px solid #e0e0e0; border-radius: 12px; background: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.05);'>
+            <div style='text-align: center;'>
+                <img src='https://i.imgur.com/htCZgAe.png' alt='Weltz Industrial Logo' style='max-width: 120px; margin-bottom: 20px;'>
+                <h1 style='color: #fc0001; margin: 0; font-size: 22px;'>Order Update: #$referenceNum</h1>
+            </div>
+            <p style='color: #333; font-size: 16px; line-height: 1.5;'>Hi there, dear customer</p>
+            <p style='color: #333; font-size: 16px; line-height: 1.5;'>$statusMessage</p>
 
-        // PHPMailer setup
+            <h2 style='color: #fc0001; font-size: 18px; margin-top: 30px;'>Order Summary</h2>
+            <table style='width: 100%; border-collapse: collapse; margin-top: 10px;'>
+                <thead>
+                    <tr style='background-color: #fc0001; color: #fff;'>
+                        <th style='padding: 10px; text-align: left;'>Product Name</th>
+                        <th style='padding: 10px; text-align: center;'>Quantity</th>
+                        <th style='padding: 10px; text-align: right;'>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    $itemsHTML
+                </tbody>
+            </table>
+
+            <p style='text-align: right; font-size: 16px; font-weight: bold; margin-top: 20px;'>Total: $" . number_format($totalOrderAmount, 2) . "</p>
+
+            <p style='color: #666; font-size: 14px; line-height: 1.5; margin-top: 30px;'>
+                If you have any questions, feel free to contact our support team.<br>
+                <strong>Weltz Industrial Phils INC.</strong>
+            </p>
+
+            <hr style='border: none; border-top: 1px solid #eee; margin: 30px 0;'>
+            <p style='color: #aaa; font-size: 12px; text-align: center;'>
+                &copy; " . date('Y') . " Weltz Industrial Phils INC. All rights reserved.<br>
+                This is an automated message, please do not reply.
+            </p>
+        </div>";
+
+        // SMTP config
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
@@ -94,7 +93,6 @@ function send_orderStatusUpdate($toEmail, $referenceNum, $orderID, $newStatus)
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        // Email headers
         $mail->setFrom('weltzphils@gmail.com', 'Weltz Industrial Phils INC.');
         $mail->addAddress($toEmail);
         $mail->Subject = $subject;
