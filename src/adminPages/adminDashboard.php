@@ -1,5 +1,5 @@
-<div class="row mb-3">
-    <div class="memabox1 col-lg-3">
+<div class="row">
+    <div class="memabox1 col-lg-3 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="memabox2 col-lg-3">
+    <div class="memabox2 col-lg-3 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <div class="memabox3 col-lg-3">
+    <div class="memabox3 col-lg-3 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -116,7 +116,7 @@
         </div>
     </div>
 
-    <div class="memabox4 col-lg-3">
+    <div class="memabox4 col-lg-3 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -214,8 +214,8 @@
     </div>
 </div>
 
-<div class="row mb-3">
-    <div class="memabox5 col-lg-7">
+<div class="row">
+    <div class="memabox5 col-lg-7 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -606,7 +606,7 @@
         </script>
     </div>
 
-    <div class="memabox6 col-lg-5">
+    <div class="memabox6 col-lg-5 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -831,7 +831,7 @@
 </div>
 
 <div class="row">
-    <div class="memabox7 col-lg-4">
+    <div class="memabox7 col-lg-4 mb-3">
         <?php
         require 'weltz_dbconnect.php';
 
@@ -1103,7 +1103,7 @@
         </script>
     </div>
 
-    <div class="memabox8 col-lg-8">
+    <div class="memabox8 col-lg-8 mb-3">
         <?php
         require_once 'weltz_dbconnect.php';
 
@@ -1124,7 +1124,7 @@
         $categoriesSQL = "SELECT * from categories_tbl";
         $categoriesSQLResult = $conn->query($categoriesSQL);
         ?>
-        <div class="table-container container-fluid bg-light p-5 rounded shadow">
+        <div class="table-container container-fluid bg-light p-5 rounded shadow-sm">
             <div class="d-flex justify-content-between align-items-center mb-5">
                 <h3 class="fs-5 text-dark m-0">Low Stocks</h3>
             </div>

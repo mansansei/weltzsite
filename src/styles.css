@@ -634,6 +634,7 @@ form .row .col input {
     color: #fc0001;
     top: 0;
     position: sticky;
+    z-index: 1050;
 }
 
 #sidebar .nav-link {
@@ -686,6 +687,10 @@ form .row .col input {
     max-height: 875px;
     z-index: 1;
 }
+  
+
+
+/* =====PRODUCT REVIEWS===== */
 
 /* Star Rating Styles */
 .star-rating {
