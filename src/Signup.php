@@ -31,30 +31,30 @@ session_start();
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <input class="form-control" type="text" name="uFname" placeholder="First Name">
+                        <input class="form-control" type="text" name="uFname" placeholder="First Name (required)">
                     </div>
                     <div class="col">
-                        <input class="form-control" type="text" name="uLname" placeholder="Last Name">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col">
-                        <input class="form-control" type="text" name="uAdd" placeholder="Address">
+                        <input class="form-control" type="text" name="uLname" placeholder="Last Name (required)">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <input class="form-control" type="tel" name="uPhone" placeholder="Phone No.">
+                        <input class="form-control" type="text" name="uAdd" placeholder="Address (required)">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <input class="form-control" type="email" name="uEmail" placeholder="Email Address">
+                        <input class="form-control" type="tel" name="uPhone" placeholder="Phone No. (required)">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <input class="form-control" type="password" name="uPass" placeholder="Password">
+                        <input class="form-control" type="email" name="uEmail" placeholder="Email Address (required)">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col">
+                        <input class="form-control" type="password" name="uPass" placeholder="Password (required)">
                     </div>
                 </div>
                 <div class="signupcheckbox" id="checkboxWrapper">

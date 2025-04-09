@@ -370,8 +370,9 @@ $(document).ready(function () {
                 // Handle low-stock items warning (if no out of stock items)
                 Swal.fire({
                     icon: 'warning',
-                    text: 'One or more items have low stock. Proceed with caution.',
+                    text: 'One or more items have low stock. Do you want to continue?',
                     showConfirmButton: true,
+                    showCancelButton: true,
                     backdrop: false,
                     position: 'top',
                     showClass: {
@@ -379,19 +380,22 @@ $(document).ready(function () {
                             animate__animated
                             animate__fadeInDown
                             animate__faster
-                            `
+                        `
                     },
                     hideClass: {
                         popup: `
                             animate__animated
                             animate__fadeOutUp
                             animate__faster
-                            `
+                        `
                     }
-                }).then(function () {
-                    // Proceed to checkout after warning for low stock
-                    window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        // Only redirect if user clicks "OK"
+                        window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');
+                    }
                 });
+
             } else {
                 // No issues, proceed directly to checkout
                 window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');

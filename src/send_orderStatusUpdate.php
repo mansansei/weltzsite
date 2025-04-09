@@ -82,7 +82,7 @@ function send_orderStatusUpdate($toEmail, $referenceNum, $orderID, $newStatus, $
 
             $emailBody .= "
                 <div style='margin-top: 30px;'>
-                    <h2 style='color: #fc0001; font-size: 18px;'>Order Proof</h2>
+                    <h2 style='color: #fc0001; font-size: 18px;'>Proof of Product</h2>
                     <img src='cid:$cid' alt='Order Proof' style='max-width: 100%; border-radius: 8px; margin-top: 10px;'>
                 </div>";
         }
