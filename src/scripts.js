@@ -304,18 +304,102 @@ $(document).ready(function () {
         });
     });
 
-    // Checkout button click event
     $('#checkoutButton').click(function () {
         var selectedItems = [];
+        var lowStockItems = [];
+        var outOfStockItems = [];
+        var stockCheckPromises = [];
+
         $('.item-check:checked').each(function () {
             var cartItemID = $(this).closest('.cart-item').data('item-id');
+            var productID = $(this).closest('.cart-item').data('product-id');
             selectedItems.push(cartItemID);
+
+            // Check the stock for each product
+            stockCheckPromises.push(
+                $.ajax({
+                    url: 'serverSideScripts.php', // Use serverSideScripts.php for the stock check
+                    type: 'POST',
+                    data: {
+                        productID: productID,
+                        action: 'getProductStock' // Add an action to indicate the purpose
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.stock <= 0) { // If stock is 0 (Out of stock)
+                            outOfStockItems.push(cartItemID); // Store the out of stock item
+                        } else if (response.stock <= 5) { // If stock is low (<= 5)
+                            lowStockItems.push(cartItemID); // Store the low stock item
+                        }
+                    }
+                })
+            );
         });
 
-        if (selectedItems.length > 0) {
-            // Redirect to the checkout page with selected cartItemIDs
-            window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');
-        } else {
+        // Wait for all stock checks to complete before proceeding
+        $.when.apply($, stockCheckPromises).then(function () {
+            // Handle out-of-stock items
+            if (outOfStockItems.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: 'One or more items are out of stock. Do you want to remove them from your cart?',
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `
+                            animate__animated
+                            animate__fadeInDown
+                            animate__faster
+                            `
+                    },
+                    hideClass: {
+                        popup: `
+                            animate__animated
+                            animate__fadeOutUp
+                            animate__faster
+                            `
+                    },
+                    preConfirm: function () {
+                        // Remove the out of stock item from the cart
+                        removeCartItem(outOfStockItems);
+                    }
+                });
+            } else if (lowStockItems.length > 0) {
+                // Handle low-stock items warning (if no out of stock items)
+                Swal.fire({
+                    icon: 'warning',
+                    text: 'One or more items have low stock. Proceed with caution.',
+                    showConfirmButton: true,
+                    backdrop: false,
+                    position: 'top',
+                    showClass: {
+                        popup: `
+                            animate__animated
+                            animate__fadeInDown
+                            animate__faster
+                            `
+                    },
+                    hideClass: {
+                        popup: `
+                            animate__animated
+                            animate__fadeOutUp
+                            animate__faster
+                            `
+                    }
+                }).then(function () {
+                    // Proceed to checkout after warning for low stock
+                    window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');
+                });
+            } else {
+                // No issues, proceed directly to checkout
+                window.location.href = 'checkoutPage.php?items=' + selectedItems.join(',');
+            }
+        });
+
+        // If no items are selected
+        if (selectedItems.length === 0) {
             Swal.fire({
                 icon: 'warning',
                 text: 'No items selected for checkout',
@@ -324,6 +408,41 @@ $(document).ready(function () {
             });
         }
     });
+
+    // Function to remove cart item
+    function removeCartItem(cartItemIDs) {
+        $.each(cartItemIDs, function (index, cartItemID) {
+            $.ajax({
+                url: 'serverSideScripts.php',
+                type: 'POST',
+                data: {
+                    action: 'deleteCartItem',
+                    cartItemID: cartItemID
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // Optionally, you can reload the page or remove the item from the DOM
+                        location.reload(); // Reload the page to reflect the changes
+                    } else {
+                        // Handle failure response
+                        console.log('Failed to remove item from cart: ' + response.message);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.log("Server response:", jqXHR.responseText);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while processing your request.',
+                    });
+                }
+            });
+        });
+    }
+
+
 
     // CHECKOUT PAGE==================================================
     $('#confirmCheckout').on('click', function () {
@@ -1622,126 +1741,193 @@ $(document).ready(function () {
     });
 
 
+    // EDIT ORDERS STATUS==================================================
+    // update to to pick up
     let orderIDToEdit = null;
 
     // When the "Edit Order" button is clicked, store the orderID
     $('.edit-order-btn').click(function () {
         orderIDToEdit = $(this).data('order-id');
+        $('#orderID').val(orderIDToEdit);
     });
 
-    // When the "Save Changes" button is clicked, send the AJAX request
-    $('#confirmEditOrder').click(function () {
-        if (!orderIDToEdit) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'No order selected for editing.',
-                showConfirmButton: false,
-                backdrop: false,
-                position: 'top',
-                showClass: {
-                    popup: `
-                  animate__animated
-                  animate__fadeInDown
-                  animate__faster
-                `
-                },
-                hideClass: {
-                    popup: `
-                  animate__animated
-                  animate__fadeOutUp
-                  animate__faster
-                `
-                },
-                timer: 2000
-            });
-            return;
+    // Preview image on file select
+    $('input[name="orderProofIMG"]').change(function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#addorderProofIMGPreview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(file);
         }
+    });
 
-        // Get the selected status from the dropdown
-        const newStatus = $('#orderStatus').val();
-
-        // Send the AJAX request to update the order status
-        $.ajax({
-            url: 'serverSideScripts.php',
-            method: 'POST',
-            data: {
-                action: 'updateOrderStatus',
-                orderID: orderIDToEdit,
-                newStatus: newStatus
+    // Initialize form validation
+    $('#editOrderToPickUpForm').validate({
+        rules: {
+            orderStatus: {
+                required: true
             },
-            dataType: 'json',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Order Updated',
-                        text: 'The order status has been updated successfully.',
-                        showConfirmButton: false,
-                        backdrop: false,
-                        position: 'top',
-                        showClass: {
-                            popup: `
-                          animate__animated
-                          animate__fadeInDown
-                          animate__faster
-                        `
-                        },
-                        hideClass: {
-                            popup: `
-                          animate__animated
-                          animate__fadeOutUp
-                          animate__faster
-                        `
-                        },
-                        timer: 2000
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else {
+            orderProofIMG: {
+                required: true,
+            }
+        },
+        messages: {
+            orderStatus: {
+                required: "Please select an order status."
+            },
+            orderProofIMG: {
+                required: "Please upload a proof of order.",
+            }
+        },
+        errorClass: 'text-danger small',
+        errorPlacement: function (error, element) {
+            error.insertAfter(element); // Show error below the input
+        },
+        submitHandler: function (form) {
+            const formData = new FormData(form);
+            formData.append("action", "updateOrderStatus");
+            console.log(formData);
 
+            $.ajax({
+                url: 'serverSideScripts.php',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Order Updated',
+                            text: 'The order status has been updated successfully.',
+                            icon: 'success',
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.error("AJAX Error:", textStatus, errorThrown);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: response.message,
-                        showConfirmButton: false,
-                        backdrop: false,
+                        text: 'An error occurred while updating the order.',
                         position: 'top',
-                        showClass: {
-                            popup: `
-                          animate__animated
-                          animate__fadeInDown
-                          animate__faster
-                        `
-                        },
-                        hideClass: {
-                            popup: `
-                          animate__animated
-                          animate__fadeOutUp
-                          animate__faster
-                        `
-                        },
+                        showConfirmButton: false,
                         timer: 2000
                     });
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error("AJAX Error:", textStatus, errorThrown);
-                console.log("Server response:", jqXHR.responseText);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while updating the order status.',
-                    showConfirmButton: false,
-                    backdrop: false,
-                    position: 'top',
-                    timer: 2000
-                });
-            }
-        });
+            });
 
-
-        $('#editOrderModal').modal('hide');
+            $('#editOrderToPickUpModal').modal('hide');
+            return false;
+        }
     });
+
+    // Trigger form validation manually on button click
+    $('#confirmEditOrderToPickUp').click(function () {
+        $('#editOrderToPickUpForm').submit();
+    });
+
+    // update to picked up
+    let pickedUpOrderID = null;
+
+    // When the "Edit Order to Picked Up" button is clicked
+    $('.edit-order-to-picked-up-btn').click(function () {
+        pickedUpOrderID = $(this).data('order-id');
+        $('#orderIDToPickedUp').val(pickedUpOrderID);
+    });
+
+    // Initialize form validation
+    $('#editOrderToPickedUpForm').validate({
+        rules: {
+            newStatus: {
+                required: true
+            }
+        },
+        messages: {
+            newStatus: {
+                required: "Please select an order status."
+            }
+        },
+        errorClass: 'text-danger small',
+        errorPlacement: function (error, element) {
+            error.insertAfter(element); // Show error below the select
+        },
+        submitHandler: function (form) {
+            const formData = new FormData(form);
+            formData.append("action", "updateOrderStatus");
+
+            $.ajax({
+                url: 'serverSideScripts.php',
+                method: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Order Updated',
+                            text: 'The order status has been updated successfully.',
+                            icon: 'success',
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                            position: 'top',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    console.error("AJAX Error:", textStatus, errorThrown);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred while updating the order.',
+                        position: 'top',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            });
+
+            $('#editOrderToPickedUpModal').modal('hide');
+            return false;
+        }
+    });
+
+    // Manually trigger validation on confirm button click
+    $('#confirmEditOrderToPickedUp').click(function () {
+        $('#editOrderToPickedUpForm').submit();
+    });
+
+
 
     // ADMIN SEARCH ORDERS==================================================
     // Admin search processing orders

@@ -334,6 +334,36 @@ function addToCart()
   exit;
 }
 
+// Function to get the stock of a specific product
+function getProductStock()
+{
+  // Assume $conn is your database connection
+  $conn = dbConnect();
+
+  $productID = isset($_POST['productID']) ? trim($_POST['productID']) : null;
+
+  // Check if productID is valid
+  if (!$productID) {
+    echo json_encode(['stock' => 0]); // Default stock if no productID is provided
+    return;
+  }
+
+  $query = "SELECT inStock FROM products_tbl WHERE productID = ?";
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param('i', $productID);
+  $stmt->execute();
+  $stmt->bind_result($stockQuantity);
+  $stmt->fetch();
+
+  // Ensure stockQuantity is numeric
+  if (is_numeric($stockQuantity)) {
+    echo json_encode(['stock' => $stockQuantity]);
+  } else {
+    echo json_encode(['stock' => 0]); // If no stock found or invalid data, return 0
+  }
+}
+
+
 // Update Cart Item Quantity function
 function updateCartItemQuantity()
 {
@@ -1103,119 +1133,119 @@ function addProduct()
 // Function to update product details
 function updateProduct()
 {
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-        $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
+    $userID = isset($_SESSION['userID']) ? $_SESSION['userID'] : null;
 
-        // Open db connection
-        $conn = dbConnect();
+    // Open db connection
+    $conn = dbConnect();
 
-        // Set variables
-        $productID = $_POST['editProdID'];
-        $productName = $_POST['editProdName'];
-        $productIMG = isset($_FILES['editProdIMG']) ? $_FILES['editProdIMG'] : null;
-        $categoryID = (int)$_POST['editProdCategory'];
-        $productDesc = $_POST['editProdDesc'];
-        $productSpecs = $_POST['editprodSpecs']; // Capturing specifications
-        $productPrice = (float)$_POST['editProdPrice'];
-        $inStock = (int)$_POST['editProdStock'];
-        $updatedAt = date('Y-m-d H:i:s');
+    // Set variables
+    $productID = $_POST['editProdID'];
+    $productName = $_POST['editProdName'];
+    $productIMG = isset($_FILES['editProdIMG']) ? $_FILES['editProdIMG'] : null;
+    $categoryID = (int)$_POST['editProdCategory'];
+    $productDesc = $_POST['editProdDesc'];
+    $productSpecs = $_POST['editprodSpecs']; // Capturing specifications
+    $productPrice = (float)$_POST['editProdPrice'];
+    $inStock = (int)$_POST['editProdStock'];
+    $updatedAt = date('Y-m-d H:i:s');
 
-        // Retrieve current product data
-        $currentDataSQL = "SELECT productName, productIMG, categoryID, productDesc, productSpecs, productPrice, inStock FROM products_tbl WHERE productID=?";
-        $stmt = $conn->prepare($currentDataSQL);
-        $stmt->bind_param("i", $productID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $currentData = $result->fetch_assoc();
-        $stmt->close();
+    // Retrieve current product data
+    $currentDataSQL = "SELECT productName, productIMG, categoryID, productDesc, productSpecs, productPrice, inStock FROM products_tbl WHERE productID=?";
+    $stmt = $conn->prepare($currentDataSQL);
+    $stmt->bind_param("i", $productID);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $currentData = $result->fetch_assoc();
+    $stmt->close();
 
-        // Initialize update fields and values
-        $updateFields = [];
-        $updateValues = [];
-        $oldValues = [];
-        $newValues = [];
+    // Initialize update fields and values
+    $updateFields = [];
+    $updateValues = [];
+    $oldValues = [];
+    $newValues = [];
 
-        // Compare and create oldValues and newValues arrays
-        if ($productName !== $currentData['productName'] && !empty($productName)) {
-            $updateFields[] = "productName=?";
-            $updateValues[] = $productName;
-            $oldValues['productName'] = $currentData['productName'];
-            $newValues['productName'] = $productName;
-        }
-        if ($categoryID !== (int)$currentData['categoryID'] && !empty($categoryID)) {
-            $updateFields[] = "categoryID=?";
-            $updateValues[] = $categoryID;
-            $oldValues['categoryID'] = (int)$currentData['categoryID'];
-            $newValues['categoryID'] = $categoryID;
-        }
-        if ($productDesc !== $currentData['productDesc'] && !empty($productDesc)) {
-            $updateFields[] = "productDesc=?";
-            $updateValues[] = $productDesc;
-            $oldValues['productDesc'] = $currentData['productDesc'];
-            $newValues['productDesc'] = $productDesc;
-        }
-        if ($productSpecs !== $currentData['productSpecs'] && !empty($productSpecs)) {
-            $updateFields[] = "productSpecs=?";
-            $updateValues[] = $productSpecs;
-            $oldValues['productSpecs'] = $currentData['productSpecs'];
-            $newValues['productSpecs'] = $productSpecs;
-        }
-        if ($productPrice !== (float)$currentData['productPrice'] && !empty($productPrice)) {
-            $updateFields[] = "productPrice=?";
-            $updateValues[] = $productPrice;
-            $oldValues['productPrice'] = (float)$currentData['productPrice'];
-            $newValues['productPrice'] = $productPrice;
-        }
-        if ($inStock !== (int)$currentData['inStock'] && !empty($inStock)) {
-            $updateFields[] = "inStock=?";
-            $updateValues[] = $inStock;
-            $oldValues['inStock'] = (int)$currentData['inStock'];
-            $newValues['inStock'] = $inStock;
-        }
-
-        if ($productIMG && $productIMG['error'] === UPLOAD_ERR_OK) {
-            // Save the image file
-            $targetDir = "../images/products/";
-            $imageFileType = strtolower(pathinfo($productIMG['name'], PATHINFO_EXTENSION));
-            $originalFileName = pathinfo($productIMG['name'], PATHINFO_FILENAME);
-            $targetFile = $targetDir . $originalFileName . '_' . uniqid() . '.' . $imageFileType;
-
-            if (move_uploaded_file($productIMG['tmp_name'], $targetFile)) {
-                $productIMGPath = htmlspecialchars($targetFile);
-                $updateFields[] = "productIMG=?";
-                $updateValues[] = $productIMGPath;
-                $oldValues['productIMG'] = $currentData['productIMG'];
-                $newValues['productIMG'] = $productIMGPath;
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Error saving image file.']);
-                exit;
-            }
-        }
-
-        if (!empty($updateFields)) {
-            $updateFields[] = "updatedAt=?";
-            $updateValues[] = $updatedAt;
-            $updateValues[] = $productID;
-
-            // Insert product detail changes
-            $updateSQL = "UPDATE products_tbl SET " . implode(", ", $updateFields) . " WHERE productID=?";
-            $stmt = $conn->prepare($updateSQL);
-            $stmt->bind_param(str_repeat('s', count($updateValues) - 1) . 'i', ...$updateValues);
-
-            if ($stmt->execute()) {
-                // Log the changes
-                createAuditLog($conn, $userID, 'UPDATE PRODUCT INFO', 'products_tbl', $productID, json_encode($oldValues), json_encode($newValues));
-
-                echo json_encode(['success' => true, 'message' => 'Product details updated successfully.']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
-            }
-            $stmt->close();
-        } else {
-            echo json_encode(['success' => false, 'message' => 'No data to update.']);
-        }
+    // Compare and create oldValues and newValues arrays
+    if ($productName !== $currentData['productName'] && !empty($productName)) {
+      $updateFields[] = "productName=?";
+      $updateValues[] = $productName;
+      $oldValues['productName'] = $currentData['productName'];
+      $newValues['productName'] = $productName;
     }
+    if ($categoryID !== (int)$currentData['categoryID'] && !empty($categoryID)) {
+      $updateFields[] = "categoryID=?";
+      $updateValues[] = $categoryID;
+      $oldValues['categoryID'] = (int)$currentData['categoryID'];
+      $newValues['categoryID'] = $categoryID;
+    }
+    if ($productDesc !== $currentData['productDesc'] && !empty($productDesc)) {
+      $updateFields[] = "productDesc=?";
+      $updateValues[] = $productDesc;
+      $oldValues['productDesc'] = $currentData['productDesc'];
+      $newValues['productDesc'] = $productDesc;
+    }
+    if ($productSpecs !== $currentData['productSpecs'] && !empty($productSpecs)) {
+      $updateFields[] = "productSpecs=?";
+      $updateValues[] = $productSpecs;
+      $oldValues['productSpecs'] = $currentData['productSpecs'];
+      $newValues['productSpecs'] = $productSpecs;
+    }
+    if ($productPrice !== (float)$currentData['productPrice'] && !empty($productPrice)) {
+      $updateFields[] = "productPrice=?";
+      $updateValues[] = $productPrice;
+      $oldValues['productPrice'] = (float)$currentData['productPrice'];
+      $newValues['productPrice'] = $productPrice;
+    }
+    if ($inStock !== (int)$currentData['inStock'] && !empty($inStock)) {
+      $updateFields[] = "inStock=?";
+      $updateValues[] = $inStock;
+      $oldValues['inStock'] = (int)$currentData['inStock'];
+      $newValues['inStock'] = $inStock;
+    }
+
+    if ($productIMG && $productIMG['error'] === UPLOAD_ERR_OK) {
+      // Save the image file
+      $targetDir = "../images/products/";
+      $imageFileType = strtolower(pathinfo($productIMG['name'], PATHINFO_EXTENSION));
+      $originalFileName = pathinfo($productIMG['name'], PATHINFO_FILENAME);
+      $targetFile = $targetDir . $originalFileName . '_' . uniqid() . '.' . $imageFileType;
+
+      if (move_uploaded_file($productIMG['tmp_name'], $targetFile)) {
+        $productIMGPath = htmlspecialchars($targetFile);
+        $updateFields[] = "productIMG=?";
+        $updateValues[] = $productIMGPath;
+        $oldValues['productIMG'] = $currentData['productIMG'];
+        $newValues['productIMG'] = $productIMGPath;
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error saving image file.']);
+        exit;
+      }
+    }
+
+    if (!empty($updateFields)) {
+      $updateFields[] = "updatedAt=?";
+      $updateValues[] = $updatedAt;
+      $updateValues[] = $productID;
+
+      // Insert product detail changes
+      $updateSQL = "UPDATE products_tbl SET " . implode(", ", $updateFields) . " WHERE productID=?";
+      $stmt = $conn->prepare($updateSQL);
+      $stmt->bind_param(str_repeat('s', count($updateValues) - 1) . 'i', ...$updateValues);
+
+      if ($stmt->execute()) {
+        // Log the changes
+        createAuditLog($conn, $userID, 'UPDATE PRODUCT INFO', 'products_tbl', $productID, json_encode($oldValues), json_encode($newValues));
+
+        echo json_encode(['success' => true, 'message' => 'Product details updated successfully.']);
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Error: ' . $conn->error]);
+      }
+      $stmt->close();
+    } else {
+      echo json_encode(['success' => false, 'message' => 'No data to update.']);
+    }
+  }
 }
 
 // Function to delete (archive) a product
@@ -1421,7 +1451,6 @@ function cancelOrder()
 function updateOrderStatus()
 {
   header('Content-Type: application/json'); // Ensure JSON response
-
   require 'send_orderStatusUpdate.php';
 
   if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -1429,31 +1458,28 @@ function updateOrderStatus()
     exit;
   }
 
-  // Check if the user is logged in (if needed)
   if (!isset($_SESSION['userID'])) {
     echo json_encode(['success' => false, 'message' => 'User not logged in']);
     exit;
   }
 
-  // Get and sanitize POST data
   $orderID = isset($_POST['orderID']) ? trim($_POST['orderID']) : null;
   $newStatus = isset($_POST['newStatus']) ? trim($_POST['newStatus']) : null;
 
-  // Input validation
   if (empty($orderID) || !is_numeric($orderID)) {
     echo json_encode(['success' => false, 'message' => 'Invalid order ID']);
     exit;
   }
+
   if (empty($newStatus) || !is_numeric($newStatus)) {
     echo json_encode(['success' => false, 'message' => 'Invalid status']);
     exit;
   }
 
-  // Connect to the database
   $conn = dbConnect();
 
-  // Check if the order exists and get the userID, referenceNum, and orderReceipt
-  $stmt = $conn->prepare("SELECT userID, referenceNum, orderReceipt FROM orders_tbl WHERE orderID = ? LIMIT 1");
+  // Fetch order data
+  $stmt = $conn->prepare("SELECT userID, referenceNum, orderReceipt, orderProof FROM orders_tbl WHERE orderID = ? LIMIT 1");
   $stmt->bind_param("i", $orderID);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -1467,76 +1493,117 @@ function updateOrderStatus()
   $userID = $orderData['userID'];
   $referenceNum = $orderData['referenceNum'];
   $orderReceipt = $orderData['orderReceipt'];
+  $orderProof = $orderData['orderProof'];
   $stmt->close();
 
-  // Prevent status update to "Picked Up" if no receipt exists
+  // Handle uploaded order proof image if provided
+  if (isset($_FILES['orderProofIMG']) && $_FILES['orderProofIMG']['error'] === UPLOAD_ERR_OK) {
+    $fileTmpPath = $_FILES['orderProofIMG']['tmp_name'];
+    $fileName = basename($_FILES['orderProofIMG']['name']);
+    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+    if (in_array($fileExtension, $allowedExtensions)) {
+      $newFileName = uniqid('orderProof_', true) . '.' . $fileExtension;
+      $uploadDir = 'images/orderProof/';
+      $uploadPath = $uploadDir . $newFileName;
+
+      if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true); // Create directory if not exists
+      }
+
+      if (move_uploaded_file($fileTmpPath, $uploadPath)) {
+        // Save the new path to the database
+        $stmt = $conn->prepare("UPDATE orders_tbl SET orderProof = ? WHERE orderID = ?");
+        $stmt->bind_param("si", $uploadPath, $orderID);
+        $stmt->execute();
+        $stmt->close();
+
+        // Overwrite the variable so it's used in notification
+        $orderProof = $uploadPath;
+      } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to move uploaded proof image']);
+        $conn->close();
+        exit;
+      }
+    } else {
+      echo json_encode(['success' => false, 'message' => 'Invalid file type for proof image']);
+      $conn->close();
+      exit;
+    }
+  }
+
   if ($newStatus == 4 && empty($orderReceipt)) {
     echo json_encode(['success' => false, 'message' => 'Cannot update status to Picked Up. Receipt is required.']);
     $conn->close();
     exit;
   }
 
-  // Prepare the SQL query with conditional logic
+  // Prepare appropriate update statement
   if ($newStatus == 4) {
     $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, receivedAt = NOW() WHERE orderID = ?");
-  } else if ($newStatus == 2) {
+  } elseif ($newStatus == 2) {
     $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, toReceive = NOW() WHERE orderID = ?");
-  } else if ($newStatus == 3) {
+  } elseif ($newStatus == 3) {
     $stmt = $conn->prepare("UPDATE orders_tbl SET statusID = ?, cancelledAt = NOW() WHERE orderID = ?");
+  } else {
+    echo json_encode(['success' => false, 'message' => 'Invalid status']);
+    $conn->close();
+    exit;
   }
 
-  // Bind parameters
   $stmt->bind_param("ii", $newStatus, $orderID);
-
-  // Execute the query
   $success = $stmt->execute();
   $stmt->close();
 
   if ($success) {
-    // Log the order status update (optional)
     createAuditLog($conn, $_SESSION['userID'], 'UPDATE ORDER STATUS', 'orders_tbl', $orderID, json_encode(['statusID' => 'Previous Status']), json_encode(['statusID' => $newStatus]));
 
-    // Send notification to the user based on the new status
     $notifName = "";
     $notifMessage = "";
-    $statusUnread = 9; // Assuming 9 is the status ID for unread notifications
+    $statusUnread = 9;
     $orderNotif = "Order";
 
     switch ($newStatus) {
-      case 2: // To Pick Up
+      case 2:
         $notifName = "Order Ready for Pickup";
         $notifMessage = "Your order #$referenceNum is now ready for pickup.";
         break;
-      case 4: // Picked Up
+      case 4:
         $notifName = "Order Picked Up";
         $notifMessage = "Your order #$referenceNum has been successfully picked up.";
-        break;
-      default:
-        // No notification for other statuses
         break;
     }
 
     if (!empty($notifName)) {
-      // Insert the notification into the database
       $stmt = $conn->prepare("INSERT INTO notifs_tbl (userID, notifName, notifMessage, statusID, notifType) VALUES (?, ?, ?, ?, ?)");
       $stmt->bind_param("issis", $userID, $notifName, $notifMessage, $statusUnread, $orderNotif);
       $stmt->execute();
       $stmt->close();
 
-      // Log the notification creation (optional)
       createAuditLog($conn, $userID, 'CREATE NOTIFICATION', 'notifs_tbl', $conn->insert_id, null, json_encode(['notifName' => $notifName, 'notifMessage' => $notifMessage, 'statusID' => $statusUnread]));
     }
 
-    // Retrieve user email and send invoice (if needed)
-    if ($newStatus == 2 || $newStatus == 4) { // Only send an email for "To Pick Up" or "Picked Up" status
+    if ($newStatus == 2 || $newStatus == 4) {
       $stmt = $conn->prepare("SELECT userEmail FROM users_tbl WHERE userID = ?");
       $stmt->bind_param("i", $userID);
       $stmt->execute();
       $result = $stmt->get_result();
+
       if ($result->num_rows > 0) {
         $email = $result->fetch_assoc()['userEmail'];
-        send_orderStatusUpdate($email, $referenceNum, $orderID, $newStatus);
+
+        // Build absolute file path to proof image (if any)
+        $proofPath = (!empty($orderProof) && file_exists($orderProof)) ? $orderProof : '';
+
+        // Only pass orderProof if status is "To Pick Up" (2)
+        if ($newStatus == 2) {
+          send_orderStatusUpdate($email, $referenceNum, $orderID, $newStatus, $proofPath);
+        } else {
+          send_orderStatusUpdate($email, $referenceNum, $orderID, $newStatus, '');
+        }
       }
+
       $stmt->close();
     }
 
@@ -1608,15 +1675,21 @@ function uploadReceipt()
     exit;
   }
 
-  $receiptPath = htmlspecialchars($targetFile);
+  $receiptPath = htmlspecialchars($targetFile); // Actual file path
+  $hashedReceiptPath = hash('sha256', $receiptPath); // Hashed path for storage
 
-  // Update the database
+  // Update the database with the hashed path
   $updateSQL = "UPDATE orders_tbl SET orderReceipt = ? WHERE orderID = ?";
   $stmt = $conn->prepare($updateSQL);
-  $stmt->bind_param("si", $receiptPath, $orderID);
+  $stmt->bind_param("si", $hashedReceiptPath, $orderID);
 
   if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Receipt uploaded successfully.', 'filePath' => $receiptPath]);
+    echo json_encode([
+      'success' => true,
+      'message' => 'Receipt uploaded successfully.',
+      'filePath' => $receiptPath, // Send back the actual path for frontend use if needed
+      'storedHash' => $hashedReceiptPath // (Optional) for debugging or confirmation
+    ]);
   } else {
     echo json_encode(['success' => false, 'message' => 'Database update failed: ' . $stmt->error]);
   }

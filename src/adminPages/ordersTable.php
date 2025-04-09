@@ -174,30 +174,69 @@
     </div>
 
     <!-- Edit Order Modal -->
-    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editOrderToPickUpModal" tabindex="-1" aria-labelledby="editOrderToPickUpModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="editOrderModalLabel">Edit Order Status</h1>
+                    <h1 class="modal-title fs-5" id="editOrderToPickUpModalLabel">Edit Order Status</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editOrderForm">
+                    <form id="editOrderToPickUpForm">
                         <div class="row mb-3">
                             <div class="col">
-                                <label for="orderStatus" class="form-label">Order Status</label>
-                                <select class="form-select" id="orderStatus" name="orderStatus">
-                                    <option value="1">Processing</option>
+                                <label for="newStatus" class="form-label">Order Status</label>
+                                <select class="form-select" id="newStatus" name="newStatus">
+                                    <option value="" selected>Choose a status</option>
                                     <option value="2">To Pick Up</option>
-                                    <option value="4">Picked Up</option>
                                     <option value="3">Cancelled</option>
                                 </select>
-                                <label class="error-message" for="orderStatus"></label>
+                                <label class="error-message" for="newStatus"></label>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col">
+                                <label for="orderProofIMG" class="form-label">Proof of Order</label>
+                                <input class="form-control" type="file" name="orderProofIMG" accept="images/*">
+                                <img id="addorderProofIMGPreview" src="#" alt="Image Preview" style="display:none; max-width: 100%; height: auto;">
+                                <label class="error-message" for="orderProofIMG"></label>
                             </div>
                         </div>
                         <input type="hidden" id="orderID" name="orderID">
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-warning" id="confirmEditOrder">Save Changes</button>
+                            <button type="button" class="btn btn-warning" id="confirmEditOrderToPickUp">Save Changes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Order Modal 2 -->
+    <div class="modal fade" id="editOrderToPickedUpModal" tabindex="-1" aria-labelledby="editOrderToPickedUpModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editOrderToPickedUpModalLabel">Edit Order Status</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editOrderToPickedUpForm">
+                        <div class="row mb-5">
+                            <div class="col">
+                                <label for="newStatus" class="form-label">Order Status</label>
+                                <select class="form-select" id="newStatus" name="newStatus">
+                                    <option value="" selected>Choose a status</option>
+                                    <option value="4">Picked Up</option>
+                                    <option value="3">Cancelled</option>
+                                </select>
+                                <label class="error-message" for="newStatus"></label>
+                            </div>
+                        </div>
+                        <input type="hidden" id="orderIDToPickedUp" name="orderID">
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-warning" id="confirmEditOrderToPickedUp">Save Changes</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </form>

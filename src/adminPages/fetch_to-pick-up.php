@@ -95,7 +95,7 @@ if (empty($orders)) {
                         <p class="user-name">By: <?= htmlspecialchars($order['userFname'] . ' ' . $order['userLname']) ?> (<?= htmlspecialchars($order['userEmail']) ?>)</p>
                     </div>
                     <div class="col-lg-6 text-end">
-                        <button class="btn btn-warning edit-order-btn" data-bs-toggle="modal" data-bs-target="#editOrderModal" data-order-id="<?= $orderID ?>">Edit Order</button>
+                        <button class="btn btn-warning edit-order-to-picked-up-btn" data-bs-toggle="modal" data-bs-target="#editOrderToPickedUpModal" data-order-id="<?= $orderID ?>">Edit Order</button>
                     </div>
                 </div>
             </div>

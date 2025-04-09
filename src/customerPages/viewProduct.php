@@ -112,7 +112,7 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
 
 <!-- Product Specifications Section -->
 <section class="productSpecs container py-5">
-    <div class="specsTitle text-center mb-5">
+    <div class="specsTitle text-center border-bottom border-danger mb-5">
         <h1 class="display-5 fw-bold">Product Specifications</h1>
         <p class="text-muted fs-3">Detailed technical features of the <?php echo htmlspecialchars($product['productName']); ?></p>
     </div>
@@ -138,6 +138,41 @@ if (isset($_GET['productID']) && $_GET['productID'] != NULL) {
     </div>
 </section>
 
+<!-- Warranty Disclaimer Section -->
+<section class="warrantyDisclaimer container py-5">
+    <div class="warrantyTitle text-center border-bottom border-danger mb-5">
+        <h1 class="display-5 fw-bold">Warranty Disclaimer</h1>
+    </div>
+    <div class="warrantyContent bg-white p-5 rounded shadow-sm">
+        <p class="fs-4">
+            This product is covered by a limited warranty for a period of <strong class="text-danger">six (6) months</strong> from the date of purchase. During this period, we guarantee that the product will be free from defects in material and workmanship under normal use and service.
+        </p>
+
+        <p class="fs-4 mb-2">However, this warranty does <strong class="text-danger">not</strong> cover:</p>
+        <ul class="fs-5 mb-4">
+            <li>Damage caused by misuse, abuse, accidents, or unauthorized modifications.</li>
+            <li>Normal wear and tear, including cosmetic damage.</li>
+            <li>Repairs or replacements performed by unauthorized service providers.</li>
+            <li>Issues resulting from failure to follow proper maintenance or usage guidelines.</li>
+        </ul>
+
+        <p class="fs-4">
+            Our liability under this warranty is limited solely to repair or replacement of the defective product, at our discretion. We are not responsible for any indirect, incidental, or consequential damages arising from the use of this product.
+        </p>
+
+        <p class="fs-4">
+            To make a warranty claim, the purchaser must provide proof of purchase and return the defective product within the warranty period. Warranty claims must be made in accordance with our service procedures.
+        </p>
+
+        <p class="fs-4">
+            This warranty does not affect any statutory rights you may have under applicable laws.
+        </p>
+
+        <p class="fs-4 mb-0">
+            For assistance, please contact our customer support team.
+        </p>
+    </div>
+</section>
 
 <!-- Reviews Section -->
 <section class="reviewsec container py-5">

@@ -65,7 +65,7 @@
                 $cartID = $cartRow['cartID'];
 
                 // Retrieve the cart items
-                $itemsQuery = $conn->prepare("SELECT ci.cartItemID, ci.productID, ci.cartItemQuantity, ci.cartItemTotal, p.productName, p.productIMG, c.categoryName 
+                $itemsQuery = $conn->prepare("SELECT ci.cartItemID, ci.productID, ci.cartItemQuantity, ci.cartItemTotal, p.productID, p.productName, p.productIMG, c.categoryName 
                                       FROM cart_items_tbl ci
                                       JOIN products_tbl p ON ci.productID = p.productID
                                       JOIN categories_tbl c ON p.categoryID = c.categoryID
@@ -78,7 +78,7 @@
                     while ($itemRow = $itemsResult->fetch_assoc()) {
                         // Display the cart item
         ?>
-                        <div class="cart-item bg-light border-bottom border-gray" data-item-id="<?php echo $itemRow['cartItemID']; ?>" data-unit-price="<?php echo number_format($itemRow['cartItemTotal'] / $itemRow['cartItemQuantity'], 2, '.', ''); ?>">
+                        <div class="cart-item bg-light border-bottom border-gray" data-item-id="<?php echo $itemRow['cartItemID']; ?>" data-product-id="<?php echo $itemRow['productID']; ?>" data-unit-price="<?php echo number_format($itemRow['cartItemTotal'] / $itemRow['cartItemQuantity'], 2, '.', ''); ?>">
                             <div class="row align-items-center p-3">
                                 <div class="col-lg-1 d-flex justify-content-center">
                                     <input type="checkbox" class="form-check-input item-check">
