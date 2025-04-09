@@ -8,9 +8,12 @@ $usersSQLResult = $conn->query($usersSQL);
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
-    <button type="button" id="sidebarCollapse" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#regNewAdmin">
-        <i class="fa-solid fa-user-plus"></i> Register New Admin
-    </button>
+    <?php if ($_SESSION['role'] == 3): // Show Add button only to Super Admin 
+    ?>
+        <button type="button" id="sidebarCollapse" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#regNewAdmin">
+            <i class="fa-solid fa-user-plus"></i> Register New Admin
+        </button>
+    <?php endif; ?>
     <h1>Users Table</h1>
 </div>
 
@@ -47,8 +50,13 @@ $usersSQLResult = $conn->query($usersSQL);
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <button class='editUserBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editUser">Edit</button>
-                                <button class='delUserBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteUserModal">Delete</button>
+                                <?php if ($_SESSION['role'] == 3): // Super Admin 
+                                ?>
+                                    <button class='editUserBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editUser">Edit</button>
+                                    <button class='delUserBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteUserModal">Delete</button>
+                                <?php else: ?>
+                                    <span class="text-muted text-center small">Action only available to Super Admin</span>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>

@@ -2,7 +2,12 @@
 
 session_start();
 
-if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || !isset($_SESSION['role']) || $_SESSION['role'] != 2) {
+if (
+  !isset($_SESSION['isLoggedIn']) || 
+  $_SESSION['isLoggedIn'] !== true || 
+  !isset($_SESSION['role']) || 
+  ($_SESSION['role'] != 2 && $_SESSION['role'] != 3)
+) {
   header('Location: Login.php');
   exit();
 }

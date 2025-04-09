@@ -1,7 +1,7 @@
 <?php
 require_once 'weltz_dbconnect.php';
 
-$productsSQL = 
+$productsSQL =
     "SELECT
         p.productID, 
         COALESCE(CONCAT(u.userFname, ' ', u.userLname), 'Deleted User') AS userFullName,
@@ -26,20 +26,19 @@ $productsSQL =
     JOIN
         statuses_tbl s ON p.statusID = s.statusID";
 
-
-
-
 $productsSQLResult = $conn->query($productsSQL);
 
 $categoriesSQL = "SELECT * from categories_tbl";
 $categoriesSQLResult = $conn->query($categoriesSQL);
-
 ?>
 
 <div class="userTableHeader mb-3 d-flex justify-content-end align-items-center gap-3">
-    <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#addNewProdModal">
-        <i class="fa-solid fa-box-open"></i> Add a New Product
-    </button>
+    <?php if ($_SESSION['role'] == 3): // Show Add button only to Super Admin 
+    ?>
+        <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#addNewProdModal">
+            <i class="fa-solid fa-box-open"></i> Add a New Product
+        </button>
+    <?php endif; ?>
     <h1>Products Table</h1>
 </div>
 
@@ -84,24 +83,25 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                         <td><?php echo  $row['updatedAt'] ?></td>
                         <td>
                             <div class='d-grid gap-2'>
-                                <?php if ($row['statusID'] == 5): ?>
-                                    <!-- Display Delete button for active products -->
-                                    <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
-                                    <button class='delProdBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteProdModal">Delete</button>
-                                <?php elseif ($row['statusID'] == 6): ?>
-                                    <!-- Display Restore button for removed products -->
-                                    <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
-                                    <button class='restoreProdBtn btn btn-success' data-bs-toggle="modal" data-bs-target="#restoreProdModal">Restore</button>
+                                <?php if ($_SESSION['role'] == 3): // Super Admin 
+                                ?>
+                                    <?php if ($row['statusID'] == 5): ?>
+                                        <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
+                                        <button class='delProdBtn btn btn-danger' data-bs-toggle="modal" data-bs-target="#deleteProdModal">Delete</button>
+                                    <?php elseif ($row['statusID'] == 6): ?>
+                                        <button class='editProdBtn btn btn-warning' data-bs-toggle="modal" data-bs-target="#editProdModal">Edit</button>
+                                        <button class='restoreProdBtn btn btn-success' data-bs-toggle="modal" data-bs-target="#restoreProdModal">Restore</button>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <span class="text-muted text-center small">Action only available to Super Admin</span>
                                 <?php endif; ?>
                             </div>
                         </td>
                     </tr>
-                <?php
+            <?php
                 }
             } else {
-                ?>
-                <h1 class="text-center">No products found</h1>
-            <?php
+                echo "<h1 class='text-center'>No products found</h1>";
             }
             ?>
         </tbody>
@@ -143,8 +143,8 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                                                                                                                                 }
                                                                                                                             } else {
                                                                                                                                     ?><option disabled>No categories available.</option><?php
-                                                                                                                            }
-                                                                                            ?>
+                                                                                                                                                                                    }
+                                                                                                                                                                                        ?>
                                 </select>
                                 <label class="error-message" for="prodCategory"></label>
                             </div>
@@ -215,11 +215,11 @@ $categoriesSQLResult = $conn->query($categoriesSQL);
                                     if ($categoriesSQLResult->num_rows > 0) {
                                         while ($catRow = $categoriesSQLResult->fetch_assoc()) {
                                     ?><option value="<?php echo $catRow['categoryID'] ?>"><?php echo $catRow['categoryName'] ?></option><?php
-                                                                                                                                                    }
-                                                                                                                                                } else {
-                                                                                                                                                        ?><option disabled>No categories available.</option><?php
-                                                                                                                                                }
-                                                                                                    ?>
+                                                                                                                                    }
+                                                                                                                                } else {
+                                                                                                                                        ?><option disabled>No categories available.</option><?php
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                            ?>
                                 </select>
                                 <label class="error-message" for="editProdCategory"></label>
                             </div>
